@@ -30,3 +30,9 @@
 - [ ] Premium CTA
 - [ ] Homepage integration
 - [ ] Responsive QA
+
+## TECH DEBT — Motion Hook Stability
+
+- [ ] Refactor useStaggeredReveal so it does not call useSharedValue inside a loop.
+- [ ] Replace with fixed shared values, child component split, or a single shared progress value.
+- [ ] Ensure count changes cannot violate React hooks rules.
