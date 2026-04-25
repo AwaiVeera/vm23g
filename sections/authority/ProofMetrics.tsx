@@ -6,7 +6,7 @@ import { GlassCard } from '@/components/ui/GlassCard';
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { useGlowHover } from '@/animations/glowSystem';
 import { colors } from '@/systems/theme/colors';
-import { typography } from '@/systems/theme/typography';
+import { fontFamilies, typography } from '@/systems/theme/typography';
 import { useParallaxLayerStyle } from '@/systems/motion/parallax';
 import { useScrollReveal, useRevealStyle, useStaggeredReveal } from '@/systems/motion/viewport';
 import { SECTION_STAGGER } from '@/systems/motion/transitions';
@@ -68,6 +68,6 @@ const styles = StyleSheet.create({
   cardWrap:      { flex: 1, minWidth: 180, maxWidth: 260 },
   cardPressable: { borderRadius: 16 },
   cardInner:     { alignItems: 'center', justifyContent: 'center' },
-  value:         { fontFamily: 'Cinzel', fontSize: 48, lineHeight: 56, letterSpacing: 2, fontWeight: '300', color: colors.text.primary, marginBottom: 10 },
+  value:         { fontFamily: fontFamilies.serif, fontSize: 48, lineHeight: 56, letterSpacing: 2, fontWeight: '300', color: colors.text.primary, marginBottom: 10 },
   label:         { ...typography.microLabel, color: colors.text.muted, textAlign: 'center' },
 });
