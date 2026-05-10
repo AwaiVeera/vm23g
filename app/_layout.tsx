@@ -75,18 +75,13 @@ export default function RootLayout() {
     <SafeAreaProvider>
       <ThemeProvider value={navTheme}>
         <View style={styles.root}>
-          <RainOverlay />
-          <View style={styles.presence}>
-            <PresenceLayer />
-            <CursorGlow />
-          </View>
           <View style={styles.surface}>
             <Navbar />
             <Stack
               screenOptions={{
                 headerShown: false,
                 contentStyle: {
-                  backgroundColor: colors.pearlMatte,
+                  backgroundColor: 'transparent',
                   ...Platform.select({
                     web:     { paddingTop: 64 },
                     default: { paddingTop: 0 },
@@ -95,6 +90,13 @@ export default function RootLayout() {
                 animation: 'fade_from_bottom',
               }}
             />
+          </View>
+          <View style={styles.rainLayer}>
+            <RainOverlay />
+          </View>
+          <View style={styles.presence}>
+            <PresenceLayer />
+            <CursorGlow />
           </View>
           <FloatingNavPill />
           <StatusBar style="dark" />
@@ -107,6 +109,7 @@ export default function RootLayout() {
 const styles = StyleSheet.create({
   splash:   { flex: 1, backgroundColor: '#F5F3EF' },
   root:     { flex: 1, backgroundColor: colors.pearlMatte },
-  presence: { ...StyleSheet.absoluteFillObject, zIndex: 1, pointerEvents: 'none' },
   surface:  { flex: 1, zIndex: 2 },
+  rainLayer: { ...StyleSheet.absoluteFillObject, zIndex: 3, pointerEvents: 'none' },
+  presence: { ...StyleSheet.absoluteFillObject, zIndex: 4, pointerEvents: 'none' },
 });

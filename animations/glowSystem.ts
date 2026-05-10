@@ -7,6 +7,8 @@ import {
   type SharedValue,
 } from 'react-native-reanimated';
 
+import { useMotionGuardrails } from '@/systems/motion/useMotionGuardrails';
+
 // ─── Cursor-reactive glow (web only) ─────────────────────────────────────────
 
 // Module-level shared values so only one mousemove listener exists globally.
@@ -96,18 +98,18 @@ type GlowPreset = {
 
 export const GLOW_PRESETS: Record<GlowSurface, GlowPreset> = {
   button: {
-    rest:  { outerRadius: 10, outerOpacity: 0.28, innerRadius: 4,  innerOpacity: 0.18 },
-    hover: { outerRadius: 26, outerOpacity: 0.65, innerRadius: 10, innerOpacity: 0.42 },
+    rest:  { outerRadius: 12, outerOpacity: 0.32, innerRadius: 6,  innerOpacity: 0.20 },
+    hover: { outerRadius: 30, outerOpacity: 0.72, innerRadius: 12, innerOpacity: 0.46 },
   },
   // Card uses two concentric shadow rings at hover: the second ring gives the card a
   // breathing ambient field that extends well beyond its border without overpowering.
   card: {
-    rest:  { outerRadius: 20, outerOpacity: 0.18 },
-    hover: { outerRadius: 44, outerOpacity: 0.40, secondOuterRadius: 80, secondOuterOpacity: 0.12 },
+    rest:  { outerRadius: 24, outerOpacity: 0.22 },
+    hover: { outerRadius: 56, outerOpacity: 0.46, secondOuterRadius: 96, secondOuterOpacity: 0.16 },
   },
   nav: {
-    rest:  { outerRadius: 6,  outerOpacity: 0.20 },
-    hover: { outerRadius: 16, outerOpacity: 0.52 },
+    rest:  { outerRadius: 8,  outerOpacity: 0.24 },
+    hover: { outerRadius: 20, outerOpacity: 0.56 },
   },
 };
 
@@ -186,14 +188,19 @@ export function useGlowHover(surface: GlowSurface = 'button'): {
   onPressIn: () => void;
   onPressOut: () => void;
 } {
+  const { reduceMotion, lowMotionDevice } = useMotionGuardrails();
   const intensity = useSharedValue(0);
 
   const glowStyle = useGlowIntensityStyle(intensity, surface);
 
-  const onHoverIn  = () => { intensity.value = withTiming(1, { duration: 220 }); };
-  const onHoverOut = () => { intensity.value = withTiming(0, { duration: 300 }); };
-  const onPressIn  = () => { intensity.value = withTiming(1, { duration: 220 }); };
-  const onPressOut = () => { intensity.value = withTiming(0, { duration: 300 }); };
+  const hoverTarget = reduceMotion ? 0.25 : lowMotionDevice ? 0.62 : 1;
+  const hoverInDuration = reduceMotion ? 120 : 220;
+  const hoverOutDuration = reduceMotion ? 140 : 300;
+
+  const onHoverIn  = () => { intensity.value = withTiming(hoverTarget, { duration: hoverInDuration }); };
+  const onHoverOut = () => { intensity.value = withTiming(0, { duration: hoverOutDuration }); };
+  const onPressIn  = () => { intensity.value = withTiming(hoverTarget, { duration: hoverInDuration }); };
+  const onPressOut = () => { intensity.value = withTiming(0, { duration: hoverOutDuration }); };
 
   return { glowStyle, onHoverIn, onHoverOut, onPressIn, onPressOut };
 }

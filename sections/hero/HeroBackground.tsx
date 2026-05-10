@@ -1,15 +1,18 @@
+import { VideoView, useVideoPlayer } from 'expo-video';
+import { useEffect } from 'react';
 import { Platform, StyleSheet, View, ViewStyle } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { SharedValue } from 'react-native-reanimated';
 import { PARALLAX_DEPTH, useParallaxStyle } from '@/systems/motion/parallax';
+import { useMotionGuardrails } from '@/systems/motion/useMotionGuardrails';
 
 const webGradientStyle = Platform.select({
   web: {
     background:
-      'radial-gradient(ellipse 70% 60% at 15% 25%, rgba(115, 130, 83, 0.11) 0%, transparent 70%), radial-gradient(ellipse 50% 40% at 85% 75%, rgba(115, 130, 83, 0.07) 0%, transparent 65%), #F5F3EF',
+      'radial-gradient(ellipse 70% 60% at 15% 25%, rgba(153, 172, 121, 0.20) 0%, transparent 70%), radial-gradient(ellipse 50% 40% at 85% 75%, rgba(115, 130, 83, 0.16) 0%, transparent 65%)',
   } as unknown as ViewStyle,
   default: {
-    backgroundColor: '#F5F3EF',
+    backgroundColor: 'transparent',
   } as ViewStyle,
 });
 
@@ -32,13 +35,52 @@ const noiseWebStyle = Platform.select({
   default: {} as ViewStyle,
 });
 
+const videoCoverWebStyle = Platform.select({
+  web: {
+    width: '104%',
+    height: '104%',
+    marginLeft: '-2%',
+    marginTop: '-2%',
+    transform: [{ scale: 1.01 }],
+  } as unknown as ViewStyle,
+  default: {} as ViewStyle,
+});
+
 export function HeroBackground({ scrollY }: { scrollY: SharedValue<number> }) {
+  const { reduceMotion, lowMotionDevice } = useMotionGuardrails();
   const bloomStyle  = useParallaxStyle(scrollY, PARALLAX_DEPTH.background);
   const ellipse1Style = useParallaxStyle(scrollY, PARALLAX_DEPTH.mid);
   const ellipse2Style = useParallaxStyle(scrollY, PARALLAX_DEPTH.foreground);
+  const player = useVideoPlayer(require('@/assets/videos/robmace-1.mp4'), (instance) => {
+    instance.loop = true;
+    instance.muted = true;
+    instance.play();
+  });
+
+  useEffect(() => {
+    if (reduceMotion) {
+      player.pause();
+      return;
+    }
+    player.play();
+  }, [player, reduceMotion]);
 
   return (
     <View style={styles.root}>
+      {!reduceMotion ? (
+        <View style={styles.videoWrap}>
+          <VideoView
+            player={player}
+            style={[styles.videoBackground, videoCoverWebStyle]}
+            nativeControls={false}
+            contentFit="cover"
+            allowsFullscreen={false}
+            allowsPictureInPicture={false}
+            playsInline
+          />
+        </View>
+      ) : null}
+
       <Animated.View
         style={[styles.gradientBloom, webGradientStyle, bloomStyle]}
       />
@@ -50,6 +92,8 @@ export function HeroBackground({ scrollY }: { scrollY: SharedValue<number> }) {
       <Animated.View
         style={[styles.ellipse2, ellipse2BlurStyle, ellipse2Style]}
       />
+
+      <View style={[styles.vignette, lowMotionDevice && styles.vignetteLowMotion]} />
 
       {Platform.OS === 'web' && (
         <View style={[styles.noiseOverlay, noiseWebStyle]} />
@@ -64,10 +108,20 @@ const styles = StyleSheet.create({
     zIndex: 0,
     overflow: 'hidden',
     pointerEvents: 'none',
+    backgroundColor: '#0F1112',
+  },
+  videoBackground: {
+    ...StyleSheet.absoluteFillObject,
+    zIndex: 0,
+  },
+  videoWrap: {
+    ...StyleSheet.absoluteFillObject,
+    overflow: 'hidden',
+    zIndex: 0,
   },
   gradientBloom: {
     ...StyleSheet.absoluteFillObject,
-    zIndex: 0,
+    zIndex: 1,
     pointerEvents: 'none',
   },
   ellipse1: {
@@ -77,8 +131,8 @@ const styles = StyleSheet.create({
     top: '5%',
     right: '8%',
     borderRadius: 9999,
-    backgroundColor: 'rgba(115, 130, 83, 0.09)',
-    zIndex: 0,
+    backgroundColor: 'rgba(115, 130, 83, 0.16)',
+    zIndex: 2,
     pointerEvents: 'none',
   },
   ellipse2: {
@@ -88,14 +142,30 @@ const styles = StyleSheet.create({
     bottom: '12%',
     left: '3%',
     borderRadius: 9999,
-    backgroundColor: 'rgba(115, 130, 83, 0.07)',
-    zIndex: 0,
+    backgroundColor: 'rgba(115, 130, 83, 0.14)',
+    zIndex: 2,
     pointerEvents: 'none',
+  },
+  vignette: {
+    ...StyleSheet.absoluteFillObject,
+    zIndex: 3,
+    ...Platform.select({
+      web: {
+        backgroundImage:
+          'radial-gradient(circle at 50% 42%, rgba(9, 10, 12, 0.08) 0%, rgba(9, 10, 12, 0.34) 64%, rgba(9, 10, 12, 0.58) 100%)',
+      } as unknown as ViewStyle,
+      default: {
+        backgroundColor: 'rgba(9, 10, 12, 0.30)',
+      } as ViewStyle,
+    }),
+  },
+  vignetteLowMotion: {
+    opacity: 0.8,
   },
   noiseOverlay: {
     ...StyleSheet.absoluteFillObject,
-    zIndex: 1,
-    opacity: 0.035,
+    zIndex: 4,
+    opacity: 0.05,
     pointerEvents: 'none',
   },
 });

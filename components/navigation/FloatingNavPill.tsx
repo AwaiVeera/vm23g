@@ -1,4 +1,4 @@
-import { Link } from 'expo-router';
+import { Link, usePathname } from 'expo-router';
 import { BlurView } from 'expo-blur';
 import { Platform, Pressable, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 
@@ -10,12 +10,12 @@ const links = [
   { href: '/about', label: 'About' },
   { href: '/collectives', label: 'Collectives' },
   { href: '/gallery', label: 'Gallery' },
-  { href: '/partners', label: 'Partners' },
   { href: '/legal', label: 'Legal' },
 ] as const;
 
 export function FloatingNavPill() {
   const { width } = useWindowDimensions();
+  const pathname = usePathname();
   const show = width < 900;
 
   if (!show) {
@@ -29,8 +29,21 @@ export function FloatingNavPill() {
         <View style={styles.pillInner}>
           {links.map((item) => (
             <Link key={item.href} href={item.href} asChild>
-              <Pressable style={({ pressed }) => [styles.pillLink, pressed && styles.pillPressed]}>
-                <Text style={styles.pillText}>{item.label}</Text>
+              <Pressable
+                style={({ pressed }) => [
+                  styles.pillLink,
+                  (pathname === item.href || (item.href !== '/' && pathname.startsWith(`${item.href}/`))) && styles.pillActive,
+                  pressed && styles.pillPressed,
+                ]}
+              >
+                <Text
+                  style={[
+                    styles.pillText,
+                    (pathname === item.href || (item.href !== '/' && pathname.startsWith(`${item.href}/`))) && styles.pillTextActive,
+                  ]}
+                >
+                  {item.label}
+                </Text>
               </Pressable>
             </Link>
           ))}
@@ -87,10 +100,20 @@ const styles = StyleSheet.create({
   },
   pillPressed: {
     backgroundColor: colors.surfaceGlassStrong,
+    transform: [{ scale: 0.97 }],
+  },
+  pillActive: {
+    borderWidth: 1,
+    borderColor: colors.accent.base,
+    backgroundColor: colors.accent.subtle,
   },
   pillText: {
     ...typography.caption,
     color: colors.oliveGreen,
     textTransform: 'uppercase',
+  },
+  pillTextActive: {
+    color: colors.text.primary,
+    fontWeight: '600',
   },
 });

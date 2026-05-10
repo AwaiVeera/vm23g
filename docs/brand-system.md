@@ -26,6 +26,14 @@
 - Background: subtle continuous motion (rain / particles)
 - Avoid abrupt or gimmicky transitions
 
+## Performance Guardrails
+
+- Prefer transform/opacity animation over layout-affecting animation
+- Keep blur/shadow intensity adaptive for smaller viewports
+- Avoid unnecessary state updates in high-frequency interactions
+- Keep particle and overlay systems lightweight on mobile
+- Preserve premium visual language while protecting frame stability
+
 ## Layout
 
 - Generous vertical spacing

@@ -7,7 +7,6 @@ import { CollectivesSection } from '@/sections/collectives';
 import { ClientPathway, PremiumCTA } from '@/sections/conversion';
 import { GallerySection } from '@/sections/gallery';
 import { HeroSection } from '@/sections/hero';
-import { PartnersSection } from '@/sections/partners';
 import { colors } from '@/systems/theme/colors';
 
 export default function HomeScreen() {
@@ -36,7 +35,6 @@ export default function HomeScreen() {
         <AboutSection scrollY={scrollY} />
         <GallerySection scrollY={scrollY} />
         <TrustArchitecture scrollY={scrollY} />
-        <PartnersSection scrollY={scrollY} />
         <PremiumCTA scrollY={scrollY} />
       </Animated.ScrollView>
     </View>

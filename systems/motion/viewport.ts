@@ -11,9 +11,10 @@ import {
 } from 'react-native-reanimated';
 
 import { motion } from './transitions';
+import { useMotionGuardrails } from './useMotionGuardrails';
 
 // How many px before the element's top edge enters the viewport to trigger reveal.
-const REVEAL_OFFSET = 80;
+const REVEAL_OFFSET = 110;
 
 export type RevealVariant = 'fadeUp' | 'scaleIn' | 'slideLeft' | 'slideRight';
 
@@ -38,7 +39,6 @@ export function useScrollReveal(scrollY: SharedValue<number>) {
     [height],
   );
 
-  // Called when the section mounts/measures and immediately checked.
   const onLayout = useCallback(
     (event: { nativeEvent: { layout: { y: number } } }) => {
       sectionY.current = event.nativeEvent.layout.y;
@@ -61,14 +61,19 @@ export function useScrollReveal(scrollY: SharedValue<number>) {
 
 // Animated style for a single element based on reveal visibility.
 export function useRevealStyle(visible: boolean, variant: RevealVariant = 'fadeUp') {
+  const { reduceMotion, lowMotionDevice } = useMotionGuardrails();
+  const distanceScale = reduceMotion ? 0 : lowMotionDevice ? 0.65 : 1;
   const opacity    = useSharedValue(0);
-  const translateY = useSharedValue(variant === 'fadeUp' ? 32 : 0);
+  const translateY = useSharedValue(variant === 'fadeUp' ? 32 * distanceScale : 0);
   const translateX = useSharedValue(
-    variant === 'slideLeft' ? -40 : variant === 'slideRight' ? 40 : 0,
+    variant === 'slideLeft' ? -40 * distanceScale : variant === 'slideRight' ? 40 * distanceScale : 0,
   );
-  const scale = useSharedValue(variant === 'scaleIn' ? 0.93 : 1);
+  const scale = useSharedValue(variant === 'scaleIn' ? (0.93 + (1 - distanceScale) * 0.03) : 1);
 
-  const config = { duration: motion.duration.long, easing: motion.easing.settle };
+  const config = {
+    duration: reduceMotion ? motion.duration.micro : lowMotionDevice ? motion.duration.medium : motion.duration.long,
+    easing: motion.easing.settle,
+  };
 
   if (visible) {
     opacity.value    = withTiming(1, config);
@@ -95,20 +100,26 @@ export function useStaggeredReveal(
   staggerMs: number = 100,
   variant: RevealVariant = 'fadeUp',
 ) {
+  const { reduceMotion, lowMotionDevice } = useMotionGuardrails();
+  const distanceScale = reduceMotion ? 0 : lowMotionDevice ? 0.65 : 1;
   const items = Array.from({ length: count }, () => ({
     opacity:    useSharedValue(0),
-    translateY: useSharedValue(variant === 'fadeUp' ? 28 : 0),
+    translateY: useSharedValue(variant === 'fadeUp' ? 28 * distanceScale : 0),
     translateX: useSharedValue(
-      variant === 'slideLeft' ? -32 : variant === 'slideRight' ? 32 : 0,
+      variant === 'slideLeft' ? -32 * distanceScale : variant === 'slideRight' ? 32 * distanceScale : 0,
     ),
-    scale: useSharedValue(variant === 'scaleIn' ? 0.94 : 1),
+    scale: useSharedValue(variant === 'scaleIn' ? (0.94 + (1 - distanceScale) * 0.03) : 1),
   }));
 
-  const config = { duration: motion.duration.long, easing: motion.easing.settle };
+  const config = {
+    duration: reduceMotion ? motion.duration.micro : lowMotionDevice ? motion.duration.medium : motion.duration.long,
+    easing: motion.easing.settle,
+  };
 
   if (visible) {
     items.forEach((item, i) => {
-      const delay = i * staggerMs;
+      const staggerFactor = reduceMotion ? 0 : lowMotionDevice ? 0.7 : 1;
+      const delay = i * staggerMs * staggerFactor;
       item.opacity.value    = withDelay(delay, withTiming(1, config));
       item.translateY.value = withDelay(delay, withTiming(0, config));
       item.translateX.value = withDelay(delay, withTiming(0, config));

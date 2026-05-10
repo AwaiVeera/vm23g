@@ -1,7 +1,7 @@
+import { useRouter } from 'expo-router';
 import { useEffect } from 'react';
 import {
   Platform,
-  Pressable,
   StyleSheet,
   Text,
   View,
@@ -17,7 +17,6 @@ import Animated, {
 } from 'react-native-reanimated';
 
 import { GlowButton } from '@/components/ui/GlowButton';
-import { FloatingPanel } from '@/components/ui/FloatingPanel';
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { colors } from '@/systems/theme/colors';
 import { typography } from '@/systems/theme/typography';
@@ -28,16 +27,12 @@ import { HeroBackground } from './HeroBackground';
 
 const BREAKPOINT = 900;
 
-const HERO_METRICS = [
-  { label: 'NODES ACTIVE', value: '23G' },
-  { label: 'ITERATIONS',   value: '∞'  },
-];
-
 type HeroProps = {
   scrollY: SharedValue<number>;
 };
 
 export function Hero({ scrollY }: HeroProps) {
+  const router = useRouter();
   const { width, height } = useWindowDimensions();
   const isWide = width >= BREAKPOINT;
 
@@ -60,7 +55,7 @@ export function Hero({ scrollY }: HeroProps) {
   const minHeight: number | string =
     Platform.OS === 'web' ? ('100vh' as unknown as number) : height;
 
-  const contentLayoutStyle = isWide ? styles.sectionContentRow : styles.sectionContentColumn;
+  const contentLayoutStyle = styles.sectionContentColumn;
 
   return (
     <View style={[styles.root, { minHeight }]}>
@@ -82,34 +77,18 @@ export function Hero({ scrollY }: HeroProps) {
         >
           <Text style={styles.microLabel}>THE COLLECTIVE</Text>
 
-          <View style={styles.headlineBlock}>
-            <Text style={styles.headline}>PRECISION</Text>
-            <Text style={[styles.headline, styles.headlineIndented]}>REDEFINED</Text>
-          </View>
+          <Text style={styles.headline}>VM23G</Text>
+          <Text style={styles.subHeadline}>Mind. Body. Brand. Technology.</Text>
 
           <Text style={styles.paragraph}>
             {'A convergence of intelligence, design, and craft — built for those who demand the exceptional.'}
           </Text>
 
           <View style={styles.ctaRow}>
-            <GlowButton label="Explore" onPress={() => {}} />
-            <Pressable style={styles.secondaryCta}>
-              <Text style={styles.secondaryCtaText}>Our Work →</Text>
-            </Pressable>
+            <GlowButton label="Explore" onPress={() => router.push('/about')} />
           </View>
         </Animated.View>
 
-        {isWide && (
-          <View style={styles.panelContainer}>
-            <FloatingPanel
-              title="INTELLIGENCE LAYER"
-              metrics={HERO_METRICS}
-              liveState="active"
-              floatAmplitude={10}
-              floatDuration={5800}
-            />
-          </View>
-        )}
       </SectionWrapper>
 
       <Animated.View style={[styles.scrollIndicator, fadeStyle]}>
@@ -124,7 +103,7 @@ const styles = StyleSheet.create({
   root: {
     position: 'relative',
     width: '100%',
-    backgroundColor: colors.background.base,
+    backgroundColor: '#0F1112',
     overflow: 'hidden',
   },
   sectionWrapper: {
@@ -134,60 +113,62 @@ const styles = StyleSheet.create({
   },
   sectionContentRow: {
     flex: 1,
-    alignItems: 'flex-start',
-    flexDirection: 'row',
-    gap: 64,
+    alignItems: 'center',
+    flexDirection: 'column',
+    gap: 0,
   },
   sectionContentColumn: {
     flex: 1,
     alignItems: 'flex-start',
     flexDirection: 'column',
+    justifyContent: 'center',
   },
   leftContent: {
-    gap: 28,
+    gap: 14,
     zIndex: 2,
+    justifyContent: 'center',
   },
   leftContentWide: {
     flex: 1,
+    maxWidth: 760,
   },
   leftContentNarrow: {
     width: '100%',
+    maxWidth: 560,
   },
   microLabel: {
     ...typography.microLabel,
-    color: colors.accent.base,
-  },
-  headlineBlock: {
-    gap: 0,
+    color: 'rgba(231, 238, 222, 0.9)',
   },
   headline: {
     ...typography.heroTitle,
-    color: colors.text.primary,
+    color: '#F6F4F0',
+    letterSpacing: 3.2,
+    textShadowColor: 'rgba(0, 0, 0, 0.42)',
+    textShadowRadius: 26,
+    textShadowOffset: { width: 0, height: 8 },
   },
-  headlineIndented: {
-    paddingLeft: 32,
+  subHeadline: {
+    ...typography.subtitle,
+    color: 'rgba(244, 242, 236, 0.92)',
+    maxWidth: 620,
+    textTransform: 'uppercase',
+    letterSpacing: 2,
+    marginTop: -4,
   },
   paragraph: {
-    ...typography.body,
-    color: colors.text.muted,
-    maxWidth: 480,
+    ...typography.bodyLarge,
+    color: 'rgba(244, 242, 236, 0.9)',
+    maxWidth: 620,
+    textShadowColor: 'rgba(0, 0, 0, 0.35)',
+    textShadowRadius: 14,
+    textShadowOffset: { width: 0, height: 4 },
   },
   ctaRow: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 16,
     marginTop: 8,
-  },
-  secondaryCta: {
-    paddingVertical: 14,
-    paddingHorizontal: 4,
-  },
-  secondaryCtaText: {
-    ...typography.label,
-    color: colors.accent.base,
-  },
-  panelContainer: {
-    width: 440,
   },
   scrollIndicator: {
     position: 'absolute',

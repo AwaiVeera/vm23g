@@ -3,20 +3,21 @@ import { Easing, useAnimatedStyle, useSharedValue, withDelay, withTiming } from 
 
 export const motion = {
   duration: {
-    micro:  180,
-    short:  320,
-    medium: 520,
-    long:   780,
+    micro:  140,
+    short:  260,
+    medium: 440,
+    long:   680,
   },
   easing: {
     cinematic: Easing.bezier(0.22, 0.61, 0.36, 1),
     settle:    Easing.bezier(0.16, 1, 0.3, 1),
     drift:     Easing.bezier(0.45, 0, 0.55, 1),
+    luxe:      Easing.bezier(0.2, 0.8, 0.2, 1),
   },
 } as const;
 
 // Section-to-section stagger cadence (ms between each card/item in a group)
-export const SECTION_STAGGER = 120;
+export const SECTION_STAGGER = 96;
 
 export function useFadeIn(trigger: boolean = true) {
   const opacity = useSharedValue(trigger ? 0 : 1);
