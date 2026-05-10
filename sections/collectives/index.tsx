@@ -1,7 +1,7 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Image } from 'expo-image';
+import { Platform, StyleSheet, Text, View } from 'react-native';
 import Animated, { SharedValue } from 'react-native-reanimated';
 
-import { GlowButton } from '@/components/ui/GlowButton';
 import { RevealCard } from '@/components/ui/RevealCard';
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { collectivesContent, collectivesPageContent } from '@/cms/content';
@@ -18,6 +18,7 @@ export function CollectivesSection({ scrollY }: CollectivesSectionProps) {
   const layer = useParallaxLayerStyle(scrollY, -0.6);
   const { onLayout, visible } = useScrollReveal(scrollY);
   const headingReveal = useRevealStyle(visible, 'slideLeft');
+  const brandReveal   = useRevealStyle(visible, 'fadeUp');
 
   return (
     <SectionWrapper asymmetry="left">
@@ -26,6 +27,9 @@ export function CollectivesSection({ scrollY }: CollectivesSectionProps) {
           <Animated.View style={layer}>
             <Animated.Text style={[styles.heading, headingReveal]}>
               {collectivesContent.heading}
+            </Animated.Text>
+            <Animated.Text style={[styles.brandLine, brandReveal]}>
+              {collectivesPageContent.hero.brandLine}
             </Animated.Text>
           </Animated.View>
         </View>
@@ -39,45 +43,44 @@ export function CollectivesSection({ scrollY }: CollectivesSectionProps) {
           borderRadius={22}
         >
           <Text style={styles.body}>{collectivesPageContent.intro}</Text>
+          <Text style={styles.ecosystem}>{collectivesPageContent.ecosystem}</Text>
           <Text style={styles.mission}>{collectivesPageContent.mission}</Text>
         </RevealCard>
 
-        <RevealCard
-          scrollY={scrollY}
-          depth={0.18}
-          variant="fadeUp"
-          intensity="medium"
-          padding={22}
-          borderRadius={20}
-        >
-          <Text style={styles.sectionTitle}>Collective Categories</Text>
-          <View style={styles.categoryWrap}>
-            {collectivesPageContent.categories.map((category) => (
-              <View key={category} style={styles.categoryChip}>
-                <Text style={styles.categoryText}>{category}</Text>
+        <View style={styles.tilesGrid}>
+          {collectivesPageContent.featureTiles.map((tile, i) => (
+            <RevealCard
+              key={tile.key}
+              scrollY={scrollY}
+              depth={i % 2 === 0 ? 0.18 : -0.18}
+              variant={i % 2 === 0 ? 'slideLeft' : 'slideRight'}
+              intensity="high"
+              padding={0}
+              borderRadius={22}
+              style={styles.tileSlot}
+            >
+              <View style={styles.tileInner}>
+                <View style={styles.tileImageFrame}>
+                  <Image
+                    source={tile.image}
+                    style={styles.tileImage}
+                    contentFit="cover"
+                    accessibilityLabel={`${tile.title} — ${tile.tag}`}
+                    alt={`${tile.title}: ${tile.caption}`}
+                    transition={300}
+                  />
+                  <View style={styles.tileMatte} pointerEvents="none" />
+                  <View style={styles.tileTopGloss} pointerEvents="none" />
+                </View>
+                <View style={styles.tileBody}>
+                  <Text style={styles.tileTag}>{tile.tag}</Text>
+                  <Text style={styles.tileTitle}>{tile.title}</Text>
+                  <Text style={styles.tileCaption}>{tile.caption}</Text>
+                </View>
               </View>
-            ))}
-          </View>
-        </RevealCard>
-
-        <RevealCard
-          scrollY={scrollY}
-          depth={-0.12}
-          variant="scaleIn"
-          intensity="high"
-          padding={26}
-          borderRadius={22}
-        >
-          <Text style={styles.sectionTitle}>Move With Us</Text>
-          <View style={styles.ctaRow}>
-            <GlowButton label={collectivesPageContent.ctas[0]} onPress={() => {}} />
-            {collectivesPageContent.ctas.slice(1).map((cta) => (
-              <Pressable key={cta} style={styles.secondaryCta}>
-                <Text style={styles.secondaryText}>{cta}</Text>
-              </Pressable>
-            ))}
-          </View>
-        </RevealCard>
+            </RevealCard>
+          ))}
+        </View>
       </View>
     </SectionWrapper>
   );
@@ -85,62 +88,114 @@ export function CollectivesSection({ scrollY }: CollectivesSectionProps) {
 
 const styles = StyleSheet.create({
   stack: {
-    gap: 18,
+    gap: 28,
   },
   heading: {
     ...typography.display,
     color: colors.text.primary,
     marginBottom: 8,
   },
+  brandLine: {
+    ...typography.caption,
+    color: colors.accent.light,
+    letterSpacing: 2.4,
+    fontWeight: '600',
+    textTransform: 'uppercase',
+    marginTop: 4,
+  },
   body: {
     ...typography.body,
     color: colors.text.primary,
   },
-  mission: {
+  ecosystem: {
     ...typography.bodySmall,
     color: colors.text.secondary,
     marginTop: 14,
+    fontStyle: 'italic',
   },
-  sectionTitle: {
-    ...typography.subtitle,
-    color: colors.accent.base,
-    marginBottom: 16,
+  mission: {
+    ...typography.bodySmall,
+    color: colors.text.muted,
+    marginTop: 14,
   },
-  categoryWrap: {
+
+  tilesGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 8,
+    gap: 16,
+    marginTop: 4,
   },
-  categoryChip: {
-    borderRadius: 999,
-    borderWidth: 1,
-    borderColor: colors.border.subtle,
-    backgroundColor: colors.glass.surface,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
+  tileSlot: {
+    flexGrow: 1,
+    flexBasis: 300,
+    minWidth: 260,
+    maxWidth: 420,
   },
-  categoryText: {
+  tileInner: {
+    flexDirection: 'column',
+    overflow: 'hidden',
+    borderRadius: 22,
+    backgroundColor: colors.glass.white,
+  },
+  tileImageFrame: {
+    width: '100%',
+    aspectRatio: 4 / 3,
+    overflow: 'hidden',
+    position: 'relative',
+    backgroundColor: colors.background.recessed,
+  },
+  tileImage: {
+    width: '100%',
+    height: '100%',
+    ...Platform.select({
+      web: {
+        filter: 'saturate(0.92) brightness(0.94) contrast(1.02)',
+      } as object,
+      default: {},
+    }),
+  },
+  tileMatte: {
+    ...StyleSheet.absoluteFillObject,
+    ...Platform.select({
+      web: {
+        backgroundImage:
+          'linear-gradient(180deg, rgba(6,7,10,0.05) 0%, rgba(6,7,10,0.18) 55%, rgba(6,7,10,0.55) 100%)',
+      } as object,
+      default: {
+        backgroundColor: 'rgba(6, 7, 10, 0.28)',
+      },
+    }),
+  },
+  tileTopGloss: {
+    ...StyleSheet.absoluteFillObject,
+    ...Platform.select({
+      web: {
+        backgroundImage:
+          'linear-gradient(180deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0) 30%, rgba(156,176,113,0) 70%, rgba(156,176,113,0.14) 100%)',
+      } as object,
+      default: {},
+    }),
+  },
+  tileBody: {
+    paddingVertical: 16,
+    paddingHorizontal: 18,
+    gap: 6,
+  },
+  tileTag: {
     ...typography.caption,
     color: colors.accent.base,
     textTransform: 'uppercase',
+    letterSpacing: 1.6,
+    fontSize: 10,
   },
-  ctaRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 12,
-    alignItems: 'center',
+  tileTitle: {
+    ...typography.subheading,
+    color: colors.text.primary,
+    fontSize: 20,
+    lineHeight: 26,
   },
-  secondaryCta: {
-    paddingVertical: 11,
-    paddingHorizontal: 14,
-    borderRadius: 999,
-    borderWidth: 1,
-    borderColor: colors.border.subtle,
-    backgroundColor: colors.glass.surface,
-  },
-  secondaryText: {
-    ...typography.caption,
-    color: colors.accent.base,
-    textTransform: 'uppercase',
+  tileCaption: {
+    ...typography.bodySmall,
+    color: colors.text.secondary,
   },
 });

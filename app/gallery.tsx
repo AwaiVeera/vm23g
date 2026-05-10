@@ -1,8 +1,8 @@
 import { StyleSheet, View } from 'react-native';
 import Animated, { useAnimatedScrollHandler, useSharedValue } from 'react-native-reanimated';
 
+import { PageHead } from '@/components/seo/PageHead';
 import { GallerySection } from '@/sections/gallery';
-import { colors } from '@/systems/theme/colors';
 
 export default function GalleryScreen() {
   const scrollY = useSharedValue(0);
@@ -14,6 +14,11 @@ export default function GalleryScreen() {
 
   return (
     <View style={styles.page}>
+      <PageHead
+        title="Gallery"
+        description="Visual archive of VM23G projects — apps, campaigns, places, people, and AI-driven design systems built for ambitious brands."
+        path="/gallery"
+      />
       <Animated.ScrollView
         style={styles.scroll}
         contentContainerStyle={styles.content}
@@ -30,7 +35,7 @@ export default function GalleryScreen() {
 const styles = StyleSheet.create({
   page: {
     flex: 1,
-    backgroundColor: colors.pearlMatte,
+    backgroundColor: 'transparent',
   },
   scroll: { flex: 1 },
   content: { paddingBottom: 120 },

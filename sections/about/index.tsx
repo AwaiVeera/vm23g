@@ -1,7 +1,8 @@
+import { Image } from 'expo-image';
 import { Platform, StyleSheet, Text, View } from 'react-native';
 import Animated, { SharedValue } from 'react-native-reanimated';
 
-import { aboutPageContent, businessArms, verificationLabels, vm23gProfile } from '@/cms/content';
+import { aboutPageContent, businessArms, vm23gProfile } from '@/cms/content';
 import { GlowButton } from '@/components/ui/GlowButton';
 import { RevealCard } from '@/components/ui/RevealCard';
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
@@ -49,92 +50,76 @@ export function AboutSection({ scrollY }: Props) {
             <Text style={styles.metaChip}>SSIC {vm23gProfile.ssic.primary.code}</Text>
             <Text style={styles.metaChip}>SSIC {vm23gProfile.ssic.secondary.code}</Text>
           </View>
-          <View style={styles.divider} />
-          <Text style={styles.sectionTitle}>Leadership</Text>
-          {aboutPageContent.leadership.map((leader) => (
-            <View key={leader.name} style={styles.leaderRow}>
-              <View style={styles.avatarPlaceholder} />
-              <View style={styles.leaderCopy}>
-                <Text style={styles.proofLabel}>{leader.name}</Text>
-                <Text style={styles.armRole}>{leader.role}</Text>
-                <Text style={styles.body}>{leader.note}</Text>
-              </View>
-            </View>
-          ))}
         </RevealCard>
 
-        <View style={styles.armGrid}>
-          <RevealCard
-            scrollY={scrollY}
-            depth={0.3}
-            variant="slideLeft"
-            intensity="high"
-            padding={26}
-            borderRadius={20}
-          >
-            <Text style={styles.armLabel}>{businessArms.navaFitAlignment.name}</Text>
-            <Text style={styles.armRole}>{businessArms.navaFitAlignment.role}</Text>
-            <Text style={styles.armText}>{businessArms.navaFitAlignment.leadership}</Text>
-            {businessArms.navaFitAlignment.focus.map((item) => (
-              <Text key={item} style={styles.armBullet}>
-                · {item}
-              </Text>
-            ))}
-            <Text style={styles.armEnergy}>{businessArms.navaFitAlignment.brandEnergy}</Text>
-          </RevealCard>
+        <Text style={[styles.sectionTitle, styles.foundersHeading]}>Founders</Text>
+        <View style={styles.foundersGrid}>
+          {aboutPageContent.leadership.map((leader, index) => {
+            const arm = businessArms[leader.armKey];
+            return (
+              <RevealCard
+                key={leader.name}
+                scrollY={scrollY}
+                depth={index === 0 ? 0.32 : -0.32}
+                variant={index === 0 ? 'slideLeft' : 'slideRight'}
+                intensity="high"
+                padding={0}
+                borderRadius={22}
+                style={styles.founderCardSlot}
+              >
+                <View style={styles.founderCardInner}>
+                  <View style={styles.portraitFrame}>
+                    <Image
+                      source={leader.portrait}
+                      style={styles.portraitImage}
+                      contentFit="cover"
+                      contentPosition={{ top: '8%' }}
+                      accessibilityLabel={`${leader.name}, ${leader.role} of VM23G`}
+                      alt={`Portrait of ${leader.name}, ${leader.role} of VM23G`}
+                      transition={300}
+                    />
+                    <View style={styles.portraitGloss} pointerEvents="none" />
+                  </View>
+                  <View style={styles.founderBody}>
+                    <Text style={styles.founderName}>{leader.name}</Text>
+                    <Text style={styles.founderRole}>{leader.role}</Text>
+                    <Text style={styles.founderNote}>{leader.note}</Text>
 
-          <RevealCard
-            scrollY={scrollY}
-            depth={-0.3}
-            variant="slideRight"
-            intensity="high"
-            padding={26}
-            borderRadius={20}
-          >
-            <Text style={styles.armLabel}>{businessArms.aaVisions.name}</Text>
-            <Text style={styles.armRole}>{businessArms.aaVisions.role}</Text>
-            <Text style={styles.armText}>{businessArms.aaVisions.leadership}</Text>
-            {businessArms.aaVisions.focus.map((item) => (
-              <Text key={item} style={styles.armBullet}>
-                · {item}
-              </Text>
-            ))}
-            <Text style={styles.armEnergy}>{businessArms.aaVisions.differentiator}</Text>
-          </RevealCard>
+                    <View style={styles.armDivider} />
+
+                    <Text style={styles.armLabel}>{arm.name}</Text>
+                    <Text style={styles.armRole}>{arm.role}</Text>
+                    {arm.focus.map((item) => (
+                      <Text key={item} style={styles.armBullet}>
+                        · {item}
+                      </Text>
+                    ))}
+                    <Text style={styles.armEnergy}>
+                      {leader.armKey === 'navaFitAlignment'
+                        ? businessArms.navaFitAlignment.brandEnergy
+                        : businessArms.aaVisions.differentiator}
+                    </Text>
+                  </View>
+                </View>
+              </RevealCard>
+            );
+          })}
         </View>
-
-        <RevealCard
-          scrollY={scrollY}
-          depth={0.25}
-          variant="fadeUp"
-          intensity="medium"
-          padding={28}
-          borderRadius={20}
-        >
-          <Text style={styles.sectionTitle}>Why VM23G Exists</Text>
-          {aboutPageContent.whyVm23gExists.map((item) => (
-            <Text key={item} style={styles.listItem}>
-              · {item}
-            </Text>
-          ))}
-        </RevealCard>
 
         <RevealCard
           scrollY={scrollY}
           depth={-0.1}
           variant="fadeUp"
-          intensity="low"
-          padding={20}
-          borderRadius={18}
-          hover={false}
+          intensity="medium"
+          padding={24}
+          borderRadius={20}
         >
-          <Text style={styles.sectionTitle}>Verification Notes</Text>
-          {aboutPageContent.verificationNotes.map((note) => (
-            <Text key={note} style={styles.note}>
-              · {note}
+          <Text style={styles.sectionTitle}>Are We Qualified</Text>
+          {aboutPageContent.qualifications.map((note) => (
+            <Text key={note} style={styles.qualificationLine}>
+              {note}
             </Text>
           ))}
-          <Text style={styles.pending}>{verificationLabels.pending}</Text>
         </RevealCard>
       </View>
     </SectionWrapper>
@@ -143,7 +128,7 @@ export function AboutSection({ scrollY }: Props) {
 
 const styles = StyleSheet.create({
   stack: {
-    gap: 18,
+    gap: 36,
   },
   heroBlock: {
     gap: 14,
@@ -216,29 +201,24 @@ const styles = StyleSheet.create({
     backgroundColor: colors.glass.surface,
     textTransform: 'uppercase',
   },
-  armGrid: {
-    gap: 14,
-  },
-  divider: {
+  armDivider: {
     height: StyleSheet.hairlineWidth,
     backgroundColor: colors.border.subtle,
     marginVertical: 14,
   },
   armLabel: {
-    ...typography.sectionTitle,
+    ...typography.subheading,
     color: colors.text.primary,
-    marginBottom: 6,
+    fontSize: 22,
+    lineHeight: 28,
+    marginBottom: 4,
   },
   armRole: {
     ...typography.caption,
     color: colors.accent.base,
     marginBottom: 8,
     textTransform: 'uppercase',
-  },
-  armText: {
-    ...typography.bodySmall,
-    color: colors.text.secondary,
-    marginBottom: 8,
+    letterSpacing: 1.4,
   },
   armBullet: {
     ...typography.bodySmall,
@@ -248,20 +228,12 @@ const styles = StyleSheet.create({
   armEnergy: {
     ...typography.bodySmall,
     color: colors.accent.base,
-    marginTop: 12,
+    marginTop: 10,
+    fontStyle: 'italic',
   },
-  listItem: {
+  qualificationLine: {
     ...typography.body,
     color: colors.text.secondary,
-    marginBottom: 6,
-  },
-  proofLabel: {
-    ...typography.label,
-    color: colors.text.primary,
-  },
-  pending: {
-    ...typography.bodySmall,
-    color: colors.accent.base,
   },
   leaderRow: {
     flexDirection: 'row',
@@ -287,5 +259,69 @@ const styles = StyleSheet.create({
     ...typography.bodySmall,
     color: colors.text.secondary,
     marginBottom: 6,
+  },
+  foundersHeading: {
+    marginTop: 6,
+    marginBottom: 0,
+  },
+  foundersGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 16,
+    marginTop: 4,
+  },
+  founderCardSlot: {
+    flexGrow: 1,
+    flexBasis: 300,
+    minWidth: 260,
+    maxWidth: 460,
+  },
+  founderCardInner: {
+    flexDirection: 'column',
+    overflow: 'hidden',
+    borderRadius: 22,
+    backgroundColor: colors.glass.white,
+  },
+  portraitFrame: {
+    width: '100%',
+    aspectRatio: 4 / 3,
+    overflow: 'hidden',
+    backgroundColor: colors.background.recessed,
+    position: 'relative',
+  },
+  portraitImage: {
+    width: '100%',
+    height: '100%',
+  },
+  portraitGloss: {
+    ...StyleSheet.absoluteFillObject,
+    ...Platform.select({
+      web: {
+        backgroundImage:
+          'linear-gradient(180deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.0) 38%, rgba(0,0,0,0.0) 60%, rgba(156,176,113,0.16) 100%)',
+      } as object,
+      default: {},
+    }),
+  },
+  founderBody: {
+    padding: 18,
+    gap: 4,
+  },
+  founderName: {
+    ...typography.subheading,
+    color: colors.text.primary,
+    fontSize: 22,
+    lineHeight: 28,
+  },
+  founderRole: {
+    ...typography.caption,
+    color: colors.accent.base,
+    textTransform: 'uppercase',
+    letterSpacing: 1.4,
+    marginBottom: 4,
+  },
+  founderNote: {
+    ...typography.bodySmall,
+    color: colors.text.secondary,
   },
 });

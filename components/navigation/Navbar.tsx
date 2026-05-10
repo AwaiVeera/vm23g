@@ -149,14 +149,14 @@ export function Navbar() {
 
   const barStyle = useAnimatedStyle(() => {
     if (Platform.OS !== 'web') return {};
-    const bgOpacity   = interpolate(scrolled.value, [0, 1], [0, 0.86]);
-    const blurPx      = interpolate(scrolled.value, [0, 1], [0, 22]);
-    const borderAlpha = interpolate(scrolled.value, [0, 1], [0, 0.16]);
+    const bgOpacity   = interpolate(scrolled.value, [0, 1], [0, 0.78]);
+    const blurPx      = interpolate(scrolled.value, [0, 1], [0, 24]);
+    const borderAlpha = interpolate(scrolled.value, [0, 1], [0, 0.20]);
     return {
-      backgroundColor:         `rgba(245, 243, 239, ${bgOpacity})`,
-      backdropFilter:          `blur(${blurPx}px)`,
-      WebkitBackdropFilter:    `blur(${blurPx}px)`,
-      borderBottomColor:       `rgba(115, 130, 83, ${borderAlpha})`,
+      backgroundColor:         `rgba(10, 11, 14, ${bgOpacity})`,
+      backdropFilter:          `blur(${blurPx}px) saturate(140%)`,
+      WebkitBackdropFilter:    `blur(${blurPx}px) saturate(140%)`,
+      borderBottomColor:       `rgba(156, 176, 113, ${borderAlpha})`,
     } as object;
   });
 
@@ -167,23 +167,23 @@ export function Navbar() {
         transform: [{ scale: interpolate(hoverInfluence, [0, 1], [1, 1.01]) }],
       };
     }
-    const blurPx      = interpolate(scrolled.value, [0, 1], [10, 26]) + interpolate(hoverInfluence, [0, 1], [0, 6]);
-    const bgOpacity   = interpolate(scrolled.value, [0, 1], [0.28, 0.52]) + interpolate(hoverInfluence, [0, 1], [0, 0.08]);
-    const shadowAlpha = interpolate(scrolled.value, [0, 1], [0.06, 0.14]) + interpolate(hoverInfluence, [0, 1], [0, 0.10]);
+    const blurPx      = interpolate(scrolled.value, [0, 1], [12, 28]) + interpolate(hoverInfluence, [0, 1], [0, 6]);
+    const bgOpacity   = interpolate(scrolled.value, [0, 1], [0.42, 0.62]) + interpolate(hoverInfluence, [0, 1], [0, 0.08]);
+    const shadowAlpha = interpolate(scrolled.value, [0, 1], [0.30, 0.46]) + interpolate(hoverInfluence, [0, 1], [0, 0.12]);
     return {
-      backdropFilter:          `blur(${blurPx}px)`,
-      WebkitBackdropFilter:    `blur(${blurPx}px)`,
-      backgroundColor:         `rgba(255, 255, 255, ${bgOpacity})`,
+      backdropFilter:          `blur(${blurPx}px) saturate(140%)`,
+      WebkitBackdropFilter:    `blur(${blurPx}px) saturate(140%)`,
+      backgroundColor:         `rgba(20, 22, 26, ${bgOpacity})`,
       transform: [
         { translateY: reduceMotion ? 0 : interpolate(hoverInfluence, [0, 1], [0, -1]) },
         { scale: reduceMotion ? 1 : interpolate(hoverInfluence, [0, 1], [1, lowMotionDevice ? 1.006 : 1.012]) },
         { rotateZ: `${reduceMotion ? 0 : interpolate(hoverInfluence, [0, 1], [0, -0.12])}deg` },
       ],
       boxShadow:               [
-        `0 10px 34px rgba(26, 25, 22, ${shadowAlpha})`,
-        `0 0 26px rgba(115, 130, 83, ${interpolate(hoverInfluence, [0, 1], [0.04, 0.22])})`,
-        `inset 0 1px 0 rgba(255, 255, 255, 0.88)`,
-        `inset 0 -1px 0 rgba(255, 255, 255, 0.32)`,
+        `0 10px 34px rgba(0, 0, 0, ${shadowAlpha})`,
+        `0 0 26px rgba(156, 176, 113, ${interpolate(hoverInfluence, [0, 1], [0.06, 0.28])})`,
+        `inset 0 1px 0 rgba(255, 255, 255, 0.16)`,
+        `inset 0 -1px 0 rgba(0, 0, 0, 0.40)`,
       ].join(', '),
     } as object;
   });
@@ -219,7 +219,9 @@ export function Navbar() {
         >
           <Animated.View style={[styles.logoWrap, logoCtaStyle]}>
             <Image
-              source={require('@/assets/images/vm23g-logo-4k.png')}
+              source={require('@/assets/images/vm23g-logo.png')}
+              accessibilityLabel="VM23G — Home"
+              alt="VM23G logo"
               style={{ width: logoSize.width, height: logoSize.height }}
               contentFit="contain"
               priority="high"
@@ -331,9 +333,13 @@ const styles = StyleSheet.create({
     borderRadius: 999,
     borderWidth: 1,
     borderColor: colors.oliveGreen,
-    backgroundColor: colors.pearlMatte,
+    backgroundColor: colors.glass.surfaceStrong,
     ...Platform.select({
-      web: { cursor: 'pointer' as unknown as undefined },
+      web: {
+        cursor: 'pointer' as unknown as undefined,
+        backdropFilter: 'blur(12px) saturate(140%)' as unknown as undefined,
+        WebkitBackdropFilter: 'blur(12px) saturate(140%)' as unknown as undefined,
+      },
       default: {},
     }),
   },
@@ -343,7 +349,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     letterSpacing: 2.2,
     fontWeight: '500',
-    color: colors.oliveGreen,
+    color: colors.accent.light,
     textTransform: 'uppercase',
   },
 });

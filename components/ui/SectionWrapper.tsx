@@ -1,8 +1,6 @@
 import { PropsWithChildren } from 'react';
 import { StyleSheet, View, ViewStyle, useWindowDimensions } from 'react-native';
 
-import { colors } from '@/systems/theme/colors';
-
 export type SectionAlign = 'center' | 'left';
 export type SectionSpacing = 'small' | 'medium' | 'large';
 export type SectionAsymmetry = 'left' | 'center' | 'right';
@@ -76,7 +74,7 @@ const styles = StyleSheet.create({
   section: {
     width: '100%',
     paddingHorizontal: 28,
-    backgroundColor: colors.background.base,
+    backgroundColor: 'transparent',
   },
   content: {
     width: '100%',

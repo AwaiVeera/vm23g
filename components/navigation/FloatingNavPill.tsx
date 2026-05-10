@@ -25,7 +25,7 @@ export function FloatingNavPill() {
   return (
     <View style={styles.shell}>
       <View style={styles.pill}>
-        <BlurView intensity={55} tint="light" style={StyleSheet.absoluteFill} />
+        <BlurView intensity={55} tint="dark" style={StyleSheet.absoluteFill} />
         <View style={styles.pillInner}>
           {links.map((item) => (
             <Link key={item.href} href={item.href} asChild>

@@ -2,10 +2,19 @@ import { useState } from 'react';
 import { StyleSheet, Text, TextInput, View } from 'react-native';
 import Animated from 'react-native-reanimated';
 
+import { PageHead } from '@/components/seo/PageHead';
 import { GlowButton } from '@/components/ui/GlowButton';
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { colors } from '@/systems/theme/colors';
 import { typography } from '@/systems/theme/typography';
+
+const FORMS_JSONLD = {
+  '@context': 'https://schema.org',
+  '@type': 'ContactPage',
+  name: 'VM23G Business Enquiry',
+  url: 'https://vm23g.com/forms',
+  description: 'Send a business enquiry to VM23G — partnerships, AI systems, and intelligent design.',
+};
 
 export default function FormsScreen() {
   const [name, setName] = useState('');
@@ -16,6 +25,12 @@ export default function FormsScreen() {
 
   return (
     <View style={styles.page}>
+      <PageHead
+        title="Business Enquiry"
+        description="Send a business enquiry to VM23G. Premium AI-driven systems, intelligent websites, applications, and operational design for ambitious brands."
+        path="/forms"
+        jsonLd={FORMS_JSONLD}
+      />
       <Animated.ScrollView style={styles.scroll} contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <SectionWrapper asymmetry="center">
           <View style={styles.stack}>
@@ -95,7 +110,7 @@ export default function FormsScreen() {
 const styles = StyleSheet.create({
   page: {
     flex: 1,
-    backgroundColor: colors.pearlMatte,
+    backgroundColor: 'transparent',
   },
   scroll: {
     flex: 1,

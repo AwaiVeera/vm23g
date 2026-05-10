@@ -9,29 +9,29 @@ import { colors } from '@/systems/theme/colors';
 const INTENSITY = {
   low: {
     blurAmount: 30,
-    fillOpacity: 0.42,
-    webBlur: 12,
-    shadowY: 8,
-    shadowBlur: 24,
-    shadowOpacity: 0.07,
+    fillOpacity: 0.55,
+    webBlur: 14,
+    shadowY: 10,
+    shadowBlur: 28,
+    shadowOpacity: 0.36,
     shadowSpread: 0,
   },
   medium: {
     blurAmount: 52,
-    fillOpacity: 0.55,
-    webBlur: 20,
-    shadowY: 18,
-    shadowBlur: 44,
-    shadowOpacity: 0.12,
+    fillOpacity: 0.65,
+    webBlur: 22,
+    shadowY: 22,
+    shadowBlur: 52,
+    shadowOpacity: 0.46,
     shadowSpread: 0,
   },
   high: {
     blurAmount: 78,
-    fillOpacity: 0.68,
-    webBlur: 32,
-    shadowY: 28,
-    shadowBlur: 64,
-    shadowOpacity: 0.18,
+    fillOpacity: 0.78,
+    webBlur: 34,
+    shadowY: 34,
+    shadowBlur: 78,
+    shadowOpacity: 0.58,
     shadowSpread: 0,
   },
 } as const;
@@ -72,16 +72,17 @@ export function GlassCard({
     default: {},
   }) ?? {};
 
-  // Web: composited box-shadow (outer depth + inner top highlight)
+  // Web: composited box-shadow (outer depth + inner top highlight + olive glow)
   const webCardStyle: ViewStyle = Platform.select({
     web: {
-      backdropFilter: `blur(${preset.webBlur}px)` as unknown as undefined,
-      WebkitBackdropFilter: `blur(${preset.webBlur}px)` as unknown as undefined,
+      backdropFilter: `blur(${preset.webBlur}px) saturate(140%)` as unknown as undefined,
+      WebkitBackdropFilter: `blur(${preset.webBlur}px) saturate(140%)` as unknown as undefined,
       boxShadow: [
-        `0 ${preset.shadowY}px ${preset.shadowBlur}px rgba(26, 25, 22, ${preset.shadowOpacity})`,
-        `0 2px 8px rgba(26, 25, 22, ${preset.shadowOpacity * 0.6})`,
-        `inset 0 1px 0 rgba(255, 255, 255, 0.90)`,
-        `inset 0 -1px 0 rgba(255, 255, 255, 0.35)`,
+        `0 ${preset.shadowY}px ${preset.shadowBlur}px rgba(0, 0, 0, ${preset.shadowOpacity})`,
+        `0 2px 8px rgba(0, 0, 0, ${preset.shadowOpacity * 0.5})`,
+        `inset 0 1px 0 rgba(255, 255, 255, 0.18)`,
+        `inset 0 -1px 0 rgba(0, 0, 0, 0.40)`,
+        `inset 0 0 0 1px rgba(156, 176, 113, 0.12)`,
       ].join(', '),
     } as unknown as ViewStyle,
     default: {},
@@ -103,7 +104,7 @@ export function GlassCard({
           webCardStyle,
           {
             borderRadius,
-            backgroundColor: `rgba(255, 255, 255, ${preset.fillOpacity})`,
+            backgroundColor: `rgba(20, 22, 26, ${preset.fillOpacity})`,
           },
         ]}
       >
@@ -111,7 +112,7 @@ export function GlassCard({
         {Platform.OS !== 'web' && (
           <BlurView
             intensity={preset.blurAmount}
-            tint="light"
+            tint="dark"
             style={StyleSheet.absoluteFill}
           />
         )}
@@ -144,9 +145,7 @@ const styles = StyleSheet.create({
   innerHighlight: {
     ...StyleSheet.absoluteFillObject,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.88)',
+    borderColor: 'rgba(255, 255, 255, 0.18)',
     pointerEvents: 'none',
-    // Simulate inset top highlight — top border is visually brighter
-    // Bottom/sides are softer (handled by border color opacity)
   },
 });

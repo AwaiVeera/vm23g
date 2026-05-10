@@ -50,26 +50,28 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     paddingHorizontal: 28,
     borderRadius: 999,
-    backgroundColor: colors.pearlMatte,
+    backgroundColor: colors.glass.surfaceStrong,
     borderWidth: 1,
     borderColor: colors.oliveGreen,
     ...Platform.select({
       ios: {
         shadowColor: colors.glowOliveIntense,
         shadowOffset: { width: 0, height: 0 },
-        shadowOpacity: 0.45,
-        shadowRadius: 16,
+        shadowOpacity: 0.55,
+        shadowRadius: 18,
       },
       android: { elevation: 8 },
       web: {
         cursor: 'pointer' as unknown as undefined,
+        backdropFilter: 'blur(12px) saturate(140%)' as unknown as undefined,
+        WebkitBackdropFilter: 'blur(12px) saturate(140%)' as unknown as undefined,
       },
       default: {},
     }),
   },
   label: {
     ...typography.subtitle,
-    color: colors.oliveGreen,
+    color: colors.accent.light,
     textAlign: 'center',
   },
 });

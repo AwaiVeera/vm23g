@@ -41,26 +41,35 @@ export default function RootLayout() {
 
   useEffect(() => {
     if (Platform.OS !== 'web' || typeof document === 'undefined') return;
+    if (document.getElementById('vm23g-global')) return;
     const style = document.createElement('style');
     style.id = 'vm23g-global';
-    if (!document.getElementById('vm23g-global')) {
-      style.textContent = [
-        '* { box-sizing: border-box; }',
-        'html, body {',
-        '  margin: 0;',
-        '  padding: 0;',
-        '  background: #F5F3EF;',
-        '  overflow-x: hidden;',
-        '  -webkit-font-smoothing: antialiased;',
-        '  -moz-osx-font-smoothing: grayscale;',
-        '}',
-        '::-webkit-scrollbar { width: 6px; }',
-        '::-webkit-scrollbar-track { background: #F5F3EF; }',
-        '::-webkit-scrollbar-thumb { background: rgba(115, 130, 83, 0.35); border-radius: 3px; }',
-        '::-webkit-scrollbar-thumb:hover { background: rgba(115, 130, 83, 0.60); }',
-      ].join('\n');
-      document.head.appendChild(style);
-    }
+    style.textContent = [
+      '* { box-sizing: border-box; }',
+      'html, body {',
+      '  margin: 0;',
+      '  padding: 0;',
+      '  background-color: #06070A;',
+      '  background-image:',
+      '    radial-gradient(ellipse 80% 60% at 18% 8%, rgba(255, 255, 255, 0.06) 0%, transparent 60%),',
+      '    radial-gradient(ellipse 70% 55% at 82% 22%, rgba(156, 176, 113, 0.08) 0%, transparent 65%),',
+      '    radial-gradient(ellipse 90% 60% at 50% 95%, rgba(0, 0, 0, 0.55) 0%, transparent 70%),',
+      '    linear-gradient(180deg, #0E1014 0%, #0A0B0E 38%, #07080B 70%, #050608 100%);',
+      '  background-attachment: fixed;',
+      '  background-repeat: no-repeat;',
+      '  background-size: cover;',
+      '  overflow-x: hidden;',
+      '  -webkit-font-smoothing: antialiased;',
+      '  -moz-osx-font-smoothing: grayscale;',
+      '  color: #F5F3EF;',
+      '}',
+      '#root { background: transparent !important; }',
+      '::-webkit-scrollbar { width: 6px; }',
+      '::-webkit-scrollbar-track { background: #06070A; }',
+      '::-webkit-scrollbar-thumb { background: rgba(156, 176, 113, 0.45); border-radius: 3px; }',
+      '::-webkit-scrollbar-thumb:hover { background: rgba(156, 176, 113, 0.78); }',
+    ].join('\n');
+    document.head.appendChild(style);
   }, []);
 
   useEffect(() => {
@@ -99,7 +108,7 @@ export default function RootLayout() {
             <CursorGlow />
           </View>
           <FloatingNavPill />
-          <StatusBar style="dark" />
+          <StatusBar style="light" />
         </View>
       </ThemeProvider>
     </SafeAreaProvider>
@@ -107,9 +116,9 @@ export default function RootLayout() {
 }
 
 const styles = StyleSheet.create({
-  splash:   { flex: 1, backgroundColor: '#F5F3EF' },
-  root:     { flex: 1, backgroundColor: colors.pearlMatte },
-  surface:  { flex: 1, zIndex: 2 },
+  splash:   { flex: 1, backgroundColor: '#06070A' },
+  root:     { flex: 1, backgroundColor: 'transparent' },
+  surface:  { flex: 1, zIndex: 2, backgroundColor: 'transparent' },
   rainLayer: { ...StyleSheet.absoluteFillObject, zIndex: 3, pointerEvents: 'none' },
   presence: { ...StyleSheet.absoluteFillObject, zIndex: 4, pointerEvents: 'none' },
 });

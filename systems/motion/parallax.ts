@@ -45,18 +45,26 @@ export function useParallaxStyle(scrollY: SharedValue<number>, depth: number) {
 // Section-layer parallax. Signed speed factor:
 //   negative → element moves up faster than scroll (foreground)
 //   positive → element moves slower (background)
-// 0.12 keeps section content motion subtle relative to hero layers.
+// Magnitude kept small (0.05) — visible drift without breaking flow stacking.
+const LAYER_MAGNITUDE = 0.05;
+const MAX_LAYER_TRANSLATE_PX = 24;
+
 export function useParallaxLayerStyle(
   scrollY: SharedValue<number>,
   speedFactor: number,
 ) {
   const multiplier = useDepthMultiplier();
   const clamped = Math.max(-2, Math.min(2, speedFactor));
-  const factor = clamped * multiplier * 0.12;
+  const factor = clamped * multiplier * LAYER_MAGNITUDE;
+  const cap = MAX_LAYER_TRANSLATE_PX;
 
-  return useAnimatedStyle(() => ({
-    transform: [{ translateY: scrollY.value * factor }],
-  }));
+  return useAnimatedStyle(() => {
+    const raw = scrollY.value * factor;
+    const translateY = Math.max(-cap, Math.min(cap, raw));
+    return {
+      transform: [{ translateY }],
+    };
+  });
 }
 
 // Fade element out as scroll passes a px range. Used for hero content fade.

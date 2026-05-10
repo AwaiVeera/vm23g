@@ -6,6 +6,7 @@ import Animated, {
   useSharedValue,
 } from 'react-native-reanimated';
 
+import { PageHead } from '@/components/seo/PageHead';
 import { RevealCard } from '@/components/ui/RevealCard';
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { legalPageContent } from '@/cms/content';
@@ -76,6 +77,11 @@ export default function LegalScreen() {
 
   return (
     <View style={styles.page}>
+      <PageHead
+        title="Legal"
+        description="VM23G legal hub — Singapore-based legal information, terms, and privacy details for VM23G group services."
+        path="/legal"
+      />
       <Animated.ScrollView
         ref={scrollRef}
         style={styles.scroll}
@@ -196,11 +202,11 @@ export default function LegalScreen() {
 const styles = StyleSheet.create({
   page: {
     flex: 1,
-    backgroundColor: colors.pearlMatte,
+    backgroundColor: 'transparent',
   },
   scroll: { flex: 1 },
   content: { paddingBottom: 160 },
-  stack: { gap: 18 },
+  stack: { gap: 32 },
   heading: {
     ...typography.display,
     color: colors.text.primary,

@@ -28,42 +28,35 @@ export const businessArms = {
   },
   navaFitAlignment: {
     name: 'NavaFit Alignment',
-    role: 'Coaching and fitness arm',
-    leadership: 'Founded and led by Awai (mind/body alignment coach).',
+    role: 'Mind and Body Wellness',
+    leadership: 'Founded and led by Tinesh Awai Veera (mind/body alignment Guru).',
     focus: [
       'Fitness branding',
       'Physical alignment and movement education',
-      'Mind/body alignment coaching',
-      'Fitness-industry transformation',
+      'Mind/body alignment programmes',
+      'Real-world strength, breathwork, Kalari/Gadah/Breathwork-inspired training with modern results',
     ],
     brandEnergy:
-      'Warrior discipline, real-world strength, breathwork, Kalari/Gadah-inspired training, and modern coaching.',
+      'Testimonials from ACL patient to organ donor.',
   },
   aaVisions: {
-    name: 'AaVisions',
-    role: 'Tech, AI, web, app, and marketing arm',
+    name: 'AAVisions',
+    role: 'Tech, AI, Web, App, and Marketing Consulting',
     leadership: 'Led by Summan Misir Veera.',
     focus: [
       'Web design and app development',
-      'Sales and performance marketing',
+      'Sales and performance consultations',
       'AI workflow automation',
       'UI/UX design and digital transformation',
     ],
     differentiator:
-      'Practical, execution-focused use of agentic AI to accelerate delivery and business outcomes.',
+      'Practical, execution-focused use of agentic AI to accelerate delivery and business outcomes — from creating studio-quality music, to making movies, to a storybook for kids.',
   },
 } as const;
 
 export const verificationLabels = {
   pending: 'Portfolio item pending verification',
   tbd: 'TBD',
-} as const;
-
-export const heroContent = {
-  title: site.name,
-  subtitle: '[Subtitle — confirm copy]',
-  primaryCta: '[Primary CTA — confirm label]',
-  secondaryCta: '[Secondary CTA — confirm label]',
 } as const;
 
 export const aboutPageContent = {
@@ -74,15 +67,9 @@ export const aboutPageContent = {
     ctas: ['Explore NavaFit Alignment', 'Explore AaVisions'],
   },
   whoWeAre:
-    'VM23G is a Singapore-based group built at the intersection of mind, body, brand, and intelligent technology. Under one roof, NavaFit Alignment brings physical coaching, movement discipline, and fitness-industry alignment, while AaVisions brings web design, app development, AI workflow automation, UI/UX design, and performance marketing. Founded through lived experience, practical execution, and continuous upskilling, VM23G exists to help people and brands move with clarity.',
-  verificationNotes: [
-    'Vertical Institute certifications: certifications pending document upload/verification.',
-    'Portfolio claims are listed as selected work and pending verification unless explicitly confirmed.',
-  ],
-  whyVm23gExists: [
-    'Align people, brands, and systems.',
-    'Bridge physical transformation and digital execution.',
-    'Make high-performance identity practical, visible, and scalable.',
+    'Founded by Awai Veera and Summan Veera, VM23G blends executive business experience with certified expertise in Generative AI design and workflow automation. We design intelligent websites, applications, and operational systems for ambitious companies ready to scale with precision. Our work fuses fitness innovation, machine learning, and AI-enhanced coaching, including pose-recognition technology that studies movement data to improve form and performance. Awai brings 18+ years in nightlife, leadership, and revenue transformation, scaling venues from modest turnover to multimillion-dollar performance. Summan brings elite sales instinct, commercial discipline, and high-conversion strategy. Together, we build premium AI-driven systems for brands that refuse ordinary growth.',
+  qualifications: [
+    '18 years in the entertainment industry, 15 years in sales — drawing commissions that hit 5 figures, to turning 25k revenue into 125k within 60 days — are just the foundation, backed by an array of network and resources from Singapore to Europe. Recently embarked on and certified by Vertical Institute.',
   ],
   proofExperience: [
     { label: 'PlayRoom Singapore', status: verificationLabels.pending },
@@ -95,24 +82,19 @@ export const aboutPageContent = {
   ],
   leadership: [
     {
-      name: 'Awai',
-      role: 'Founder, NavaFit Alignment',
-      note: 'Mind/body alignment coach. Portrait placeholder: TBD.',
+      name: 'Summan Misir Veera',
+      role: 'Founder, Managing Director',
+      note: 'Elite sales instinct, commercial discipline, and high-conversion strategy. Leads brand direction, partnerships, and growth across the VM23G group.',
+      portrait: require('@/assets/images/founder-summan.jpg'),
+      armKey: 'aaVisions' as const,
     },
     {
-      name: 'Summan Misir Veera',
-      role: 'Lead, AaVisions',
-      note: 'AI, web, app, and marketing direction. Portrait placeholder: TBD.',
+      name: 'Tinesh Awai Veera',
+      role: 'Co-Founder',
+      note: '18+ years in nightlife, leadership, and revenue transformation, scaling venues from modest turnover to multimillion-dollar performance. Drives operational systems, AI-enhanced coaching, and movement intelligence.',
+      portrait: require('@/assets/images/founder-tinesh.jpg'),
+      armKey: 'navaFitAlignment' as const,
     },
-  ],
-} as const;
-
-export const servicesContent = {
-  heading: '[Services heading — confirm copy]',
-  items: [
-    { title: '[Service 1 title]', body: '[Service 1 body — confirm copy]' },
-    { title: '[Service 2 title]', body: '[Service 2 body — confirm copy]' },
-    { title: '[Service 3 title]', body: '[Service 3 body — confirm copy]' },
   ],
 } as const;
 
@@ -124,50 +106,58 @@ export const collectivesContent = {
 export const collectivesPageContent = {
   hero: {
     title: 'The Collective Moves Together.',
-    subtitle:
-      'A growing network of creators, coaches, clubs, venues, sponsors, builders, and community allies.',
+    brandLine: 'NAVAFIT ALIGNMENT  ·  PLAYROOM SG  ·  KYANI  ·  NAVANAGAS HUB',
   },
   intro:
-    'Collectives are the people and communities moving with VM23G. This is not only a partner wall. It is a living network of creators, athletes, venues, clubs, sponsors, educators, resource providers, charity initiatives, and collaborators.',
+    'We collaborate with organizations such as Jurong Football Club, athletes such as Blackcat Movement, and overseas training and experience as near as Banaras and as far as Batumi, Georgia. With career opportunities such as modeling, digital creation, and many more.',
+  ecosystem:
+    'An eco-system of live creators, athletes, venues, clubs, sponsors, educators, resource providers, charity initiatives, and collaborators.',
   mission:
     'This space is reserved for people and organisations aligned with our mission: better bodies, sharper minds, stronger brands, and technology that serves real human progress.',
-  categories: [
-    'Creators & Storytellers',
-    'Fitness & Movement Friends',
-    'Football Clubs & Sports Teams',
-    'Sponsors & Resource Partners',
-    'Charity & Community Initiatives',
-    'Venue & Lifestyle Network',
-    'AI / Design / Tech Collaborators',
-    'Education & Training Allies',
+  featureTiles: [
+    {
+      key: 'playroom',
+      title: 'PlayRoom SG',
+      caption: 'Premier gentleman\u2019s bar and nightlife destination.',
+      tag: 'Venue & Lifestyle',
+      image: require('@/assets/images/collective-playroom.jpg'),
+    },
+    {
+      key: 'navafit-training',
+      title: 'NavaFit Alignment',
+      caption: 'Real-world strength, breathwork, Kalari & Gadah-inspired training.',
+      tag: 'Movement & Coaching',
+      image: require('@/assets/images/collective-navafit-training.jpg'),
+    },
+    {
+      key: 'navafit-app',
+      title: 'NavaFit App',
+      caption: 'AI-enhanced coaching with pose recognition and connected core tracking.',
+      tag: 'Tech & AI',
+      image: require('@/assets/images/collective-navafit-app.jpg'),
+    },
+    {
+      key: 'jurong-fc',
+      title: 'Jurong Football Club',
+      caption: 'Sports partnership, sponsorship, and community football.',
+      tag: 'Sports Partnership',
+      image: require('@/assets/images/collective-jurong-fc.jpg'),
+    },
+    {
+      key: 'navanagas',
+      title: 'Navanagas Hub',
+      caption: 'Charity initiatives and community provisioning across Singapore and overseas.',
+      tag: 'Charity Initiative',
+      image: require('@/assets/images/collective-charity.jpg'),
+    },
+    {
+      key: 'heritage',
+      title: 'Heritage & Roots',
+      caption: 'The cultural foundation guiding VM23G\u2019s mind, body, and discipline.',
+      tag: 'Founders\u2019 Story',
+      image: require('@/assets/images/collective-heritage.jpg'),
+    },
   ],
-  placeholderCards: [
-    {
-      name: 'TBD',
-      category: 'TBD',
-      relationship: 'Friend / Sponsor / Resource / Charity / Collaboration / Club / Creator',
-      description: 'TBD',
-      link: 'TBD',
-      image: 'Placeholder',
-    },
-    {
-      name: 'TBD',
-      category: 'TBD',
-      relationship: 'Friend / Sponsor / Resource / Charity / Collaboration / Club / Creator',
-      description: 'TBD',
-      link: 'TBD',
-      image: 'Placeholder',
-    },
-    {
-      name: 'TBD',
-      category: 'TBD',
-      relationship: 'Friend / Sponsor / Resource / Charity / Collaboration / Club / Creator',
-      description: 'TBD',
-      link: 'TBD',
-      image: 'Placeholder',
-    },
-  ],
-  ctas: ['Join The Collective', 'Propose A Collaboration', 'Sponsor A Movement', 'Support A Community Initiative'],
 } as const;
 
 export const galleryContent = {
@@ -290,11 +280,6 @@ export const galleryPageContent = {
   ],
 } as const;
 
-export const legalContent = {
-  heading: 'Legal Hub',
-  body: 'This page is a general website legal template and should be reviewed by a qualified Singapore lawyer before publication.',
-} as const;
-
 export const legalPageContent = {
   heading: 'Legal Hub',
   subheading:
@@ -390,11 +375,6 @@ export const legalPageContent = {
     'Singapore Statutes Online: PDPA and Consumer Protection (Fair Trading) Act.',
     'SingStat SSIC 2020 references for 70205 and 85409.',
   ],
-} as const;
-
-export const aboutContent = {
-  heading: aboutPageContent.hero.title,
-  body: aboutPageContent.whoWeAre,
 } as const;
 
 export const authorityContent = {
