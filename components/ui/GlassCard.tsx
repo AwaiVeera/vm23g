@@ -78,11 +78,11 @@ export function GlassCard({
       backdropFilter: `blur(${preset.webBlur}px) saturate(140%)` as unknown as undefined,
       WebkitBackdropFilter: `blur(${preset.webBlur}px) saturate(140%)` as unknown as undefined,
       boxShadow: [
-        `0 ${preset.shadowY}px ${preset.shadowBlur}px rgba(0, 0, 0, ${preset.shadowOpacity})`,
-        `0 2px 8px rgba(0, 0, 0, ${preset.shadowOpacity * 0.5})`,
-        `inset 0 1px 0 rgba(255, 255, 255, 0.18)`,
-        `inset 0 -1px 0 rgba(0, 0, 0, 0.40)`,
-        `inset 0 0 0 1px rgba(156, 176, 113, 0.12)`,
+        `0 ${preset.shadowY}px ${preset.shadowBlur}px rgba(31, 42, 36, ${preset.shadowOpacity * 0.45})`,
+        `0 2px 8px rgba(31, 42, 36, ${preset.shadowOpacity * 0.28})`,
+        `inset 0 1px 0 rgba(255, 255, 255, 0.45)`,
+        `inset 0 -1px 0 rgba(0, 66, 37, 0.20)`,
+        `inset 0 0 0 1px rgba(0, 66, 37, 0.12)`,
       ].join(', '),
     } as unknown as ViewStyle,
     default: {},
@@ -104,7 +104,7 @@ export function GlassCard({
           webCardStyle,
           {
             borderRadius,
-            backgroundColor: `rgba(20, 22, 26, ${preset.fillOpacity})`,
+            backgroundColor: `rgba(255, 255, 255, ${preset.fillOpacity})`,
           },
         ]}
       >
@@ -112,7 +112,7 @@ export function GlassCard({
         {Platform.OS !== 'web' && (
           <BlurView
             intensity={preset.blurAmount}
-            tint="dark"
+            tint="light"
             style={StyleSheet.absoluteFill}
           />
         )}

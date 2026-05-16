@@ -194,12 +194,12 @@ const styles = StyleSheet.create({
     pointerEvents: 'none',
   },
   dropBack: {
-    backgroundColor: 'rgba(245, 243, 239, 0.65)',
+    backgroundColor: 'rgba(0, 66, 37, 0.18)',
   },
   dropMid: {
-    backgroundColor: 'rgba(230, 237, 221, 0.70)',
+    backgroundColor: 'rgba(0, 66, 37, 0.26)',
   },
   dropFront: {
-    backgroundColor: 'rgba(200, 219, 171, 0.84)',
+    backgroundColor: 'rgba(0, 59, 32, 0.38)',
   },
 });

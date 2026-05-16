@@ -8,6 +8,7 @@ import { Platform, StyleSheet, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { CursorGlow } from '@/animations/cursorGlow';
+import { FloatingShapes } from '@/animations/floatingShapes';
 import { PresenceLayer } from '@/animations/presenceLayer';
 import { RainOverlay } from '@/animations/rainOverlay';
 import { FloatingNavPill } from '@/components/navigation/FloatingNavPill';
@@ -49,25 +50,25 @@ export default function RootLayout() {
       'html, body {',
       '  margin: 0;',
       '  padding: 0;',
-      '  background-color: #06070A;',
+      '  background-color: #F4F1EA;',
       '  background-image:',
-      '    radial-gradient(ellipse 80% 60% at 18% 8%, rgba(255, 255, 255, 0.06) 0%, transparent 60%),',
-      '    radial-gradient(ellipse 70% 55% at 82% 22%, rgba(156, 176, 113, 0.08) 0%, transparent 65%),',
-      '    radial-gradient(ellipse 90% 60% at 50% 95%, rgba(0, 0, 0, 0.55) 0%, transparent 70%),',
-      '    linear-gradient(180deg, #0E1014 0%, #0A0B0E 38%, #07080B 70%, #050608 100%);',
+      '    radial-gradient(ellipse 80% 60% at 18% 8%, rgba(255, 255, 255, 0.55) 0%, transparent 60%),',
+      '    radial-gradient(ellipse 70% 55% at 82% 22%, rgba(0, 66, 37, 0.05) 0%, transparent 65%),',
+      '    radial-gradient(ellipse 90% 60% at 50% 95%, rgba(31, 42, 36, 0.08) 0%, transparent 70%),',
+      '    linear-gradient(180deg, #FAF8F2 0%, #F4F1EA 40%, #ECE7DA 100%);',
       '  background-attachment: fixed;',
       '  background-repeat: no-repeat;',
       '  background-size: cover;',
       '  overflow-x: hidden;',
       '  -webkit-font-smoothing: antialiased;',
       '  -moz-osx-font-smoothing: grayscale;',
-      '  color: #F5F3EF;',
+      '  color: #003B20;',
       '}',
       '#root { background: transparent !important; }',
       '::-webkit-scrollbar { width: 6px; }',
-      '::-webkit-scrollbar-track { background: #06070A; }',
-      '::-webkit-scrollbar-thumb { background: rgba(156, 176, 113, 0.45); border-radius: 3px; }',
-      '::-webkit-scrollbar-thumb:hover { background: rgba(156, 176, 113, 0.78); }',
+      '::-webkit-scrollbar-track { background: rgba(244, 241, 234, 0.9); }',
+      '::-webkit-scrollbar-thumb { background: rgba(0, 66, 37, 0.35); border-radius: 3px; }',
+      '::-webkit-scrollbar-thumb:hover { background: rgba(0, 66, 37, 0.56); }',
     ].join('\n');
     document.head.appendChild(style);
   }, []);
@@ -101,6 +102,7 @@ export default function RootLayout() {
             />
           </View>
           <View style={styles.rainLayer}>
+            <FloatingShapes />
             <RainOverlay />
           </View>
           <View style={styles.presence}>
@@ -108,7 +110,7 @@ export default function RootLayout() {
             <CursorGlow />
           </View>
           <FloatingNavPill />
-          <StatusBar style="light" />
+          <StatusBar style="dark" />
         </View>
       </ThemeProvider>
     </SafeAreaProvider>
@@ -116,7 +118,7 @@ export default function RootLayout() {
 }
 
 const styles = StyleSheet.create({
-  splash:   { flex: 1, backgroundColor: '#06070A' },
+  splash:   { flex: 1, backgroundColor: '#F4F1EA' },
   root:     { flex: 1, backgroundColor: 'transparent' },
   surface:  { flex: 1, zIndex: 2, backgroundColor: 'transparent' },
   rainLayer: { ...StyleSheet.absoluteFillObject, zIndex: 3, pointerEvents: 'none' },

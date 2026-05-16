@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
   },
   label: {
     ...typography.subtitle,
-    color: colors.accent.light,
+    color: colors.text.primary,
     textAlign: 'center',
   },
 });

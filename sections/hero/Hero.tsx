@@ -1,5 +1,5 @@
 import { useRouter } from 'expo-router';
-import { useEffect } from 'react';
+import { lazy, Suspense, useEffect } from 'react';
 import {
   Platform,
   StyleSheet,
@@ -22,10 +22,12 @@ import { colors } from '@/systems/theme/colors';
 import { typography } from '@/systems/theme/typography';
 import { useParallaxStyle, PARALLAX_DEPTH } from '@/systems/motion/parallax';
 import { useParallaxFade } from '@/systems/motion/parallax';
+import { useMotionGuardrails } from '@/systems/motion/useMotionGuardrails';
 
 import { HeroBackground } from './HeroBackground';
 
 const BREAKPOINT = 900;
+const HeroScene = lazy(() => import('./HeroScene'));
 
 type HeroProps = {
   scrollY: SharedValue<number>;
@@ -35,6 +37,8 @@ export function Hero({ scrollY }: HeroProps) {
   const router = useRouter();
   const { width, height } = useWindowDimensions();
   const isWide = width >= BREAKPOINT;
+  const { reduceMotion, lowMotionDevice } = useMotionGuardrails();
+  const enableHeroScene = Platform.OS === 'web' && !reduceMotion && !lowMotionDevice;
 
   const foregroundStyle = useParallaxStyle(scrollY, PARALLAX_DEPTH.foreground);
   const fadeStyle       = useParallaxFade(scrollY, height * 0.3, height * 0.85);
@@ -60,6 +64,9 @@ export function Hero({ scrollY }: HeroProps) {
   return (
     <View style={[styles.root, { minHeight }]}>
       <HeroBackground scrollY={scrollY} />
+      <Suspense fallback={null}>
+        {enableHeroScene ? <HeroScene scrollY={scrollY} enabled={enableHeroScene} /> : null}
+      </Suspense>
 
       <SectionWrapper
         align="left"
@@ -103,7 +110,7 @@ const styles = StyleSheet.create({
   root: {
     position: 'relative',
     width: '100%',
-    backgroundColor: '#0F1112',
+    backgroundColor: colors.background.base,
     overflow: 'hidden',
   },
   sectionWrapper: {
@@ -138,19 +145,19 @@ const styles = StyleSheet.create({
   },
   microLabel: {
     ...typography.microLabel,
-    color: 'rgba(231, 238, 222, 0.9)',
+    color: colors.text.secondary,
   },
   headline: {
     ...typography.heroTitle,
-    color: '#F6F4F0',
+    color: colors.text.primary,
     letterSpacing: 3.2,
-    textShadowColor: 'rgba(0, 0, 0, 0.42)',
-    textShadowRadius: 26,
-    textShadowOffset: { width: 0, height: 8 },
+    textShadowColor: 'rgba(250, 248, 242, 0.86)',
+    textShadowRadius: 22,
+    textShadowOffset: { width: 0, height: 5 },
   },
   subHeadline: {
     ...typography.subtitle,
-    color: 'rgba(244, 242, 236, 0.92)',
+    color: colors.text.secondary,
     maxWidth: 620,
     textTransform: 'uppercase',
     letterSpacing: 2,
@@ -158,11 +165,11 @@ const styles = StyleSheet.create({
   },
   paragraph: {
     ...typography.bodyLarge,
-    color: 'rgba(244, 242, 236, 0.9)',
+    color: colors.text.primary,
     maxWidth: 620,
-    textShadowColor: 'rgba(0, 0, 0, 0.35)',
-    textShadowRadius: 14,
-    textShadowOffset: { width: 0, height: 4 },
+    textShadowColor: 'rgba(250, 248, 242, 0.72)',
+    textShadowRadius: 12,
+    textShadowOffset: { width: 0, height: 2 },
   },
   ctaRow: {
     flexDirection: 'row',

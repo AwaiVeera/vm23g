@@ -51,16 +51,16 @@ function NavLink({ href, label, active }: { href: NavHref; label: string; active
     const scale = reduceMotion ? 1 : interpolate(hover.value, [0, 1], [1, lowMotionDevice ? 1.02 : 1.04]);
     if (Platform.OS === 'web') {
       return {
-        backgroundColor: `rgba(115, 130, 83, ${glow})`,
+        backgroundColor: `rgba(0, 66, 37, ${glow * 0.6})`,
         transform: [{ translateY: lift }, { scale }],
         boxShadow: [
-          `0 12px 26px rgba(115, 130, 83, ${interpolate(hover.value, [0, 1], [0.16, 0.42])})`,
-          `0 0 18px rgba(115, 130, 83, ${interpolate(hover.value, [0, 1], [0.10, 0.32])})`,
+          `0 12px 26px rgba(0, 66, 37, ${interpolate(hover.value, [0, 1], [0.10, 0.24])})`,
+          `0 0 18px rgba(0, 66, 37, ${interpolate(hover.value, [0, 1], [0.06, 0.18])})`,
         ].join(', '),
       } as object;
     }
     return {
-      backgroundColor: `rgba(115, 130, 83, ${glow})`,
+      backgroundColor: `rgba(0, 66, 37, ${glow * 0.6})`,
       transform: [{ translateY: lift }, { scale }],
     };
   });
@@ -91,7 +91,7 @@ function CtaButton({ onPress }: { onPress: () => void }) {
     const glowRadius = interpolate(hover.value, [0, 1], [12, 28]);
     if (Platform.OS === 'web') {
       return {
-        boxShadow: `0 0 ${glowRadius}px rgba(115, 130, 83, ${glowOpacity})`,
+        boxShadow: `0 0 ${glowRadius}px rgba(0, 66, 37, ${glowOpacity * 0.62})`,
       } as object;
     }
     return {
@@ -151,12 +151,12 @@ export function Navbar() {
     if (Platform.OS !== 'web') return {};
     const bgOpacity   = interpolate(scrolled.value, [0, 1], [0, 0.78]);
     const blurPx      = interpolate(scrolled.value, [0, 1], [0, 24]);
-    const borderAlpha = interpolate(scrolled.value, [0, 1], [0, 0.20]);
+    const borderAlpha = interpolate(scrolled.value, [0, 1], [0, 0.16]);
     return {
-      backgroundColor:         `rgba(10, 11, 14, ${bgOpacity})`,
-      backdropFilter:          `blur(${blurPx}px) saturate(140%)`,
-      WebkitBackdropFilter:    `blur(${blurPx}px) saturate(140%)`,
-      borderBottomColor:       `rgba(156, 176, 113, ${borderAlpha})`,
+      backgroundColor:         `rgba(255, 255, 255, ${bgOpacity})`,
+      backdropFilter:          `blur(${blurPx}px) saturate(125%)`,
+      WebkitBackdropFilter:    `blur(${blurPx}px) saturate(125%)`,
+      borderBottomColor:       `rgba(0, 66, 37, ${borderAlpha})`,
     } as object;
   });
 
@@ -168,22 +168,22 @@ export function Navbar() {
       };
     }
     const blurPx      = interpolate(scrolled.value, [0, 1], [12, 28]) + interpolate(hoverInfluence, [0, 1], [0, 6]);
-    const bgOpacity   = interpolate(scrolled.value, [0, 1], [0.42, 0.62]) + interpolate(hoverInfluence, [0, 1], [0, 0.08]);
-    const shadowAlpha = interpolate(scrolled.value, [0, 1], [0.30, 0.46]) + interpolate(hoverInfluence, [0, 1], [0, 0.12]);
+    const bgOpacity   = interpolate(scrolled.value, [0, 1], [0.55, 0.74]) + interpolate(hoverInfluence, [0, 1], [0, 0.08]);
+    const shadowAlpha = interpolate(scrolled.value, [0, 1], [0.16, 0.24]) + interpolate(hoverInfluence, [0, 1], [0, 0.08]);
     return {
-      backdropFilter:          `blur(${blurPx}px) saturate(140%)`,
-      WebkitBackdropFilter:    `blur(${blurPx}px) saturate(140%)`,
-      backgroundColor:         `rgba(20, 22, 26, ${bgOpacity})`,
+      backdropFilter:          `blur(${blurPx}px) saturate(125%)`,
+      WebkitBackdropFilter:    `blur(${blurPx}px) saturate(125%)`,
+      backgroundColor:         `rgba(255, 255, 255, ${bgOpacity})`,
       transform: [
         { translateY: reduceMotion ? 0 : interpolate(hoverInfluence, [0, 1], [0, -1]) },
         { scale: reduceMotion ? 1 : interpolate(hoverInfluence, [0, 1], [1, lowMotionDevice ? 1.006 : 1.012]) },
         { rotateZ: `${reduceMotion ? 0 : interpolate(hoverInfluence, [0, 1], [0, -0.12])}deg` },
       ],
       boxShadow:               [
-        `0 10px 34px rgba(0, 0, 0, ${shadowAlpha})`,
-        `0 0 26px rgba(156, 176, 113, ${interpolate(hoverInfluence, [0, 1], [0.06, 0.28])})`,
-        `inset 0 1px 0 rgba(255, 255, 255, 0.16)`,
-        `inset 0 -1px 0 rgba(0, 0, 0, 0.40)`,
+        `0 10px 34px rgba(31, 42, 36, ${shadowAlpha})`,
+        `0 0 22px rgba(0, 66, 37, ${interpolate(hoverInfluence, [0, 1], [0.05, 0.15])})`,
+        `inset 0 1px 0 rgba(255, 255, 255, 0.45)`,
+        `inset 0 -1px 0 rgba(0, 66, 37, 0.20)`,
       ].join(', '),
     } as object;
   });
@@ -337,8 +337,8 @@ const styles = StyleSheet.create({
     ...Platform.select({
       web: {
         cursor: 'pointer' as unknown as undefined,
-        backdropFilter: 'blur(12px) saturate(140%)' as unknown as undefined,
-        WebkitBackdropFilter: 'blur(12px) saturate(140%)' as unknown as undefined,
+        backdropFilter: 'blur(12px) saturate(125%)' as unknown as undefined,
+        WebkitBackdropFilter: 'blur(12px) saturate(125%)' as unknown as undefined,
       },
       default: {},
     }),
@@ -349,7 +349,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     letterSpacing: 2.2,
     fontWeight: '500',
-    color: colors.accent.light,
+    color: colors.text.primary,
     textTransform: 'uppercase',
   },
 });

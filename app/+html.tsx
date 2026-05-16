@@ -63,8 +63,8 @@ export default function Root({ children }: PropsWithChildren) {
         <meta charSet="utf-8" />
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-        <meta name="theme-color" content="#06070A" />
-        <meta name="color-scheme" content="dark" />
+        <meta name="theme-color" content="#F4F1EA" />
+        <meta name="color-scheme" content="light" />
 
         {/* Default title + description (per-route Head will override) */}
         <title>{`${SITE_NAME} — Mind. Body. Brand. Technology.`}</title>

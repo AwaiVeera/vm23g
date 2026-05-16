@@ -1,7 +1,14 @@
+import { Image } from 'expo-image';
 import { useMemo, useState } from 'react';
-import { Pressable, StyleSheet, Text, View, ViewStyle } from 'react-native';
-import Animated, { AnimatedStyle, interpolate, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
-import { SharedValue } from 'react-native-reanimated';
+import { Platform, Pressable, StyleSheet, Text, View, ViewStyle } from 'react-native';
+import Animated, {
+  AnimatedStyle,
+  SharedValue,
+  interpolate,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from 'react-native-reanimated';
 
 import { GlassCard } from '@/components/ui/GlassCard';
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
@@ -13,67 +20,74 @@ import { useScrollReveal, useRevealStyle, useStaggeredReveal } from '@/systems/m
 import { SECTION_STAGGER } from '@/systems/motion/transitions';
 import { useGlowHover } from '@/animations/glowSystem';
 
+type GalleryItem = (typeof galleryPageContent.items)[number];
+
 type GallerySectionProps = {
   scrollY: SharedValue<number>;
 };
 
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
+
 function GalleryCard({
-  title,
-  project,
-  category,
-  year,
-  status,
-  caption,
+  item,
   revealStyle,
 }: {
-  title: string;
-  project: string;
-  category: string;
-  year: string;
-  status: string;
-  caption: string;
+  item: GalleryItem;
   revealStyle: AnimatedStyle<ViewStyle>;
 }) {
-  const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
   const hoverDepth = useSharedValue(0);
   const { glowStyle, onHoverIn, onHoverOut, onPressIn, onPressOut } = useGlowHover('card');
 
   const cardMotionStyle = useAnimatedStyle(() => ({
     transform: [
       { translateY: interpolate(hoverDepth.value, [0, 1], [0, -4]) },
-      { scale: interpolate(hoverDepth.value, [0, 1], [1, 1.01]) },
+      { scale: interpolate(hoverDepth.value, [0, 1], [1, 1.012]) },
     ],
   }));
 
   return (
-    <Animated.View style={[revealStyle, styles.card]}>
-      <GlassCard style={styles.cardInner}>
-        <AnimatedPressable
-          style={[styles.frame, glowStyle as AnimatedStyle<ViewStyle>, cardMotionStyle]}
-          onHoverIn={() => {
-            hoverDepth.value = withTiming(1, { duration: 200 });
-            onHoverIn();
-          }}
-          onHoverOut={() => {
-            hoverDepth.value = withTiming(0, { duration: 240 });
-            onHoverOut();
-          }}
-          onPressIn={() => {
-            hoverDepth.value = withTiming(1, { duration: 120 });
-            onPressIn();
-          }}
-          onPressOut={() => {
-            hoverDepth.value = withTiming(0, { duration: 220 });
-            onPressOut();
-          }}
-        />
-        <Text style={styles.label}>{title}</Text>
-        <Text style={styles.meta}>Project: {project}</Text>
-        <Text style={styles.meta}>Category: {category}</Text>
-        <Text style={styles.meta}>Year: {year}</Text>
-        <Text style={styles.status}>Status: {status}</Text>
-        <Text style={styles.caption}>{caption}</Text>
-      </GlassCard>
+    <Animated.View style={[revealStyle, styles.cardSlot]}>
+      <AnimatedPressable
+        style={[glowStyle as AnimatedStyle<ViewStyle>, cardMotionStyle, styles.cardPressable]}
+        onHoverIn={() => {
+          hoverDepth.value = withTiming(1, { duration: 200 });
+          onHoverIn();
+        }}
+        onHoverOut={() => {
+          hoverDepth.value = withTiming(0, { duration: 240 });
+          onHoverOut();
+        }}
+        onPressIn={() => {
+          hoverDepth.value = withTiming(1, { duration: 120 });
+          onPressIn();
+        }}
+        onPressOut={() => {
+          hoverDepth.value = withTiming(0, { duration: 220 });
+          onPressOut();
+        }}
+      >
+        <GlassCard intensity="low" padding={0} borderRadius={20} style={styles.cardInner}>
+          <View style={styles.imageFrame}>
+            <Image
+              source={item.image}
+              style={styles.image}
+              contentFit="cover"
+              accessibilityLabel={`${item.title} — ${item.category}`}
+              alt={`${item.title}: ${item.caption}`}
+              transition={300}
+            />
+            <View style={styles.imageMatte} pointerEvents="none" />
+          </View>
+          <View style={styles.cardBody}>
+            <Text style={styles.label}>{item.title}</Text>
+            <Text style={styles.meta}>Project: {item.project}</Text>
+            <Text style={styles.meta}>Category: {item.category}</Text>
+            <Text style={styles.meta}>Year: {item.year}</Text>
+            {item.status ? <Text style={styles.status}>{item.status}</Text> : null}
+            {item.caption ? <Text style={styles.caption}>{item.caption}</Text> : null}
+          </View>
+        </GlassCard>
+      </AnimatedPressable>
     </Animated.View>
   );
 }
@@ -85,16 +99,12 @@ export function GallerySection({ scrollY }: GallerySectionProps) {
 
   const filteredItems = useMemo(() => {
     const indexed = galleryPageContent.items.map((item, index) => ({ ...item, index }));
-    if (activeFilter === 'All') {
-      return indexed;
-    }
-    return indexed.filter(
-      (item) => item.category === activeFilter || item.project === activeFilter,
-    );
+    if (activeFilter === 'All') return indexed;
+    return indexed.filter((item) => item.category === activeFilter || item.project === activeFilter);
   }, [activeFilter]);
 
   const headingReveal = useRevealStyle(visible, 'fadeUp');
-  const cardReveals   = useStaggeredReveal(
+  const cardReveals = useStaggeredReveal(
     galleryPageContent.items.length,
     visible,
     SECTION_STAGGER,
@@ -125,7 +135,9 @@ export function GallerySection({ scrollY }: GallerySectionProps) {
                     isActive && styles.filterChipActive,
                   ]}
                 >
-                  <Text style={[styles.filterText, isActive && styles.filterTextActive]}>{filter}</Text>
+                  <Text style={[styles.filterText, isActive && styles.filterTextActive]}>
+                    {filter}
+                  </Text>
                 </Pressable>
               );
             })}
@@ -134,12 +146,7 @@ export function GallerySection({ scrollY }: GallerySectionProps) {
             {filteredItems.map((item) => (
               <GalleryCard
                 key={`${item.title}-${item.index}`}
-                title={item.title}
-                project={item.project}
-                category={item.category}
-                year={item.year}
-                status={item.status}
-                caption={item.caption}
+                item={item}
                 revealStyle={cardReveals[item.index]}
               />
             ))}
@@ -159,13 +166,13 @@ const styles = StyleSheet.create({
   subtitle: {
     ...typography.body,
     color: colors.text.secondary,
-    marginBottom: 14,
+    marginBottom: 18,
   },
   filterRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 8,
-    marginBottom: 14,
+    marginBottom: 18,
   },
   filterChip: {
     borderWidth: 1,
@@ -180,7 +187,7 @@ const styles = StyleSheet.create({
     borderColor: colors.accent.base,
   },
   filterChipHover: {
-    backgroundColor: colors.glass.white,
+    backgroundColor: colors.glass.surfaceStrong,
     borderColor: colors.accent.muted,
     transform: [{ translateY: -1 }],
   },
@@ -191,45 +198,89 @@ const styles = StyleSheet.create({
     ...typography.caption,
     color: colors.text.secondary,
     textTransform: 'uppercase',
+    letterSpacing: 1.2,
   },
   filterTextActive: {
-    color: colors.accent.base,
+    color: colors.accent.light,
   },
+
   grid: {
-    gap: 12,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 16,
   },
-  card: {
-    width: '100%',
+  cardSlot: {
+    flexGrow: 1,
+    flexBasis: 300,
+    minWidth: 260,
+    maxWidth: 460,
+  },
+  cardPressable: {
+    borderRadius: 20,
+    ...Platform.select({
+      web: { cursor: 'pointer' as unknown as undefined },
+      default: {},
+    }),
   },
   cardInner: {
-    width: '100%',
+    overflow: 'hidden',
   },
-  frame: {
-    height: 110,
-    borderRadius: 14,
-    borderWidth: 1,
-    borderColor: colors.strokeSubtle,
-    backgroundColor: colors.surfaceGlass,
-    marginBottom: 12,
+  imageFrame: {
+    width: '100%',
+    aspectRatio: 4 / 3,
+    overflow: 'hidden',
+    position: 'relative',
+    backgroundColor: colors.background.recessed,
+  },
+  image: {
+    width: '100%',
+    height: '100%',
+    ...Platform.select({
+      web: {
+        filter: 'saturate(0.95) brightness(0.96) contrast(1.02)',
+      } as object,
+      default: {},
+    }),
+  },
+  imageMatte: {
+    ...StyleSheet.absoluteFillObject,
+    ...Platform.select({
+      web: {
+        backgroundImage:
+          'linear-gradient(180deg, rgba(6,7,10,0.04) 0%, rgba(6,7,10,0.12) 60%, rgba(6,7,10,0.42) 100%)',
+      } as object,
+      default: {
+        backgroundColor: 'rgba(6, 7, 10, 0.20)',
+      },
+    }),
+  },
+  cardBody: {
+    padding: 18,
+    gap: 4,
   },
   label: {
-    ...typography.subtitle,
+    ...typography.subheading,
     color: colors.text.primary,
+    fontSize: 19,
+    lineHeight: 25,
+    marginBottom: 4,
   },
   meta: {
     ...typography.bodySmall,
     color: colors.text.secondary,
-    marginTop: 2,
+    marginTop: 1,
   },
   status: {
     ...typography.caption,
-    color: colors.accent.base,
-    marginTop: 6,
+    color: colors.accent.light,
+    marginTop: 8,
     textTransform: 'uppercase',
+    letterSpacing: 1.4,
   },
   caption: {
-    ...typography.caption,
+    ...typography.bodySmall,
     color: colors.text.muted,
-    marginTop: 2,
+    marginTop: 6,
+    fontStyle: 'italic',
   },
 });

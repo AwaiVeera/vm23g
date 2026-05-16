@@ -9,7 +9,7 @@ import { useMotionGuardrails } from '@/systems/motion/useMotionGuardrails';
 const webGradientStyle = Platform.select({
   web: {
     background:
-      'radial-gradient(ellipse 70% 60% at 15% 25%, rgba(153, 172, 121, 0.20) 0%, transparent 70%), radial-gradient(ellipse 50% 40% at 85% 75%, rgba(115, 130, 83, 0.16) 0%, transparent 65%)',
+      'radial-gradient(ellipse 78% 62% at 16% 18%, rgba(255, 255, 255, 0.42) 0%, transparent 70%), radial-gradient(ellipse 56% 46% at 86% 74%, rgba(0, 66, 37, 0.10) 0%, transparent 65%)',
   } as unknown as ViewStyle,
   default: {
     backgroundColor: 'transparent',
@@ -51,7 +51,7 @@ export function HeroBackground({ scrollY }: { scrollY: SharedValue<number> }) {
   const bloomStyle  = useParallaxStyle(scrollY, PARALLAX_DEPTH.background);
   const ellipse1Style = useParallaxStyle(scrollY, PARALLAX_DEPTH.mid);
   const ellipse2Style = useParallaxStyle(scrollY, PARALLAX_DEPTH.foreground);
-  const player = useVideoPlayer(require('@/assets/videos/robmace-1.mp4'), (instance) => {
+  const player = useVideoPlayer(require('@/assets/videos/evo-1.mp4'), (instance) => {
     instance.loop = true;
     instance.muted = true;
     instance.play();
@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
     zIndex: 0,
     overflow: 'hidden',
     pointerEvents: 'none',
-    backgroundColor: '#0F1112',
+    backgroundColor: '#F4F1EA',
   },
   videoBackground: {
     ...StyleSheet.absoluteFillObject,
@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
     top: '5%',
     right: '8%',
     borderRadius: 9999,
-    backgroundColor: 'rgba(115, 130, 83, 0.16)',
+    backgroundColor: 'rgba(0, 66, 37, 0.12)',
     zIndex: 2,
     pointerEvents: 'none',
   },
@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
     bottom: '12%',
     left: '3%',
     borderRadius: 9999,
-    backgroundColor: 'rgba(115, 130, 83, 0.14)',
+    backgroundColor: 'rgba(0, 66, 37, 0.10)',
     zIndex: 2,
     pointerEvents: 'none',
   },
@@ -152,10 +152,10 @@ const styles = StyleSheet.create({
     ...Platform.select({
       web: {
         backgroundImage:
-          'radial-gradient(circle at 50% 42%, rgba(9, 10, 12, 0.08) 0%, rgba(9, 10, 12, 0.34) 64%, rgba(9, 10, 12, 0.58) 100%)',
+          'radial-gradient(circle at 50% 42%, rgba(255, 255, 255, 0.10) 0%, rgba(244, 241, 234, 0.42) 64%, rgba(232, 227, 215, 0.62) 100%)',
       } as unknown as ViewStyle,
       default: {
-        backgroundColor: 'rgba(9, 10, 12, 0.30)',
+        backgroundColor: 'rgba(244, 241, 234, 0.34)',
       } as ViewStyle,
     }),
   },
