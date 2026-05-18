@@ -8,7 +8,6 @@ import { Platform, StyleSheet, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { CursorGlow } from '@/animations/cursorGlow';
-import { FloatingShapes } from '@/animations/floatingShapes';
 import { PresenceLayer } from '@/animations/presenceLayer';
 import { RainOverlay } from '@/animations/rainOverlay';
 import { FloatingNavPill } from '@/components/navigation/FloatingNavPill';
@@ -102,7 +101,6 @@ export default function RootLayout() {
             />
           </View>
           <View style={styles.rainLayer}>
-            <FloatingShapes />
             <RainOverlay />
           </View>
           <View style={styles.presence}>
