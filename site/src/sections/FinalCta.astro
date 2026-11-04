@@ -1,0 +1,109 @@
+---
+import Picture from '@/components/Picture.astro';
+import { startHref } from '@/content/site';
+
+interface Props {
+  title?: string;
+  accent?: string;
+  copy?: string;
+}
+
+const {
+  title = 'If the work matters,',
+  accent = 'build it properly.',
+  copy = 'For founders, brands, creators and teams ready to combine intelligence, identity, media and human performance into one sharper operating system.',
+} = Astro.props;
+---
+
+<section class="cta" aria-labelledby="cta-title">
+  <div class="wrap">
+    <div class="cta-panel glass" data-reveal>
+      <div class="cta-mark" aria-hidden="true">
+        <Picture src="brand/vm23g-logo" alt="" sizes="260px" imgClass="cta-logo" />
+      </div>
+      <div class="cta-copy">
+        <p class="eyebrow">Start a project</p>
+        <h2 id="cta-title" class="cta-title display">
+          {title}<br /><span class="gilded">{accent}</span>
+        </h2>
+        <p class="cta-text">{copy}</p>
+        <div class="cta-actions">
+          <a class="btn btn-gold" href={startHref}>Start a Project</a>
+          <button type="button" class="btn btn-ghost" data-concierge-open>Ask V first</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cta {
+    padding-block: var(--space-7) var(--space-8);
+  }
+
+  .cta-panel {
+    display: grid;
+    grid-template-columns: minmax(0, 0.7fr) minmax(0, 1.3fr);
+    align-items: center;
+    gap: clamp(1.5rem, 4vw, 4rem);
+    padding: clamp(1.75rem, 5vw, 4.5rem);
+    overflow: hidden;
+    background:
+      radial-gradient(60% 90% at 15% 50%, rgb(var(--gold-rgb) / 0.12), transparent 70%),
+      radial-gradient(70% 90% at 100% 0%, rgb(var(--olive-rgb) / 0.28), transparent 70%),
+      rgb(var(--glass-rgb) / 0.7);
+  }
+
+  .cta-mark {
+    display: grid;
+    place-items: center;
+  }
+
+  .cta-mark :global(.cta-logo) {
+    width: min(100%, 260px);
+    filter: drop-shadow(0 0 24px rgb(var(--gold-rgb) / 0.3));
+    animation: cta-pulse 7s var(--ease-soft) infinite;
+  }
+
+  @keyframes cta-pulse {
+    0%,
+    100% {
+      filter: drop-shadow(0 0 16px rgb(var(--gold-rgb) / 0.22));
+    }
+    50% {
+      filter: drop-shadow(0 0 32px rgb(var(--gold-rgb) / 0.42));
+    }
+  }
+
+  .cta-copy {
+    display: grid;
+    gap: var(--space-4);
+  }
+
+  .cta-title {
+    font-size: var(--step-4);
+    line-height: 1.05;
+  }
+
+  .cta-text {
+    color: var(--text-2);
+    max-width: 50ch;
+  }
+
+  .cta-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  @media (max-width: 760px) {
+    .cta-panel {
+      grid-template-columns: 1fr;
+      text-align: left;
+    }
+
+    .cta-mark :global(.cta-logo) {
+      width: 180px;
+    }
+  }
+</style>

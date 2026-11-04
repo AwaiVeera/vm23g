@@ -1,0 +1,225 @@
+---
+import Picture from '@/components/Picture.astro';
+import { founders } from '@/content/site';
+
+interface Props {
+  founder: (typeof founders)[number];
+  detailed?: boolean;
+  headingLevel?: 'h2' | 'h3';
+}
+
+const { founder, detailed = false, headingLevel = 'h3' } = Astro.props;
+const Heading = headingLevel;
+---
+
+<article class:list={['founder', { 'founder-detailed': detailed }]} id={detailed ? founder.slug : undefined} data-glow>
+  <div class="founder-portrait">
+    <Picture
+      src={`founders/${founder.portrait}`}
+      alt={`Portrait of ${founder.name}`}
+      sizes="(max-width: 760px) 92vw, 34vw"
+      imgClass="founder-img"
+      style={`view-transition-name: portrait-${founder.slug}`}
+    />
+  </div>
+  <div class="founder-body">
+    <Heading class="founder-name display">{founder.name}</Heading>
+    <p class="founder-role">{founder.role}</p>
+    <p class="founder-assoc">Associated with <strong>{founder.venture}</strong></p>
+    <p class="founder-bio">{founder.bio}</p>
+    {
+      detailed && (
+        <div class="founder-venture">
+          <p class="venture-name display">{founder.venture}</p>
+          <p class="venture-focus">{founder.ventureFocus}</p>
+          <ul>
+            {founder.ventureOffers.map((o) => (
+              <li>{o}</li>
+            ))}
+          </ul>
+          <p class="venture-note">{founder.ventureNote}</p>
+        </div>
+      )
+    }
+    <ul class="founder-social" aria-label={`${founder.name} on social media`}>
+      {
+        founder.social.map((s) => (
+          <li>
+            <a href={s.href} target="_blank" rel="noopener">
+              {s.label} <span>{s.handle}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</article>
+
+<style>
+  .founder {
+    --mx: 50%;
+    --my: 30%;
+    position: relative;
+    display: grid;
+    grid-template-rows: auto 1fr;
+    border-radius: var(--radius-l);
+    overflow: hidden;
+    border: 1px solid var(--line);
+    background:
+      radial-gradient(400px circle at var(--mx) var(--my), rgb(var(--gold-rgb) / 0.08), transparent 60%),
+      linear-gradient(180deg, rgb(242 237 223 / 0.04), transparent 30%),
+      rgb(var(--glass-rgb) / 0.75);
+    box-shadow: var(--shadow-deep), inset 0 1px 0 rgb(var(--gold-rgb) / 0.2);
+    transition: box-shadow var(--dur-2) var(--ease-cine), border-color var(--dur-2) var(--ease-cine), transform var(--dur-2) var(--ease-cine);
+  }
+
+  .founder:hover {
+    border-color: rgb(var(--gold-rgb) / 0.45);
+    box-shadow: var(--shadow-deep), 0 0 60px -20px rgb(var(--gold-rgb) / 0.5);
+    transform: translateY(-4px);
+  }
+
+  .founder-portrait {
+    position: relative;
+    aspect-ratio: 4 / 4.2;
+    overflow: hidden;
+  }
+
+  .founder-portrait :global(picture),
+  .founder-portrait :global(.founder-img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 22%;
+  }
+
+  .founder-portrait::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 60%, rgb(var(--glass-rgb) / 0.9));
+  }
+
+  .founder-body {
+    position: relative;
+    display: grid;
+    align-content: start;
+    gap: 0.45rem;
+    padding: 0 clamp(1.25rem, 2.4vw, 2rem) clamp(1.25rem, 2.4vw, 2rem);
+    margin-top: -1.5rem;
+  }
+
+  .founder-name {
+    font-size: var(--step-2);
+    line-height: 1.15;
+  }
+
+  .founder-role {
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  .founder-assoc {
+    font-size: 0.92rem;
+    color: var(--text-2);
+  }
+
+  .founder-assoc strong {
+    color: var(--text);
+    font-weight: 650;
+  }
+
+  .founder-bio {
+    margin-top: 0.4rem;
+    color: var(--text-2);
+    font-size: 0.95rem;
+  }
+
+  .founder-venture {
+    display: grid;
+    gap: 0.4rem;
+    margin-top: 0.9rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--line-soft);
+  }
+
+  .venture-name {
+    font-size: var(--step-1);
+    color: var(--gold-hi);
+  }
+
+  .venture-focus {
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--text-2);
+  }
+
+  .founder-venture ul {
+    list-style: none;
+    margin: 0.3rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 0.35rem;
+  }
+
+  .founder-venture li {
+    position: relative;
+    padding-left: 1rem;
+    font-size: 0.92rem;
+    color: var(--text-2);
+  }
+
+  .founder-venture li::before {
+    content: '·';
+    position: absolute;
+    left: 0.15rem;
+    color: var(--gold);
+  }
+
+  .venture-note {
+    margin-top: 0.4rem;
+    font-style: italic;
+    font-size: 0.92rem;
+    color: var(--text);
+  }
+
+  .founder-social {
+    list-style: none;
+    margin: 0.8rem 0 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .founder-social a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 40px;
+    padding: 0 0.9rem;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    font-size: 0.82rem;
+    font-weight: 600;
+    text-decoration: none;
+    color: var(--text);
+    transition: border-color var(--dur-2) var(--ease-cine), box-shadow var(--dur-2) var(--ease-cine);
+  }
+
+  .founder-social a span {
+    color: var(--text-2);
+    font-weight: 500;
+  }
+
+  .founder-social a:hover,
+  .founder-social a:focus-visible {
+    border-color: rgb(var(--gold-rgb) / 0.6);
+    box-shadow: var(--shadow-glow);
+  }
+</style>

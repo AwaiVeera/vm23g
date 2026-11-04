@@ -25,6 +25,8 @@ export type Pillar = {
   arm: string;
   summary: string;
   offers: string[];
+  image: string;
+  imageAlt: string;
 };
 
 export const pillars: Pillar[] = [
@@ -35,6 +37,8 @@ export const pillars: Pillar[] = [
     arm: 'NavaFit Alignment',
     summary: 'Mind and body alignment programmes that build focus, breath control and composure under pressure.',
     offers: ['Mind/body alignment programmes', 'Breathwork and pranayama', 'AI-enhanced coaching'],
+    image: 'work/collective-navafit-app',
+    imageAlt: 'NavaFit Alignment app screen showing a daily breathwork wisdom card and a Begin Session button',
   },
   {
     key: 'body',
@@ -43,6 +47,8 @@ export const pillars: Pillar[] = [
     arm: 'NavaFit Alignment',
     summary: 'Real-world strength through physical alignment, movement education and Kalari- and Gadah-inspired training.',
     offers: ['Physical alignment and movement education', 'Kalari and Gadah-inspired training', 'Fitness branding'],
+    image: 'work/collective-navafit-training',
+    imageAlt: 'A NavaFit Alignment floor movement drill outdoors beside wooden gadah maces',
   },
   {
     key: 'brand',
@@ -51,6 +57,8 @@ export const pillars: Pillar[] = [
     arm: 'AaVisions',
     summary: 'Brand direction, media and commercial strategy for founders who want to be remembered.',
     offers: ['Sales and performance consultations', 'Videography, edits and music composing', 'Brand and logo work'],
+    image: 'work/gallery-kyani',
+    imageAlt: 'kyanielite.com website with a black-and-white talent gallery',
   },
   {
     key: 'technology',
@@ -59,6 +67,8 @@ export const pillars: Pillar[] = [
     arm: 'AaVisions',
     summary: 'Websites, apps and agentic AI workflows engineered to move a business faster.',
     offers: ['Web design and app development', 'AI workflow automation', 'UI/UX design and digital transformation'],
+    image: 'work/gallery-navafit-app',
+    imageAlt: 'NavaFit Alignment iOS app home screen with Kalari, Gadah and Breathwork disciplines',
   },
 ];
 
@@ -139,17 +149,6 @@ export const projects = [
     linkLabel: 'View on the App Store',
   },
   {
-    slug: 'playroom-sg',
-    title: 'playroom-sg.com',
-    kind: 'Website, marketing and consultancy',
-    category: 'Websites',
-    year: '2025',
-    summary: 'Design, marketing and consultancy management for PlayRoom SG.',
-    image: 'gallery-playroom-web',
-    href: 'https://playroom-sg.com',
-    linkLabel: 'Visit site',
-  },
-  {
     slug: 'kyanielite',
     title: 'kyanielite.com',
     kind: 'Website',
@@ -172,6 +171,17 @@ export const projects = [
     linkLabel: 'Visit site',
   },
   {
+    slug: 'playroom-sg',
+    title: 'playroom-sg.com',
+    kind: 'Website, marketing and consultancy',
+    category: 'Websites',
+    year: '2025',
+    summary: 'Design, marketing and consultancy management for PlayRoom SG.',
+    image: 'gallery-playroom-web',
+    href: 'https://playroom-sg.com',
+    linkLabel: 'Visit site',
+  },
+  {
     slug: 'cocktail-guide',
     title: 'Cocktail Guide',
     kind: 'App',
@@ -190,17 +200,6 @@ export const projects = [
     year: '2026',
     summary: 'Club sponsorship for networking and brand awareness.',
     image: 'gallery-jurong-fc',
-    href: '',
-    linkLabel: '',
-  },
-  {
-    slug: 'workflow-automation',
-    title: 'Agentic workflow automation',
-    kind: 'AaVisions · Generative AI',
-    category: 'AaVisions',
-    year: '',
-    summary: 'Agentic AI workflow automation for live event operations.',
-    image: 'gallery-navafit-session',
     href: '',
     linkLabel: '',
   },

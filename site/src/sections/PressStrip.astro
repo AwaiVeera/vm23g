@@ -1,0 +1,148 @@
+---
+import SectionHead from '@/components/SectionHead.astro';
+import { press } from '@/content/site';
+
+interface Props {
+  items?: readonly (typeof press)[number][];
+}
+const { items = press } = Astro.props;
+const fmt = (d: string) =>
+  new Intl.DateTimeFormat('en-SG', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }).format(new Date(d));
+---
+
+<section class="section press" aria-labelledby="press-title">
+  <div class="wrap">
+    <SectionHead
+      id="press-title"
+      eyebrow="In the press"
+      title="Featured and"
+      accent="on the record."
+      copy="Each item is labelled by type, so you always know whether it is a press release or a contributed feature."
+    />
+    <ul class="press-grid">
+      {
+        items.map((p, i) => (
+          <li data-reveal style={`--reveal-delay:${i * 90}ms`}>
+            <a class="press-card" href={p.href} target="_blank" rel="noopener" data-glow>
+              <p class="press-pub display">{p.publication}</p>
+              <p class="press-type">{p.classification}</p>
+              <h3 class="press-title">{p.title}</h3>
+              <p class="press-summary">{p.summary}</p>
+              <p class="press-foot">
+                <time datetime={p.date}>{fmt(p.date)}</time>
+                <span>
+                  Read original
+                  <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 12L12 4M5.5 4H12v6.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </span>
+              </p>
+              <span class="visually-hidden">(opens in a new tab)</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .press-grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(1rem, 2vw, 1.5rem);
+  }
+
+  .press-grid li:nth-child(2) {
+    transform: translateY(var(--space-5));
+  }
+
+  .press-card {
+    --mx: 50%;
+    --my: 0%;
+    display: grid;
+    gap: 0.6rem;
+    height: 100%;
+    padding: clamp(1.4rem, 2.4vw, 2rem);
+    border-radius: var(--radius-l);
+    border: 1px solid var(--line-soft);
+    background:
+      radial-gradient(380px circle at var(--mx) var(--my), rgb(var(--gold-rgb) / 0.1), transparent 60%),
+      rgb(var(--glass-rgb) / 0.6);
+    text-decoration: none;
+    box-shadow: var(--shadow-deep);
+    transition: border-color var(--dur-2) var(--ease-cine), box-shadow var(--dur-2) var(--ease-cine), transform var(--dur-2) var(--ease-cine);
+  }
+
+  .press-card:hover,
+  .press-card:focus-visible {
+    border-color: rgb(var(--gold-rgb) / 0.45);
+    box-shadow: var(--shadow-deep), 0 0 50px -18px rgb(var(--gold-rgb) / 0.5);
+    transform: translateY(-4px);
+  }
+
+  .press-pub {
+    font-size: var(--step-1);
+    color: var(--gold-hi);
+  }
+
+  .press-type {
+    justify-self: start;
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-2);
+  }
+
+  .press-title {
+    margin-top: 0.4rem;
+    font-family: var(--font-body);
+    font-size: 1.08rem;
+    font-weight: 650;
+    line-height: 1.35;
+  }
+
+  .press-summary {
+    color: var(--text-2);
+    font-size: 0.92rem;
+  }
+
+  .press-foot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-top: auto;
+    padding-top: 0.8rem;
+    border-top: 1px solid var(--line-soft);
+    font-size: 0.84rem;
+    color: var(--text-3);
+  }
+
+  .press-foot span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--gold-hi);
+    font-weight: 600;
+  }
+
+  @media (max-width: 900px) {
+    .press-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .press-grid li:nth-child(2) {
+      transform: none;
+    }
+  }
+</style>
+
+<script>
+  import '@/systems/glow';
+</script>

@@ -1,0 +1,187 @@
+---
+const prompts = [
+  'What does VM23G actually do?',
+  'Can you build an app for my business?',
+  'Tell me about NavaFit Alignment',
+  'Who are the founders?',
+];
+---
+
+<section class="section teaser" aria-labelledby="teaser-title">
+  <div class="wrap teaser-grid">
+    <div class="teaser-orb" aria-hidden="true">
+      <div class="orb">
+        <span class="orb-core"></span>
+        <span class="orb-ring orb-ring-1"></span>
+        <span class="orb-ring orb-ring-2"></span>
+        <span class="orb-letter display">V</span>
+      </div>
+    </div>
+    <div class="teaser-copy">
+      <p class="eyebrow" data-reveal>AI Lab · Meet V</p>
+      <h2 id="teaser-title" class="teaser-title display" data-reveal>
+        Ask V.<br /><span class="gilded">Get a straight answer.</span>
+      </h2>
+      <p class="lede" data-reveal style="--reveal-delay:100ms">
+        V is our AI concierge. It answers questions about VM23G from verified information only, by text or by voice — and
+        when you are ready, it passes your brief straight to the founders.
+      </p>
+      <ul class="teaser-prompts" data-reveal style="--reveal-delay:180ms">
+        {
+          prompts.map((p) => (
+            <li>
+              <button type="button" class="prompt-chip" data-concierge-open data-concierge-prompt={p}>
+                {p}
+              </button>
+            </li>
+          ))
+        }
+      </ul>
+      <div class="teaser-ctas" data-reveal style="--reveal-delay:240ms">
+        <button type="button" class="btn btn-gold" data-concierge-open>Talk to V</button>
+        <a class="btn btn-ghost" href="/ai-lab">Inside the AI Lab</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .teaser {
+    overflow: hidden;
+  }
+
+  .teaser-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    gap: clamp(2rem, 6vw, 6rem);
+    align-items: center;
+  }
+
+  .teaser-orb {
+    display: grid;
+    place-items: center;
+  }
+
+  .orb {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: min(100%, 420px);
+    aspect-ratio: 1;
+  }
+
+  .orb-core {
+    position: absolute;
+    inset: 22%;
+    border-radius: 50%;
+    background:
+      radial-gradient(circle at 35% 30%, rgb(255 240 200 / 0.55), transparent 35%),
+      radial-gradient(circle at 50% 55%, var(--gold) 0%, #8a6d34 45%, #2a2a17 75%, transparent 76%);
+    box-shadow:
+      0 0 80px -10px rgb(var(--gold-rgb) / 0.55),
+      inset 0 -20px 40px rgb(0 0 0 / 0.45);
+    animation: orb-breathe 6s var(--ease-soft) infinite;
+  }
+
+  .orb-ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid rgb(var(--gold-rgb) / 0.3);
+  }
+
+  .orb-ring-1 {
+    inset: 12%;
+    animation: orb-pulse 6s var(--ease-soft) infinite;
+  }
+
+  .orb-ring-2 {
+    inset: 0;
+    border-color: rgb(var(--olive-rgb) / 0.5);
+    animation: orb-pulse 6s var(--ease-soft) infinite 1.5s;
+  }
+
+  .orb-letter {
+    position: relative;
+    font-size: clamp(4rem, 3rem + 4vw, 7rem);
+    color: #1d1708;
+    text-shadow: 0 1px 0 rgb(255 240 200 / 0.4);
+  }
+
+  @keyframes orb-breathe {
+    0%,
+    100% {
+      transform: scale(1);
+      box-shadow: 0 0 60px -10px rgb(var(--gold-rgb) / 0.45), inset 0 -20px 40px rgb(0 0 0 / 0.45);
+    }
+    50% {
+      transform: scale(1.03);
+      box-shadow: 0 0 110px -6px rgb(var(--gold-rgb) / 0.65), inset 0 -20px 40px rgb(0 0 0 / 0.45);
+    }
+  }
+
+  @keyframes orb-pulse {
+    0%,
+    100% {
+      transform: scale(0.96);
+      opacity: 0.4;
+    }
+    50% {
+      transform: scale(1.04);
+      opacity: 1;
+    }
+  }
+
+  .teaser-copy {
+    display: grid;
+    gap: var(--space-4);
+  }
+
+  .teaser-title {
+    font-size: var(--step-4);
+    line-height: 1.05;
+  }
+
+  .teaser-prompts {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+
+  .prompt-chip {
+    min-height: 44px;
+    padding: 0.55rem 1rem;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: rgb(var(--glass-rgb) / 0.55);
+    color: var(--text);
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: border-color var(--dur-2) var(--ease-cine), box-shadow var(--dur-2) var(--ease-cine), transform var(--dur-2) var(--ease-cine);
+  }
+
+  .prompt-chip:hover,
+  .prompt-chip:focus-visible {
+    border-color: rgb(var(--gold-rgb) / 0.6);
+    box-shadow: var(--shadow-glow);
+    transform: translateY(-2px);
+  }
+
+  .teaser-ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  @media (max-width: 860px) {
+    .teaser-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .orb {
+      width: min(70vw, 300px);
+    }
+  }
+</style>

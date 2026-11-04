@@ -1,0 +1,424 @@
+---
+import Picture from '@/components/Picture.astro';
+import { pillars } from '@/content/site';
+---
+
+<section id="chapters" class="chapters" aria-labelledby="chapters-title" data-chapters>
+  <div class="wrap chapters-grid">
+    <div class="chapters-rail">
+      <div class="rail-sticky">
+        <p class="eyebrow">Four disciplines · One operating layer</p>
+        <h2 id="chapters-title" class="rail-title display">
+          One group.<br /><span class="gilded">Four disciplines.</span>
+        </h2>
+        <p class="rail-copy">
+          VM23G brings together two specialist arms — <strong>NavaFit Alignment</strong> for mind and body, and{' '}
+          <strong>AaVisions</strong> for brand and technology — so founders work with one team instead of four.
+        </p>
+        <ol class="rail-index" aria-label="Chapters">
+          {
+            pillars.map((p, i) => (
+              <li>
+                <a href={`#chapter-${p.key}`} data-rail-link={p.key} aria-current={i === 0 ? 'true' : undefined}>
+                  <span class="rail-num">{p.index}</span>
+                  <span class="rail-name display">{p.title}</span>
+                  <span class="rail-bar" aria-hidden="true"><span></span></span>
+                </a>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+    </div>
+
+    <div class="chapters-track">
+      {
+        pillars.map((p, i) => (
+          <article id={`chapter-${p.key}`} class={`chapter chapter-${i % 2 ? 'right' : 'left'}`} data-chapter={p.key}>
+            <div class="chapter-media" data-reveal>
+              <div class="media-frame" data-parallax>
+                <Picture
+                  src={p.image}
+                  alt={p.imageAlt}
+                  sizes="(max-width: 900px) 92vw, 46vw"
+                  imgClass="media-img"
+                />
+              </div>
+              <span class="chapter-ghost display" aria-hidden="true">{p.index}</span>
+            </div>
+            <div class="chapter-body glass" data-reveal style="--reveal-delay:120ms">
+              <p class="chapter-arm">
+                <span>{p.index}</span> {p.arm}
+              </p>
+              <h3 class="chapter-title display gilded">{p.title}</h3>
+              <p class="chapter-summary">{p.summary}</p>
+              <ul class="chapter-offers">
+                {p.offers.map((o) => <li>{o}</li>)}
+              </ul>
+              <a class="chapter-link" href={`/services#${p.key}`}>
+                Explore {p.title.toLowerCase()}
+                <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9M8.5 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </a>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .chapters {
+    position: relative;
+    padding-block: var(--space-8);
+    background:
+      radial-gradient(50% 40% at 0% 20%, rgb(var(--olive-rgb) / 0.14), transparent 70%),
+      radial-gradient(40% 30% at 100% 70%, rgb(var(--gold-rgb) / 0.06), transparent 70%);
+  }
+
+  .chapters-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.5fr);
+    gap: clamp(2rem, 5vw, 6rem);
+  }
+
+  .rail-sticky {
+    position: sticky;
+    top: calc(var(--nav-h) + 3rem);
+    display: grid;
+    gap: var(--space-4);
+  }
+
+  .rail-title {
+    font-size: var(--step-4);
+    line-height: 1.05;
+  }
+
+  .rail-copy {
+    color: var(--text-2);
+    max-width: 40ch;
+  }
+
+  .rail-copy strong {
+    color: var(--text);
+    font-weight: 650;
+  }
+
+  .rail-index {
+    list-style: none;
+    margin: var(--space-3) 0 0;
+    padding: 0;
+    display: grid;
+    gap: 0.2rem;
+  }
+
+  .rail-index a {
+    display: grid;
+    grid-template-columns: 2.4rem 1fr auto;
+    align-items: center;
+    gap: 0.8rem;
+    min-height: 48px;
+    padding: 0.4rem 0.9rem;
+    border-radius: 14px;
+    text-decoration: none;
+    color: var(--text-3);
+    transition:
+      color var(--dur-2) var(--ease-cine),
+      background-color var(--dur-2) var(--ease-cine);
+  }
+
+  .rail-index a:hover,
+  .rail-index a:focus-visible {
+    color: var(--text);
+    background: rgb(var(--gold-rgb) / 0.05);
+  }
+
+  .rail-index a[aria-current='true'] {
+    color: var(--text);
+  }
+
+  .rail-num {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    color: var(--gold);
+  }
+
+  .rail-name {
+    font-size: 1.25rem;
+  }
+
+  .rail-bar {
+    width: 64px;
+    height: 2px;
+    border-radius: 2px;
+    background: rgb(242 237 223 / 0.08);
+    overflow: hidden;
+  }
+
+  .rail-bar span {
+    display: block;
+    height: 100%;
+    width: 100%;
+    background: linear-gradient(90deg, var(--gold), var(--gold-hi));
+    box-shadow: 0 0 10px var(--gold);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--dur-3) var(--ease-cine);
+  }
+
+  .rail-index a[aria-current='true'] .rail-bar span {
+    transform: scaleX(1);
+  }
+
+  .chapters-track {
+    display: grid;
+    gap: clamp(5rem, 10vw, 10rem);
+  }
+
+  .chapter {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    align-items: center;
+  }
+
+  .chapter-media {
+    position: relative;
+    grid-row: 1;
+  }
+
+  .chapter-left .chapter-media {
+    grid-column: 1 / span 9;
+  }
+
+  .chapter-right .chapter-media {
+    grid-column: 4 / span 9;
+  }
+
+  .media-frame {
+    position: relative;
+    border-radius: var(--radius-l);
+    overflow: hidden;
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow-deep);
+    aspect-ratio: 4 / 3;
+    transform: translate3d(0, calc(var(--shift, 0) * 1px), 0);
+    will-change: transform;
+  }
+
+  .media-frame::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(180deg, rgb(8 13 9 / 0) 50%, rgb(8 13 9 / 0.55)),
+      linear-gradient(120deg, rgb(var(--gold-rgb) / 0.08), transparent 40%);
+    pointer-events: none;
+  }
+
+  .media-frame :global(.media-img) {
+    width: 100%;
+    height: 112%;
+    margin-top: -6%;
+    object-fit: cover;
+    transition: transform 1.4s var(--ease-cine), filter 1.4s var(--ease-cine);
+    filter: saturate(0.92) contrast(1.02);
+  }
+
+  .chapter:hover .media-frame :global(.media-img) {
+    transform: scale(1.035);
+    filter: saturate(1.02) contrast(1.04);
+  }
+
+  .chapter-ghost {
+    position: absolute;
+    top: -0.55em;
+    font-size: clamp(5rem, 3rem + 8vw, 11rem);
+    line-height: 1;
+    color: transparent;
+    -webkit-text-stroke: 1px rgb(var(--gold-rgb) / 0.3);
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .chapter-left .chapter-ghost {
+    right: -0.15em;
+  }
+
+  .chapter-right .chapter-ghost {
+    left: -0.15em;
+  }
+
+  .chapter-body {
+    grid-row: 1;
+    z-index: 1;
+    display: grid;
+    gap: 0.9rem;
+    padding: clamp(1.4rem, 2.4vw, 2.2rem);
+    margin-top: 45%;
+  }
+
+  .chapter-left .chapter-body {
+    grid-column: 7 / span 6;
+  }
+
+  .chapter-right .chapter-body {
+    grid-column: 1 / span 6;
+  }
+
+  .chapter-arm {
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  .chapter-arm span {
+    color: var(--text-3);
+    margin-right: 0.4rem;
+  }
+
+  .chapter-title {
+    font-size: var(--step-4);
+    line-height: 1;
+  }
+
+  .chapter-summary {
+    color: var(--text-2);
+  }
+
+  .chapter-offers {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.45rem;
+  }
+
+  .chapter-offers li {
+    position: relative;
+    padding-left: 1.2rem;
+    font-size: 0.94rem;
+  }
+
+  .chapter-offers li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.62em;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--gold);
+    box-shadow: 0 0 10px rgb(var(--gold-rgb) / 0.8);
+  }
+
+  .chapter-link {
+    justify-self: start;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 44px;
+    margin-top: 0.3rem;
+    font-weight: 650;
+    font-size: 0.92rem;
+    color: var(--gold-hi);
+    text-decoration: none;
+    transition: gap var(--dur-2) var(--ease-cine), text-shadow var(--dur-2) var(--ease-cine);
+  }
+
+  .chapter-link:hover,
+  .chapter-link:focus-visible {
+    gap: 0.85rem;
+    text-shadow: 0 0 18px rgb(var(--gold-rgb) / 0.6);
+  }
+
+  @media (max-width: 900px) {
+    .chapters-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .rail-sticky {
+      position: static;
+    }
+
+    .rail-index {
+      display: none;
+    }
+
+    .chapter {
+      grid-template-columns: 1fr;
+    }
+
+    .chapter-left .chapter-media,
+    .chapter-right .chapter-media,
+    .chapter-left .chapter-body,
+    .chapter-right .chapter-body {
+      grid-column: 1;
+    }
+
+    .chapter-body {
+      grid-row: 2;
+      margin: -3.5rem 0.75rem 0;
+    }
+
+    .chapter-ghost {
+      font-size: 5.5rem;
+      top: -0.5em;
+    }
+  }
+</style>
+
+<script>
+  import { motionAllowed } from '@/systems/motion';
+
+  const root = document.querySelector<HTMLElement>('[data-chapters]');
+  if (root) {
+    const links = root.querySelectorAll<HTMLAnchorElement>('[data-rail-link]');
+    const chapters = root.querySelectorAll<HTMLElement>('[data-chapter]');
+    const frames = root.querySelectorAll<HTMLElement>('[data-parallax]');
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (!e.isIntersecting) continue;
+          const key = (e.target as HTMLElement).dataset.chapter;
+          links.forEach((l) => l.setAttribute('aria-current', String(l.dataset.railLink === key)));
+        }
+      },
+      { rootMargin: '-45% 0px -45% 0px' },
+    );
+    chapters.forEach((c) => io.observe(c));
+
+    let inView = false;
+    new IntersectionObserver(([e]) => (inView = e.isIntersecting)).observe(root);
+
+    let ticking = false;
+    const parallax = () => {
+      ticking = false;
+      if (!inView || !motionAllowed()) return;
+      const vh = window.innerHeight;
+      frames.forEach((f) => {
+        const r = f.getBoundingClientRect();
+        if (r.bottom < 0 || r.top > vh) return;
+        const p = (r.top + r.height / 2 - vh / 2) / vh;
+        f.style.setProperty('--shift', (p * -36).toFixed(1));
+      });
+    };
+    window.addEventListener(
+      'scroll',
+      () => {
+        if (!ticking) {
+          ticking = true;
+          requestAnimationFrame(parallax);
+        }
+      },
+      { passive: true },
+    );
+    window.addEventListener('vm23g:motion', () => {
+      if (!motionAllowed()) frames.forEach((f) => f.style.setProperty('--shift', '0'));
+    });
+  }
+</script>

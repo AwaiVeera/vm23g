@@ -1,0 +1,83 @@
+---
+import SectionHead from '@/components/SectionHead.astro';
+import FounderCard from '@/components/FounderCard.astro';
+import { founders } from '@/content/site';
+---
+
+<section class="section founders" aria-labelledby="founders-title">
+  <div class="wrap founders-grid">
+    <div class="founders-intro">
+      <SectionHead
+        id="founders-title"
+        eyebrow="The founders"
+        title="Two founders."
+        accent="One standard."
+        copy="Summan leads brand, partnerships and growth through AaVisions. Awai drives operations, AI-enhanced coaching and movement through NavaFit Alignment."
+        align="left"
+      >
+        <a class="btn btn-ghost founders-link" href="/founders" data-reveal>Meet the founders</a>
+      </SectionHead>
+    </div>
+    <div class="founders-cards">
+      {
+        founders.map((f, i) => (
+          <div class:list={['founder-slot', `founder-slot-${i + 1}`]} data-reveal style={`--reveal-delay:${i * 120}ms`}>
+            <FounderCard founder={f} />
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .founders {
+    background: radial-gradient(60% 50% at 100% 40%, rgb(var(--olive-rgb) / 0.14), transparent 70%);
+  }
+
+  .founders-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.4fr);
+    gap: clamp(2rem, 5vw, 5rem);
+    align-items: start;
+  }
+
+  .founders-intro {
+    position: sticky;
+    top: calc(var(--nav-h) + 3rem);
+  }
+
+  .founders-link {
+    justify-self: start;
+  }
+
+  .founders-cards {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(1rem, 2vw, 1.75rem);
+  }
+
+  .founder-slot-2 {
+    margin-top: var(--space-7);
+  }
+
+  @media (max-width: 1000px) {
+    .founders-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .founders-intro {
+      position: static;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .founders-cards {
+      grid-template-columns: 1fr;
+    }
+
+    .founder-slot-2 {
+      margin-top: 0;
+    }
+  }
+</style>

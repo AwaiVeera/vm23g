@@ -1,0 +1,62 @@
+---
+interface Props {
+  eyebrow: string;
+  title: string;
+  accent?: string;
+  copy?: string;
+  id?: string;
+  align?: 'left' | 'split';
+  level?: 'h1' | 'h2';
+}
+const { eyebrow, title, accent, copy, id, align = 'split', level = 'h2' } = Astro.props;
+const Tag = level;
+---
+
+<div class:list={['head', `head-${align}`]}>
+  <div class="head-main" data-reveal>
+    <p class="eyebrow">{eyebrow}</p>
+    <Tag id={id} class="head-title display">
+      {title}
+      {accent && <><br /><span class="gilded">{accent}</span></>}
+    </Tag>
+  </div>
+  {copy && <p class="head-copy" data-reveal style="--reveal-delay:120ms">{copy}</p>}
+  <slot />
+</div>
+
+<style>
+  .head {
+    display: grid;
+    gap: var(--space-4);
+    margin-bottom: var(--space-6);
+  }
+
+  .head-split {
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    align-items: end;
+    gap: var(--space-5);
+  }
+
+  .head-main {
+    display: grid;
+    gap: var(--space-3);
+  }
+
+  .head-title {
+    font-size: var(--step-4);
+    line-height: 1.05;
+  }
+
+  .head-copy {
+    color: var(--text-2);
+    font-size: var(--step-1);
+    line-height: 1.55;
+    max-width: 44ch;
+  }
+
+  @media (max-width: 860px) {
+    .head-split {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -1,0 +1,237 @@
+---
+import Picture from '@/components/Picture.astro';
+import SectionHead from '@/components/SectionHead.astro';
+import { projects } from '@/content/site';
+
+const featured = projects.slice(0, 4);
+---
+
+<section class="section work" aria-labelledby="work-title">
+  <div class="wrap">
+    <SectionHead
+      id="work-title"
+      eyebrow="Selected work"
+      title="Built, shipped,"
+      accent="and still moving."
+      copy="Websites, an iOS app and brand programmes delivered across the VM23G ecosystem."
+    />
+
+    <ul class="work-grid">
+      {
+        featured.map((p, i) => (
+          <li class={`work-item work-item-${i + 1}`} data-reveal style={`--reveal-delay:${i * 90}ms`}>
+            <a href={`/work#${p.slug}`} class="work-card" data-glow>
+              <div class="work-media">
+                <Picture
+                  src={`work/${p.image}`}
+                  alt=""
+                  sizes={i === 0 ? '(max-width: 860px) 92vw, 58vw' : '(max-width: 860px) 92vw, 38vw'}
+                  imgClass="work-img"
+                />
+              </div>
+              <div class="work-meta">
+                <p class="work-kind">
+                  {p.kind}
+                  {p.year && <span> · {p.year}</span>}
+                </p>
+                <h3 class="work-title display">{p.title}</h3>
+                <p class="work-summary">{p.summary}</p>
+              </div>
+              <span class="work-arrow" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 16 16"><path d="M4 12L12 4M5.5 4H12v6.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <div class="work-more" data-reveal>
+      <a class="btn btn-ghost" href="/work">See all work</a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .work-grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: clamp(1rem, 2vw, 1.75rem);
+  }
+
+  .work-item-1 {
+    grid-column: 1 / span 7;
+    grid-row: span 2;
+  }
+
+  .work-item-2 {
+    grid-column: 8 / span 5;
+  }
+
+  .work-item-3 {
+    grid-column: 8 / span 5;
+  }
+
+  .work-item-4 {
+    grid-column: 3 / span 8;
+  }
+
+  .work-card {
+    --mx: 50%;
+    --my: 50%;
+    position: relative;
+    display: grid;
+    grid-template-rows: 1fr auto;
+    height: 100%;
+    border-radius: var(--radius-l);
+    overflow: hidden;
+    border: 1px solid var(--line-soft);
+    background: rgb(var(--glass-rgb) / 0.6);
+    text-decoration: none;
+    box-shadow: var(--shadow-deep);
+    isolation: isolate;
+    transition:
+      border-color var(--dur-2) var(--ease-cine),
+      box-shadow var(--dur-2) var(--ease-cine),
+      transform var(--dur-2) var(--ease-cine);
+  }
+
+  .work-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background: radial-gradient(420px circle at var(--mx) var(--my), rgb(var(--gold-rgb) / 0.16), transparent 60%);
+    opacity: 0;
+    transition: opacity var(--dur-2) var(--ease-cine);
+    pointer-events: none;
+  }
+
+  .work-card:hover,
+  .work-card:focus-visible {
+    border-color: rgb(var(--gold-rgb) / 0.45);
+    box-shadow: var(--shadow-deep), 0 0 50px -16px rgb(var(--gold-rgb) / 0.55);
+    transform: translateY(-4px);
+  }
+
+  .work-card:hover::before,
+  .work-card:focus-visible::before {
+    opacity: 1;
+  }
+
+  .work-media {
+    position: relative;
+    min-height: 220px;
+    overflow: hidden;
+  }
+
+  .work-item-1 .work-media {
+    min-height: 420px;
+  }
+
+  .work-media :global(picture),
+  .work-media :global(.work-img) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .work-media :global(.work-img) {
+    transition: transform 1.2s var(--ease-cine);
+  }
+
+  .work-card:hover .work-media :global(.work-img) {
+    transform: scale(1.05);
+  }
+
+  .work-media::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 30%, rgb(var(--glass-rgb) / 0.7) 62%, rgb(var(--glass-rgb) / 0.98) 92%);
+  }
+
+  .work-meta {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    gap: 0.35rem;
+    padding: 0 1.4rem 1.4rem;
+    margin-top: -2.2rem;
+  }
+
+  .work-kind {
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  .work-title {
+    font-size: var(--step-2);
+  }
+
+  .work-summary {
+    color: var(--text-2);
+    font-size: 0.94rem;
+    max-width: 52ch;
+  }
+
+  .work-arrow {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    z-index: 3;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    color: var(--gold-hi);
+    background: rgb(8 13 9 / 0.6);
+    border: 1px solid var(--line);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    transition: transform var(--dur-2) var(--ease-cine), box-shadow var(--dur-2) var(--ease-cine);
+  }
+
+  .work-card:hover .work-arrow,
+  .work-card:focus-visible .work-arrow {
+    transform: rotate(45deg);
+    box-shadow: var(--shadow-glow);
+  }
+
+  .work-more {
+    display: flex;
+    justify-content: center;
+    margin-top: var(--space-6);
+  }
+
+  @media (max-width: 860px) {
+    .work-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .work-item-1,
+    .work-item-2,
+    .work-item-3,
+    .work-item-4 {
+      grid-column: 1;
+      grid-row: auto;
+    }
+
+    .work-item-1 .work-media {
+      min-height: 260px;
+    }
+  }
+</style>
+
+<script>
+  import '@/systems/glow';
+</script>
