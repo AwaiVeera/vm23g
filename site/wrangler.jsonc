@@ -1,0 +1,41 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "vm23g-v2",
+  "main": "@astrojs/cloudflare/entrypoints/server",
+  "compatibility_date": "2026-10-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": { "enabled": true },
+  "vars": {
+    "AI_MODEL": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+    "TRANSCRIBE_MODEL": "@cf/openai/whisper-large-v3-turbo",
+    "ADMIN_EMAILS": "summan@veeramisir.com,awaiveera@navafit.sg"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "vm23g",
+      "database_id": "00000000-0000-0000-0000-000000000000",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "r2_buckets": [{ "binding": "MEDIA", "bucket_name": "vm23g-media" }],
+  "ai": { "binding": "AI" },
+  "env": {
+    "dev": {
+      "vars": {
+        "AI_MODEL": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+        "TRANSCRIBE_MODEL": "@cf/openai/whisper-large-v3-turbo",
+        "ADMIN_EMAILS": "summan@veeramisir.com,awaiveera@navafit.sg"
+      },
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "vm23g",
+          "database_id": "00000000-0000-0000-0000-000000000000",
+          "migrations_dir": "migrations"
+        }
+      ],
+      "r2_buckets": [{ "binding": "MEDIA", "bucket_name": "vm23g-media" }]
+    }
+  }
+}

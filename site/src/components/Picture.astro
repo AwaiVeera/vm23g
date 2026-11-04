@@ -1,0 +1,35 @@
+---
+import manifest from '@/content/media-manifest.json';
+
+interface Props {
+  src: string;
+  alt: string;
+  sizes?: string;
+  class?: string;
+  loading?: 'lazy' | 'eager';
+  fetchpriority?: 'high' | 'low' | 'auto';
+  imgClass?: string;
+  style?: string;
+}
+
+const { src, alt, sizes = '100vw', loading = 'lazy', fetchpriority = 'auto', imgClass, style } = Astro.props;
+const entry = (manifest as Record<string, { width: number; height: number; widths: number[] }>)[src];
+if (!entry) throw new Error(`Unknown media asset: ${src}`);
+const set = (format: string) => entry.widths.map((w) => `/media/${src}-${w}.${format} ${w}w`).join(', ');
+const fallback = `/media/${src}-${entry.widths[entry.widths.length - 1]}.webp`;
+---
+
+<picture class={Astro.props.class} style={style}>
+  <source type="image/avif" srcset={set('avif')} sizes={sizes} />
+  <source type="image/webp" srcset={set('webp')} sizes={sizes} />
+  <img
+    src={fallback}
+    alt={alt}
+    width={entry.width}
+    height={entry.height}
+    loading={loading}
+    decoding={loading === 'eager' ? 'sync' : 'async'}
+    fetchpriority={fetchpriority}
+    class={imgClass}
+  />
+</picture>

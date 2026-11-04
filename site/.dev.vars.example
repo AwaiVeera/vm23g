@@ -1,0 +1,2 @@
+ADMIN_PASSWORD_HASH=pbkdf2$210000$<salt-base64>$<hash-base64>
+SESSION_SECRET=<64-random-hex-characters>

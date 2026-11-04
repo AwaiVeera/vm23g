@@ -1,0 +1,194 @@
+---
+import Picture from '@/components/Picture.astro';
+import { nav, startHref, founders, channels } from '@/content/site';
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="wrap footer-grid">
+    <div class="footer-brand">
+      <a href="/" aria-label="VM23G — Home" class="footer-logo">
+        <Picture src="brand/vm23g-logo" alt="" sizes="180px" imgClass="footer-logo-img" />
+      </a>
+      <p class="display footer-line">Mind. Body. Brand. Technology.</p>
+      <p class="footer-note">A Singapore-based group.</p>
+    </div>
+
+    <nav class="footer-col" aria-label="Footer">
+      <p class="footer-head">Explore</p>
+      <ul>
+        {nav.map((n) => <li><a href={n.href}>{n.label}</a></li>)}
+        <li><a href={startHref}>Start a Project</a></li>
+      </ul>
+    </nav>
+
+    <div class="footer-col">
+      <p class="footer-head">Founders</p>
+      <ul>
+        {
+          founders.map((f) => (
+            <li>
+              <a href={`/founders#${f.slug}`}>{f.name}</a>
+              <ul class="footer-social">
+                {f.social.map((s) => (
+                  <li><a href={s.href} rel="noopener" target="_blank">{s.label} {s.handle}</a></li>
+                ))}
+              </ul>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <p class="footer-head">NavaFit Alignment</p>
+      <ul>
+        {channels.map((c) => <li><a href={c.href} rel="noopener" target="_blank">{c.label.replace('NavaFit Alignment on ', '')}</a></li>)}
+      </ul>
+      <p class="footer-head footer-head-gap">Enquiries</p>
+      <ul>
+        <li><a href={startHref}>Start a Project</a></li>
+        <li><button type="button" class="footer-ask" data-concierge-open>Ask V, our AI concierge</button></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="wrap footer-base">
+    <p>© {year} VM23 Group. Singapore.</p>
+    <div class="footer-base-links">
+      <a href="/legal">Legal &amp; privacy</a>
+      <button type="button" class="footer-motion" data-motion-toggle><span data-motion-label>Pause motion</span></button>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    position: relative;
+    padding-block: var(--space-7) calc(var(--space-5) + env(safe-area-inset-bottom));
+    border-top: 1px solid var(--line-soft);
+    background:
+      radial-gradient(60% 80% at 15% 0%, rgb(var(--olive-rgb) / 0.16), transparent 70%),
+      var(--canvas-deep);
+  }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 1.4fr repeat(3, 1fr);
+    gap: var(--space-5);
+  }
+
+  .footer-logo :global(.footer-logo-img) {
+    width: 150px;
+  }
+
+  .footer-line {
+    margin-top: 1rem;
+    font-size: 0.82rem;
+    letter-spacing: 0.22em;
+    color: var(--gold);
+  }
+
+  .footer-note {
+    margin-top: 0.4rem;
+    color: var(--text-3);
+    font-size: 0.9rem;
+  }
+
+  .footer-head {
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.9rem;
+  }
+
+  .footer-head-gap {
+    margin-top: 1.6rem;
+  }
+
+  .footer ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.35rem;
+  }
+
+  .footer a,
+  .footer-ask,
+  .footer-motion {
+    display: inline-flex;
+    align-items: center;
+    min-height: 32px;
+    color: var(--text-2);
+    text-decoration: none;
+    font-size: 0.93rem;
+    background: none;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    transition: color var(--dur-1) ease, text-shadow var(--dur-2) ease;
+  }
+
+  .footer a:hover,
+  .footer a:focus-visible,
+  .footer-ask:hover,
+  .footer-ask:focus-visible,
+  .footer-motion:hover,
+  .footer-motion:focus-visible {
+    color: var(--gold-hi);
+    text-shadow: 0 0 18px rgb(var(--gold-rgb) / 0.5);
+  }
+
+  .footer-social {
+    margin-top: 0.1rem !important;
+    padding-left: 0.8rem !important;
+    border-left: 1px solid var(--line-soft);
+  }
+
+  .footer-social a {
+    font-size: 0.84rem;
+    color: var(--text-3);
+  }
+
+  .footer-base {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: var(--space-6);
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--line-soft);
+    color: var(--text-3);
+    font-size: 0.86rem;
+  }
+
+  .footer-base-links {
+    display: flex;
+    gap: 1.4rem;
+  }
+
+  @media (max-width: 900px) {
+    .footer-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .footer-brand {
+      grid-column: 1 / -1;
+    }
+  }
+
+  @media (max-width: 720px) {
+    .footer {
+      padding-bottom: calc(6rem + env(safe-area-inset-bottom));
+    }
+  }
+
+  @media (max-width: 480px) {
+    .footer-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

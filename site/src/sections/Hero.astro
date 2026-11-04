@@ -1,0 +1,631 @@
+---
+import Picture from '@/components/Picture.astro';
+import { pillars, startHref } from '@/content/site';
+
+interface Props {
+  lede?: string;
+}
+
+const {
+  lede = 'A Singapore group building AI systems, websites and apps, brands and media — and the discipline of body and mind behind them.',
+} = Astro.props;
+---
+
+<section class="hero" aria-labelledby="hero-title" data-hero>
+  <div class="hero-bg" aria-hidden="true">
+    <canvas class="hero-canvas" data-halo></canvas>
+    <div class="plane plane-a" data-depth="0.6"></div>
+    <div class="plane plane-b" data-depth="1.1"></div>
+    <div class="plane plane-c" data-depth="0.35"></div>
+  </div>
+
+  <div class="hero-grid wrap">
+    <div class="hero-copy">
+      <p class="eyebrow hero-eyebrow" data-reveal>VM23G · Singapore</p>
+      <h1 id="hero-title" class="hero-title display" data-reveal style="--reveal-delay:80ms">
+        <span class="gilded">Mind.</span>
+        <span class="gilded">Body.</span>
+        <span class="gilded">Brand.</span>
+        <span class="gilded">Technology.</span>
+      </h1>
+      <p class="lede hero-lede" data-reveal style="--reveal-delay:180ms">{lede}</p>
+      <div class="hero-ctas" data-reveal style="--reveal-delay:260ms">
+        <a class="btn btn-gold" href={startHref}>
+          Start a Project
+          <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9M8.5 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a class="btn btn-ghost" href="/work">Explore Our Work</a>
+      </div>
+      <ul class="hero-pillars" data-reveal style="--reveal-delay:340ms" aria-label="What we do">
+        {
+          pillars.map((p) => (
+            <li>
+              <a href={`/services#${p.key}`}>
+                <span class="pill-index">{p.index}</span>
+                <span class="pill-title">{p.title}</span>
+                <span class="pill-offer">{p.offers[0]}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <div class="hero-stage" data-stage>
+      <div class="stage-tilt" data-tilt>
+        <div class="stage-ring" aria-hidden="true"></div>
+        <div class="stage-glass" aria-hidden="true"></div>
+        <div class="stage-logo">
+          <Picture
+            src="brand/vm23g-logo"
+            alt="VM23G — VM 23 Group logo: a gold bull with circuit traces"
+            sizes="(max-width: 720px) 78vw, 560px"
+            loading="eager"
+            fetchpriority="high"
+            imgClass="logo-img"
+          />
+          <span class="logo-sheen" aria-hidden="true"></span>
+        </div>
+        <div class="stage-floor" aria-hidden="true"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-foot wrap">
+    <a class="scroll-cue" href="#chapters">
+      <span class="cue-line" aria-hidden="true"></span>
+      <span>Scroll to explore</span>
+    </a>
+    <button type="button" class="hero-motion" data-motion-toggle aria-pressed="false">
+      <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><rect x="3" y="2.5" width="2.4" height="9" rx="1" fill="currentColor"/><rect x="8.6" y="2.5" width="2.4" height="9" rx="1" fill="currentColor"/></svg>
+      <span data-motion-label>Pause motion</span>
+    </button>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    isolation: isolate;
+    min-height: max(100svh, 680px);
+    display: grid;
+    grid-template-rows: 1fr auto;
+    padding-top: calc(var(--nav-h) + 1.25rem);
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      radial-gradient(42% 52% at 70% 46%, rgb(var(--gold-rgb) / 0.13), transparent 70%),
+      radial-gradient(70% 80% at 70% 46%, rgb(var(--olive-rgb) / 0.32), transparent 72%),
+      radial-gradient(120% 90% at 50% 120%, rgb(var(--olive-rgb) / 0.18), transparent 60%),
+      var(--canvas);
+  }
+
+  .hero-bg::after {
+    content: '';
+    position: absolute;
+    inset: auto 0 0 0;
+    height: 30%;
+    background: linear-gradient(180deg, transparent, var(--canvas));
+    pointer-events: none;
+  }
+
+  .hero-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 1.6s var(--ease-soft);
+  }
+
+  .hero-canvas:global(.is-ready) {
+    opacity: 1;
+  }
+
+  .plane {
+    position: absolute;
+    border-radius: 32px;
+    border: 1px solid rgb(var(--gold-rgb) / 0.14);
+    background: linear-gradient(150deg, rgb(242 237 223 / 0.05), rgb(var(--glass-rgb) / 0.12) 45%, transparent);
+    box-shadow: inset 0 1px 0 rgb(var(--gold-rgb) / 0.12), 0 40px 80px -40px rgb(0 0 0 / 0.7);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    transform: translate3d(calc(var(--px, 0) * 1px), calc(var(--py, 0) * 1px), 0) rotate(var(--rot));
+    transition: transform 1.2s var(--ease-cine);
+    will-change: transform;
+  }
+
+  .plane-a {
+    --rot: -8deg;
+    width: min(34vw, 460px);
+    aspect-ratio: 0.78;
+    right: 7%;
+    top: 14%;
+  }
+
+  .plane-b {
+    --rot: 11deg;
+    width: min(18vw, 240px);
+    aspect-ratio: 0.7;
+    right: 39%;
+    top: 58%;
+    opacity: 0.7;
+  }
+
+  .plane-c {
+    --rot: 4deg;
+    width: min(22vw, 300px);
+    aspect-ratio: 1.4;
+    right: -3%;
+    bottom: 12%;
+    opacity: 0.6;
+  }
+
+  .hero-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+    align-items: center;
+    gap: clamp(2rem, 4vw, 5rem);
+  }
+
+  .hero-copy {
+    display: grid;
+    gap: 1.25rem;
+    max-width: 600px;
+    padding-block: var(--space-3);
+  }
+
+  .hero-title {
+    display: grid;
+    font-size: clamp(2.6rem, 1.6rem + 3.6vw, 5.2rem);
+    line-height: 1.02;
+    letter-spacing: 0.015em;
+  }
+
+  .hero-title span:nth-child(2) {
+    padding-left: 0.6em;
+  }
+
+  .hero-title span:nth-child(3) {
+    padding-left: 1.2em;
+  }
+
+  .hero-title span:nth-child(4) {
+    font-size: 0.82em;
+    letter-spacing: 0.04em;
+  }
+
+  .hero-lede {
+    max-width: 44ch;
+  }
+
+  .hero-ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: var(--space-1);
+  }
+
+  .hero-pillars {
+    list-style: none;
+    margin: 0.5rem 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.5rem;
+  }
+
+  .hero-pillars a {
+    display: grid;
+    gap: 0.1rem;
+    height: 100%;
+    padding: 0.85rem 0.85rem 0.9rem;
+    border-radius: var(--radius-m);
+    border: 1px solid var(--line-soft);
+    background: rgb(var(--glass-rgb) / 0.45);
+    text-decoration: none;
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    transition:
+      border-color var(--dur-2) var(--ease-cine),
+      box-shadow var(--dur-2) var(--ease-cine),
+      transform var(--dur-2) var(--ease-cine);
+  }
+
+  .hero-pillars a:hover,
+  .hero-pillars a:focus-visible {
+    border-color: rgb(var(--gold-rgb) / 0.5);
+    box-shadow: var(--shadow-glow);
+    transform: translateY(-3px);
+  }
+
+  .pill-index {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    color: var(--gold);
+  }
+
+  .pill-title {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    color: var(--text);
+  }
+
+  .pill-offer {
+    font-size: 0.78rem;
+    line-height: 1.35;
+    color: var(--text-2);
+  }
+
+  .hero-stage {
+    position: relative;
+    display: grid;
+    place-items: center;
+    perspective: 1400px;
+    min-height: 420px;
+  }
+
+  .stage-tilt {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: min(100%, 620px);
+    aspect-ratio: 1.08;
+  }
+
+  .stage-glass {
+    position: absolute;
+    inset: 3% 0;
+    border-radius: 44px;
+    background:
+      radial-gradient(70% 55% at 50% 40%, rgb(var(--gold-rgb) / 0.12), transparent 70%),
+      linear-gradient(155deg, rgb(242 237 223 / 0.09), rgb(242 237 223 / 0.015) 38%, rgb(0 0 0 / 0.15)),
+      rgb(18 27 20 / 0.42);
+    border: 1px solid rgb(var(--gold-rgb) / 0.26);
+    box-shadow:
+      0 50px 100px -40px rgb(0 0 0 / 0.85),
+      inset 0 1px 0 rgb(var(--gold-rgb) / 0.32),
+      inset 0 0 60px rgb(var(--olive-rgb) / 0.18);
+    -webkit-backdrop-filter: blur(14px) saturate(130%);
+    backdrop-filter: blur(14px) saturate(130%);
+    transform: perspective(1400px) rotateX(calc(var(--ty, 0) * 1deg)) rotateY(calc(var(--tx, 0) * 1deg));
+    transition: transform 900ms var(--ease-cine);
+  }
+
+  .stage-glass::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(115deg, transparent 35%, rgb(229 208 154 / 0) 40%, rgb(229 208 154 / 0.1) 48%, transparent 56%);
+    background-size: 250% 100%;
+    animation: glass-sweep 11s var(--ease-soft) infinite;
+  }
+
+  @keyframes glass-sweep {
+    0%,
+    20% {
+      background-position: 120% 0;
+    }
+    70%,
+    100% {
+      background-position: -60% 0;
+    }
+  }
+
+  .stage-ring {
+    position: absolute;
+    width: 88%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: conic-gradient(
+      from 0deg,
+      transparent 0deg,
+      rgb(var(--gold-rgb) / 0.35) 40deg,
+      transparent 110deg,
+      rgb(var(--olive-rgb) / 0.4) 200deg,
+      transparent 290deg
+    );
+    -webkit-mask: radial-gradient(closest-side, transparent 96%, #000 97%, #000 99%, transparent 100%);
+    mask: radial-gradient(closest-side, transparent 96%, #000 97%, #000 99%, transparent 100%);
+    opacity: 0.8;
+    translate: calc(var(--tx, 0) * -1.4px) calc(var(--ty, 0) * 1.4px);
+    transition: translate 900ms var(--ease-cine);
+    animation: ring-spin 38s linear infinite;
+  }
+
+  @keyframes ring-spin {
+    to {
+      rotate: 360deg;
+    }
+  }
+
+  .stage-logo {
+    position: relative;
+    width: 76%;
+    max-width: 500px;
+    translate: calc(var(--tx, 0) * 1.6px) calc(var(--ty, 0) * -1.6px);
+    transition: translate 900ms var(--ease-cine);
+    animation: logo-pulse 7s var(--ease-soft) infinite;
+  }
+
+  .stage-logo :global(.logo-img) {
+    width: 100%;
+    height: auto;
+    filter: drop-shadow(0 0 1px rgb(255 236 190 / 0.5)) drop-shadow(0 14px 28px rgb(0 0 0 / 0.7));
+  }
+
+  @keyframes logo-pulse {
+    0%,
+    100% {
+      filter: drop-shadow(0 0 14px rgb(var(--gold-rgb) / 0.18));
+    }
+    50% {
+      filter: drop-shadow(0 0 26px rgb(var(--gold-rgb) / 0.34));
+    }
+  }
+
+  .logo-sheen {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      108deg,
+      transparent 0%,
+      transparent 38%,
+      rgb(255 246 220 / 0.0) 42%,
+      rgb(255 246 220 / 0.75) 50%,
+      rgb(255 246 220 / 0.0) 58%,
+      transparent 62%,
+      transparent 100%
+    );
+    background-size: 300% 100%;
+    background-position: 150% 0;
+    -webkit-mask: url('/media/brand/vm23g-logo-640.webp') center / 100% 100% no-repeat;
+    mask: url('/media/brand/vm23g-logo-640.webp') center / 100% 100% no-repeat;
+    mix-blend-mode: soft-light;
+    animation: sheen 8.5s var(--ease-soft) infinite 1.2s;
+    pointer-events: none;
+  }
+
+  @keyframes sheen {
+    0% {
+      background-position: 150% 0;
+    }
+    45%,
+    100% {
+      background-position: -50% 0;
+    }
+  }
+
+  .stage-floor {
+    position: absolute;
+    bottom: 3%;
+    width: 62%;
+    height: 9%;
+    border-radius: 50%;
+    background: radial-gradient(closest-side, rgb(var(--gold-rgb) / 0.22), transparent);
+    filter: blur(8px);
+  }
+
+  .hero-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-block: var(--space-2) var(--space-4);
+  }
+
+  .scroll-cue {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.8rem;
+    min-height: 44px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-2);
+    text-decoration: none;
+  }
+
+  .scroll-cue:hover,
+  .scroll-cue:focus-visible {
+    color: var(--gold-hi);
+  }
+
+  .cue-line {
+    position: relative;
+    width: 1px;
+    height: 34px;
+    background: rgb(var(--gold-rgb) / 0.25);
+    overflow: hidden;
+  }
+
+  .cue-line::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent, var(--gold-hi), transparent);
+    animation: cue 2.4s var(--ease-soft) infinite;
+  }
+
+  @keyframes cue {
+    from {
+      transform: translateY(-100%);
+    }
+    to {
+      transform: translateY(100%);
+    }
+  }
+
+  .hero-motion {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 44px;
+    padding: 0 1rem;
+    border-radius: 999px;
+    border: 1px solid var(--line-soft);
+    background: rgb(var(--glass-rgb) / 0.5);
+    color: var(--text-2);
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: color var(--dur-1) ease, border-color var(--dur-2) var(--ease-cine);
+  }
+
+  .hero-motion:hover,
+  .hero-motion:focus-visible {
+    color: var(--text);
+    border-color: rgb(var(--gold-rgb) / 0.5);
+  }
+
+  @media (max-width: 1040px) {
+    .hero-grid {
+      grid-template-columns: 1fr;
+      gap: 0;
+    }
+
+    .hero-stage {
+      order: -1;
+      min-height: 0;
+    }
+
+    .stage-tilt {
+      width: min(100%, 520px);
+    }
+
+    .hero-copy {
+      max-width: 680px;
+      padding-top: 0;
+    }
+
+    .plane-a {
+      width: 60vw;
+      right: 10%;
+      top: 8%;
+    }
+
+    .plane-b {
+      right: 70%;
+      top: 34%;
+      width: 28vw;
+    }
+  }
+
+  @media (max-width: 720px) {
+    .hero {
+      padding-top: calc(var(--nav-h) + 0.25rem);
+      min-height: auto;
+    }
+
+    .stage-tilt {
+      width: 100%;
+      aspect-ratio: 1.32;
+    }
+
+    .stage-glass {
+      inset: 4% 0;
+      border-radius: 28px;
+    }
+
+    .stage-logo {
+      width: 74%;
+    }
+
+    .hero-title {
+      font-size: clamp(2.3rem, 10.5vw, 3.1rem);
+    }
+
+    .hero-pillars {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .hero-ctas .btn {
+      flex: 1 1 auto;
+    }
+
+    .scroll-cue span:last-child {
+      display: none;
+    }
+
+    .plane-c {
+      display: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .stage-glass,
+    .plane {
+      transform: none !important;
+    }
+
+    .stage-logo,
+    .stage-ring {
+      translate: none !important;
+    }
+  }
+</style>
+
+<script>
+  import { mountHalo } from '@/animations/halo';
+  import { motionAllowed } from '@/systems/motion';
+
+  const hero = document.querySelector<HTMLElement>('[data-hero]');
+  const canvas = hero?.querySelector<HTMLCanvasElement>('[data-halo]');
+  const stage = hero?.querySelector<HTMLElement>('[data-stage]');
+  const tilt = hero?.querySelector<HTMLElement>('[data-tilt]');
+  const planes = hero?.querySelectorAll<HTMLElement>('[data-depth]') ?? [];
+
+  const center = (): [number, number] => {
+    if (!hero || !stage) return [0.7, 0.5];
+    const h = hero.getBoundingClientRect();
+    const s = stage.getBoundingClientRect();
+    return [(s.left + s.width / 2 - h.left) / h.width, 1 - (s.top + s.height * 0.46 - h.top) / h.height];
+  };
+
+  if (canvas) {
+    const start = () => mountHalo(canvas, center);
+    if ('requestIdleCallback' in window) requestIdleCallback(start, { timeout: 900 });
+    else setTimeout(start, 200);
+  }
+
+  const fine = window.matchMedia('(hover: hover) and (pointer: fine)');
+  if (hero && tilt && fine.matches) {
+    let raf = 0;
+    hero.addEventListener(
+      'pointermove',
+      (e) => {
+        if (!motionAllowed()) return;
+        cancelAnimationFrame(raf);
+        raf = requestAnimationFrame(() => {
+          const r = hero.getBoundingClientRect();
+          const x = (e.clientX - r.left) / r.width - 0.5;
+          const y = (e.clientY - r.top) / r.height - 0.5;
+          tilt.style.setProperty('--tx', (x * 9).toFixed(2));
+          tilt.style.setProperty('--ty', (-y * 7).toFixed(2));
+          planes.forEach((p) => {
+            const d = Number(p.dataset.depth);
+            p.style.setProperty('--px', (-x * 26 * d).toFixed(1));
+            p.style.setProperty('--py', (-y * 20 * d).toFixed(1));
+          });
+        });
+      },
+      { passive: true },
+    );
+    hero.addEventListener('pointerleave', () => {
+      tilt.style.setProperty('--tx', '0');
+      tilt.style.setProperty('--ty', '0');
+      planes.forEach((p) => {
+        p.style.setProperty('--px', '0');
+        p.style.setProperty('--py', '0');
+      });
+    });
+  }
+</script>

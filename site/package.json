@@ -1,0 +1,32 @@
+{
+  "name": "vm23g-site",
+  "type": "module",
+  "version": "2.0.0",
+  "private": true,
+  "scripts": {
+    "predev": "node scripts/optimize-images.mjs",
+    "prebuild": "node scripts/optimize-images.mjs",
+    "dev": "CLOUDFLARE_ENV=dev astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "db:migrate:local": "wrangler d1 migrations apply vm23g --local --env dev",
+    "db:migrate:remote": "wrangler d1 migrations apply vm23g --remote",
+    "deploy": "astro build && wrangler deploy"
+  },
+  "dependencies": {
+    "@astrojs/cloudflare": "^14.4.4",
+    "@fontsource-variable/manrope": "^5.3.0",
+    "@fontsource/cinzel": "^5.3.0",
+    "astro": "^7.4.5"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.12",
+    "sharp": "^0.35.5",
+    "typescript": "^6.0.3",
+    "wrangler": "^4.157.0"
+  },
+  "engines": {
+    "node": ">=22.23.4"
+  }
+}

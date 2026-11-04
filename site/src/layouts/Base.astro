@@ -1,0 +1,97 @@
+---
+import '@fontsource/cinzel/500.css';
+import '@fontsource/cinzel/600.css';
+import '@fontsource-variable/manrope/wght.css';
+import '@/styles/global.css';
+import SiteNav from '@/components/SiteNav.astro';
+import SiteFooter from '@/components/SiteFooter.astro';
+import Concierge from '@/components/Concierge.astro';
+import MotionToggle from '@/components/MotionToggle.astro';
+import { brand } from '@/content/site';
+
+interface Props {
+  title?: string;
+  description?: string;
+  path?: string;
+  image?: string;
+  jsonLd?: Record<string, unknown>[];
+  bare?: boolean;
+}
+
+const {
+  title,
+  description = brand.description,
+  path = Astro.url.pathname,
+  image = '/og-cover.jpg',
+  jsonLd = [],
+  bare = false,
+} = Astro.props;
+
+const fullTitle = title ? `${title} — VM23G` : `VM23G — Mind. Body. Brand. Technology. | Singapore`;
+const canonical = new URL(path, brand.domain).toString();
+const ogImage = new URL(image, brand.domain).toString();
+
+const orgLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'VM23G',
+  alternateName: 'VM23 Group',
+  url: brand.domain,
+  logo: `${brand.domain}/media/brand/vm23g-logo-640.webp`,
+  slogan: 'Mind. Body. Brand. Technology.',
+  areaServed: 'SG',
+  address: { '@type': 'PostalAddress', addressCountry: 'SG', addressLocality: 'Singapore' },
+  founder: [
+    { '@type': 'Person', name: 'Summan Misir Veera', jobTitle: 'Founder, Managing Director' },
+    { '@type': 'Person', name: 'Tinesh Awai Veera', jobTitle: 'Co-founder' },
+  ],
+};
+---
+
+<!doctype html>
+<html lang="en-SG" class="no-js">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta name="theme-color" content="#080d09" />
+    <link rel="icon" href="/favicon.png" type="image/png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="VM23G" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="en_SG" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <script is:inline>
+      document.documentElement.classList.remove('no-js');
+      try {
+        if (localStorage.getItem('vm23g-motion') === 'paused') document.documentElement.dataset.motion = 'paused';
+      } catch (e) {}
+    </script>
+    <script type="application/ld+json" set:html={JSON.stringify([orgLd, ...jsonLd])} />
+    <slot name="head" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    {!bare && <SiteNav />}
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    {!bare && <SiteFooter />}
+    {!bare && <MotionToggle />}
+    {!bare && <Concierge />}
+    <script>
+      import '@/systems/reveal';
+    </script>
+  </body>
+</html>
