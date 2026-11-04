@@ -1,1 +1,606 @@
-<div data-concierge-root></div>
+---
+const hideLauncher = Astro.url.pathname.startsWith('/start');
+const suggestions = ['What does VM23G do?', 'I need a website or app', 'Tell me about NavaFit', 'Who are the founders?'];
+---
+
+<div class="cg" data-concierge data-hide-launcher={hideLauncher ? 'true' : undefined}>
+  {
+    !hideLauncher && (
+      <button type="button" class="cg-launcher" data-concierge-open aria-haspopup="dialog" aria-controls="concierge-panel">
+        <span class="cg-orb" aria-hidden="true">
+          <span class="display">V</span>
+        </span>
+        <span class="cg-launch-label">Ask V</span>
+      </button>
+    )
+  }
+
+  <dialog class="cg-panel" id="concierge-panel" aria-labelledby="cg-title" data-cg-panel>
+    <div class="cg-shell">
+      <header class="cg-head">
+        <span class="cg-orb cg-orb-sm" aria-hidden="true"><span class="display">V</span></span>
+        <div class="cg-head-text">
+          <h2 id="cg-title" class="display">V · AI concierge</h2>
+          <p>Answers from verified VM23G information</p>
+        </div>
+        <button type="button" class="cg-icon" data-cg-speak aria-pressed="false" title="Read replies aloud" hidden>
+          <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor"/><path d="M16 8.5a5 5 0 010 7M18.5 6a8.5 8.5 0 010 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" data-wave/></svg>
+          <span class="visually-hidden">Read replies aloud</span>
+        </button>
+        <button type="button" class="cg-icon" data-cg-close>
+          <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          <span class="visually-hidden">Close V</span>
+        </button>
+      </header>
+
+      <div class="cg-log" data-cg-log role="log" aria-live="polite" aria-relevant="additions" tabindex="0">
+        <div class="msg msg-v">
+          <p>Hello — I'm V. Ask me anything about VM23G: our work, the founders, NavaFit Alignment or AaVisions. When you're ready, I can pass your brief straight to the founders.</p>
+        </div>
+      </div>
+
+      <div class="cg-suggest" data-cg-suggest>
+        {suggestions.map((s) => <button type="button" data-cg-chip>{s}</button>)}
+      </div>
+
+      <form class="cg-lead" data-cg-lead hidden novalidate>
+        <p class="cg-lead-title display">Send your brief to the founders</p>
+        <label>
+          <span>Your name</span>
+          <input name="name" autocomplete="name" required maxlength="120" />
+        </label>
+        <label>
+          <span>Email</span>
+          <input name="email" type="email" autocomplete="email" required maxlength="200" />
+        </label>
+        <label>
+          <span>Anything to add? <small>(optional)</small></span>
+          <textarea name="message" rows="2" maxlength="2000"></textarea>
+        </label>
+        <label class="cg-consent">
+          <input type="checkbox" name="consent" value="yes" required />
+          <span>VM23G may contact me about this enquiry. Our conversation will be shared with the founders. <a href="/legal#privacy">Privacy</a></span>
+        </label>
+        <input type="text" name="website" tabindex="-1" autocomplete="off" class="cg-hp" aria-hidden="true" />
+        <p class="cg-lead-error" data-cg-lead-error role="alert"></p>
+        <div class="cg-lead-actions">
+          <button type="button" class="btn btn-ghost" data-cg-lead-cancel>Back to chat</button>
+          <button type="submit" class="btn btn-gold">Send brief</button>
+        </div>
+      </form>
+
+      <form class="cg-input" data-cg-form>
+        <button type="button" class="cg-brief" data-cg-brief>Send my brief</button>
+        <div class="cg-row">
+          <label class="visually-hidden" for="cg-text">Message V</label>
+          <textarea id="cg-text" rows="1" maxlength="800" placeholder="Ask V anything…" data-cg-text></textarea>
+          <button type="button" class="cg-icon cg-mic" data-cg-mic aria-pressed="false" hidden>
+            <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3" fill="currentColor"/><path d="M5.5 11a6.5 6.5 0 0013 0M12 17.5V21" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+            <span class="visually-hidden" data-cg-mic-label>Speak to V</span>
+          </button>
+          <button type="submit" class="cg-send" data-cg-send>
+            <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span class="visually-hidden">Send</span>
+          </button>
+        </div>
+        <p class="cg-note">V can make mistakes. For anything important, the founders will confirm.</p>
+      </form>
+    </div>
+  </dialog>
+</div>
+
+<style>
+  .cg-launcher {
+    position: fixed;
+    right: max(1rem, env(safe-area-inset-right));
+    bottom: max(1rem, env(safe-area-inset-bottom));
+    z-index: 60;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.35rem 1.1rem 0.35rem 0.35rem;
+    border-radius: 999px;
+    border: 1px solid rgb(var(--gold-rgb) / 0.4);
+    background: rgb(12 18 13 / 0.82);
+    color: var(--text);
+    font-weight: 650;
+    font-size: 0.92rem;
+    cursor: pointer;
+    box-shadow: 0 18px 40px -16px rgb(0 0 0 / 0.8), 0 0 0 0 rgb(var(--gold-rgb) / 0.4);
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+    transition: transform var(--dur-2) var(--ease-cine), box-shadow var(--dur-2) var(--ease-cine);
+    animation: cg-beacon 5s var(--ease-soft) infinite 3s;
+  }
+
+  .cg-launcher:hover,
+  .cg-launcher:focus-visible {
+    transform: translateY(-3px);
+    box-shadow: 0 22px 50px -16px rgb(0 0 0 / 0.85), 0 0 34px -4px rgb(var(--gold-rgb) / 0.6);
+  }
+
+  @keyframes cg-beacon {
+    0%,
+    70%,
+    100% {
+      box-shadow: 0 18px 40px -16px rgb(0 0 0 / 0.8), 0 0 0 0 rgb(var(--gold-rgb) / 0.35);
+    }
+    85% {
+      box-shadow: 0 18px 40px -16px rgb(0 0 0 / 0.8), 0 0 0 10px rgb(var(--gold-rgb) / 0);
+    }
+  }
+
+  .cg-orb {
+    display: grid;
+    place-items: center;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background:
+      radial-gradient(circle at 35% 30%, rgb(255 240 200 / 0.6), transparent 40%),
+      radial-gradient(circle at 50% 55%, var(--gold), #7f6430 75%);
+    color: #1d1708;
+    font-size: 1.25rem;
+    box-shadow: inset 0 -6px 12px rgb(0 0 0 / 0.35), 0 0 18px -4px rgb(var(--gold-rgb) / 0.7);
+  }
+
+  .cg-orb-sm {
+    width: 40px;
+    height: 40px;
+    font-size: 1.05rem;
+    flex: none;
+  }
+
+  .cg-panel {
+    position: fixed;
+    inset: auto max(1rem, env(safe-area-inset-right)) max(1rem, env(safe-area-inset-bottom)) auto;
+    width: min(420px, calc(100vw - 2rem));
+    height: min(680px, calc(100dvh - 2rem));
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: var(--radius-l);
+    background: transparent;
+    color: var(--text);
+    overflow: visible;
+  }
+
+  .cg-panel::backdrop {
+    background: rgb(4 7 5 / 0.35);
+    -webkit-backdrop-filter: blur(3px);
+    backdrop-filter: blur(3px);
+  }
+
+  .cg-panel[open] {
+    display: block;
+    animation: cg-in 480ms var(--ease-cine) both;
+  }
+
+  @keyframes cg-in {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 18px, 0) scale(0.97);
+    }
+  }
+
+  .cg-shell {
+    display: grid;
+    grid-template-rows: auto 1fr auto auto auto;
+    height: 100%;
+    border-radius: inherit;
+    overflow: hidden;
+    border: 1px solid rgb(var(--gold-rgb) / 0.32);
+    background:
+      radial-gradient(90% 40% at 50% 0%, rgb(var(--gold-rgb) / 0.1), transparent 70%),
+      rgb(12 18 13 / 0.94);
+    box-shadow: var(--shadow-deep), inset 0 1px 0 rgb(var(--gold-rgb) / 0.22);
+    -webkit-backdrop-filter: blur(24px);
+    backdrop-filter: blur(24px);
+  }
+
+  .cg-head {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.9rem 0.9rem 0.9rem 1rem;
+    border-bottom: 1px solid var(--line-soft);
+  }
+
+  .cg-head-text {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .cg-head h2 {
+    font-size: 1rem;
+    letter-spacing: 0.04em;
+  }
+
+  .cg-head p {
+    font-size: 0.76rem;
+    color: var(--text-2);
+  }
+
+  .cg-icon {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    flex: none;
+    border-radius: 50%;
+    border: 1px solid var(--line-soft);
+    background: rgb(var(--glass-rgb) / 0.6);
+    color: var(--text-2);
+    cursor: pointer;
+    transition: color var(--dur-1) ease, border-color var(--dur-2) var(--ease-cine), box-shadow var(--dur-2) var(--ease-cine);
+  }
+
+  .cg-icon:hover,
+  .cg-icon:focus-visible,
+  .cg-icon[aria-pressed='true'] {
+    color: var(--gold-hi);
+    border-color: rgb(var(--gold-rgb) / 0.5);
+  }
+
+  .cg-mic[aria-pressed='true'] {
+    color: #1d1708;
+    background: var(--gold);
+    box-shadow: 0 0 0 6px rgb(var(--gold-rgb) / 0.18);
+    animation: cg-listen 1.4s var(--ease-soft) infinite;
+  }
+
+  @keyframes cg-listen {
+    50% {
+      box-shadow: 0 0 0 10px rgb(var(--gold-rgb) / 0.08);
+    }
+  }
+
+  .cg-log {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1rem;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scroll-behavior: smooth;
+  }
+
+  .cg-log:focus-visible {
+    outline-offset: -3px;
+  }
+
+  .cg-log :global(.msg) {
+    max-width: 88%;
+    padding: 0.7rem 0.95rem;
+    border-radius: 18px;
+    font-size: 0.93rem;
+    line-height: 1.55;
+    animation: msg-in 420ms var(--ease-cine) both;
+  }
+
+  @keyframes msg-in {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 8px, 0);
+    }
+  }
+
+  .cg-log :global(.msg p + p),
+  .cg-log :global(.msg p + ul),
+  .cg-log :global(.msg ul + p) {
+    margin-top: 0.45rem;
+  }
+
+  .cg-log :global(.msg ul) {
+    margin: 0;
+    padding-left: 1.1rem;
+  }
+
+  .cg-log :global(.msg a) {
+    color: var(--gold-hi);
+  }
+
+  .cg-log :global(.msg-v) {
+    align-self: flex-start;
+    background: rgb(var(--glass-rgb) / 0.9);
+    border: 1px solid var(--line-soft);
+    border-bottom-left-radius: 6px;
+  }
+
+  .cg-log :global(.msg-u) {
+    align-self: flex-end;
+    background: linear-gradient(180deg, rgb(var(--gold-rgb) / 0.22), rgb(var(--gold-rgb) / 0.12));
+    border: 1px solid rgb(var(--gold-rgb) / 0.3);
+    border-bottom-right-radius: 6px;
+  }
+
+  .cg-log :global(.msg-typing) {
+    display: inline-flex;
+    gap: 5px;
+    align-items: center;
+    min-height: 2.4rem;
+  }
+
+  .cg-log :global(.msg-typing span) {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--gold);
+    animation: dot 1.1s var(--ease-soft) infinite;
+  }
+
+  .cg-log :global(.msg-typing span:nth-child(2)) {
+    animation-delay: 0.15s;
+  }
+
+  .cg-log :global(.msg-typing span:nth-child(3)) {
+    animation-delay: 0.3s;
+  }
+
+  @keyframes dot {
+    0%,
+    100% {
+      opacity: 0.3;
+      transform: translateY(0);
+    }
+    50% {
+      opacity: 1;
+      transform: translateY(-3px);
+    }
+  }
+
+  .cg-log :global(.msg-system) {
+    align-self: center;
+    max-width: 100%;
+    font-size: 0.82rem;
+    color: var(--text-2);
+    background: none;
+    border: 1px dashed var(--line);
+    text-align: center;
+  }
+
+  .cg-suggest {
+    display: flex;
+    gap: 0.45rem;
+    padding: 0 1rem 0.75rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .cg-suggest[hidden] {
+    display: none;
+  }
+
+  .cg-suggest button {
+    flex: none;
+    min-height: 38px;
+    padding: 0 0.85rem;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: rgb(var(--glass-rgb) / 0.6);
+    font-size: 0.82rem;
+    color: var(--text);
+    cursor: pointer;
+  }
+
+  .cg-suggest button:hover,
+  .cg-suggest button:focus-visible {
+    border-color: rgb(var(--gold-rgb) / 0.6);
+    box-shadow: var(--shadow-glow);
+  }
+
+  .cg-input {
+    display: grid;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem calc(0.75rem + env(safe-area-inset-bottom));
+    border-top: 1px solid var(--line-soft);
+  }
+
+  .cg-input[hidden] {
+    display: none;
+  }
+
+  .cg-brief {
+    justify-self: start;
+    min-height: 34px;
+    padding: 0 0.85rem;
+    border-radius: 999px;
+    border: 1px solid rgb(var(--gold-rgb) / 0.45);
+    background: rgb(var(--gold-rgb) / 0.1);
+    color: var(--gold-hi);
+    font-size: 0.8rem;
+    font-weight: 650;
+    cursor: pointer;
+  }
+
+  .cg-brief:hover,
+  .cg-brief:focus-visible {
+    box-shadow: var(--shadow-glow);
+  }
+
+  .cg-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 0.5rem;
+  }
+
+  .cg-row textarea {
+    flex: 1;
+    min-height: 44px;
+    max-height: 140px;
+    padding: 0.7rem 0.9rem;
+    border-radius: 16px;
+    border: 1px solid var(--line);
+    background: rgb(5 8 6 / 0.6);
+    resize: none;
+    overflow-y: hidden;
+    font-size: 0.95rem;
+    line-height: 1.4;
+  }
+
+  .cg-row textarea:focus-visible {
+    outline: none;
+    border-color: rgb(var(--gold-rgb) / 0.7);
+    box-shadow: 0 0 0 3px rgb(var(--gold-rgb) / 0.18);
+  }
+
+  .cg-send {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    flex: none;
+    border-radius: 50%;
+    border: 0;
+    background: linear-gradient(180deg, var(--gold-hi), var(--gold));
+    color: #1d1708;
+    cursor: pointer;
+    transition: transform var(--dur-2) var(--ease-cine), box-shadow var(--dur-2) var(--ease-cine);
+  }
+
+  .cg-send:hover,
+  .cg-send:focus-visible {
+    transform: translateY(-2px);
+    box-shadow: 0 0 22px -2px rgb(var(--gold-rgb) / 0.7);
+  }
+
+  .cg-send:disabled {
+    opacity: 0.5;
+    cursor: wait;
+  }
+
+  .cg-note {
+    font-size: 0.72rem;
+    color: var(--text-3);
+  }
+
+  .cg-lead {
+    display: grid;
+    gap: 0.7rem;
+    padding: 1rem;
+    border-top: 1px solid var(--line-soft);
+    background: rgb(var(--gold-rgb) / 0.04);
+    max-height: 70dvh;
+    overflow-y: auto;
+  }
+
+  .cg-lead[hidden] {
+    display: none;
+  }
+
+  .cg-lead-title {
+    font-size: 1.05rem;
+    color: var(--gold-hi);
+  }
+
+  .cg-lead label {
+    display: grid;
+    gap: 0.3rem;
+    font-size: 0.82rem;
+    color: var(--text-2);
+  }
+
+  .cg-lead input:not([type='checkbox']),
+  .cg-lead textarea {
+    min-height: 44px;
+    padding: 0.6rem 0.85rem;
+    border-radius: 12px;
+    border: 1px solid var(--line);
+    background: rgb(5 8 6 / 0.6);
+    font-size: 0.95rem;
+  }
+
+  .cg-lead input:focus-visible,
+  .cg-lead textarea:focus-visible {
+    outline: none;
+    border-color: rgb(var(--gold-rgb) / 0.7);
+    box-shadow: 0 0 0 3px rgb(var(--gold-rgb) / 0.18);
+  }
+
+  .cg-lead .cg-consent {
+    grid-template-columns: auto 1fr;
+    align-items: start;
+    gap: 0.6rem;
+    font-size: 0.78rem;
+  }
+
+  .cg-consent input {
+    width: 20px;
+    height: 20px;
+    margin-top: 0.1rem;
+    accent-color: var(--gold);
+  }
+
+  .cg-consent a {
+    color: var(--gold-hi);
+  }
+
+  .cg-hp {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+  }
+
+  .cg-lead-error {
+    min-height: 1em;
+    font-size: 0.82rem;
+    color: #f0b27a;
+  }
+
+  .cg-lead-actions {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+  }
+
+  .cg-lead-actions .btn {
+    min-height: 44px;
+    padding: 0.6rem 1.1rem;
+    font-size: 0.86rem;
+  }
+
+  @media (max-width: 720px) {
+    .cg-launcher {
+      padding-right: 0.35rem;
+    }
+
+    .cg-launch-label {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+    }
+
+    .cg-panel {
+      inset: 0;
+      width: 100%;
+      height: 100dvh;
+      border-radius: 0;
+    }
+
+    .cg-shell {
+      border-radius: 0;
+      border: 0;
+    }
+
+    .cg-head {
+      padding-top: max(0.9rem, env(safe-area-inset-top));
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cg-launcher {
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  import { mountConcierge } from '@/systems/concierge';
+  mountConcierge();
+</script>

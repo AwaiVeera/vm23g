@@ -9,3 +9,4 @@ dist/
 public/media/
 src/content/media-manifest.json
 worker-configuration.d.ts
+ADMIN-LOGIN.local.md
