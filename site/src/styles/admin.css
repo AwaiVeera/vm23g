@@ -442,12 +442,16 @@
   font-size: 0.9rem;
   font-weight: 600;
   box-shadow: var(--shadow-deep), 0 0 30px -10px rgb(var(--gold-rgb) / 0.6);
-  transform: translate(-50%, 160%);
-  transition: transform var(--dur-2) var(--ease-cine);
+  opacity: 0;
+  visibility: hidden;
+  transform: translate(-50%, 24px);
+  transition: transform var(--dur-2) var(--ease-cine), opacity var(--dur-2) var(--ease-cine), visibility var(--dur-2);
   pointer-events: none;
 }
 
 .adm-toast.is-on {
+  opacity: 1;
+  visibility: visible;
   transform: translate(-50%, 0);
 }
 

@@ -1,0 +1,372 @@
+---
+import Base from '@/layouts/Base.astro';
+import PageHero from '@/components/PageHero.astro';
+import Picture from '@/components/Picture.astro';
+import ConciergeTeaser from '@/sections/ConciergeTeaser.astro';
+import FinalCta from '@/sections/FinalCta.astro';
+import SectionHead from '@/components/SectionHead.astro';
+
+const steps = [
+  {
+    n: '01',
+    title: 'Verified facts only',
+    body: 'V answers from a fact sheet the founders control — services, ventures, work and press. If it does not know, it says so instead of guessing.',
+  },
+  {
+    n: '02',
+    title: 'Type it or say it',
+    body: 'Ask by text or tap the microphone and speak. V can read its answers aloud on devices that support speech.',
+  },
+  {
+    n: '03',
+    title: 'Straight to the founders',
+    body: 'When you are ready, V turns the conversation into a brief. It lands in the founders’ Command Centre with an AI summary attached.',
+  },
+];
+
+const work = [
+  {
+    tag: 'NavaFit Alignment · iOS',
+    title: 'An in-app guide with boundaries',
+    body: 'The NavaFit Alignment app pairs a lap-tracking workout timer and guided breathwork with an in-app guide limited to Kalaripayattu, Gadah training and pranayama.',
+    image: 'work/collective-navafit-app',
+    poster: '',
+    alt: 'NavaFit Alignment app screen with a daily breathwork card',
+    href: 'https://apps.apple.com/sg/app/navafit-alignment/id6761351480',
+    link: 'View on the App Store',
+  },
+  {
+    tag: 'AaVisions · Automation',
+    title: 'Agentic workflows for real operations',
+    body: 'Practical, execution-focused use of agentic AI to accelerate delivery and business outcomes — from creating studio-quality music, to making movies, to a storybook for kids.',
+    image: '',
+    poster: '/videos/evo-1-poster.jpg',
+    alt: 'AI-generated still of a vintage computer terminal',
+    href: '/start?focus=technology',
+    link: 'Start an AI project',
+  },
+];
+
+const clips = [
+  { src: '/videos/robmace-1-960.mp4', poster: '/videos/robmace-1-poster.jpg', label: 'A humanoid robot training with a gadah in a futuristic city' },
+  { src: '/videos/evo-1-960.mp4', poster: '/videos/evo-1-poster.jpg', label: 'A vintage computer terminal coming to life' },
+];
+---
+
+<Base title="AI Lab" description="Inside the VM23G AI Lab: V, our AI concierge that answers from verified facts by text or voice, and the AI work behind NavaFit Alignment and AaVisions.">
+  <PageHero
+    eyebrow="AI Lab"
+    title="Where VM23G"
+    accent="puts AI to work."
+    copy="Not AI for show. Systems that answer honestly, save time and move a brief from curiosity to conversation."
+  >
+    <div class="lab-ctas" data-reveal>
+      <button type="button" class="btn btn-gold" data-concierge-open>Talk to V now</button>
+      <a class="btn btn-ghost" href="#how">How V works</a>
+    </div>
+  </PageHero>
+
+  <section class="section lab-how" id="how" aria-labelledby="how-title">
+    <div class="wrap">
+      <SectionHead id="how-title" eyebrow="How V works" title="An honest concierge," accent="by design." />
+      <ol class="steps">
+        {
+          steps.map((s, i) => (
+            <li class="step glass" data-reveal style={`--reveal-delay:${i * 100}ms`}>
+              <span class="step-n display">{s.n}</span>
+              <h3 class="step-title display">{s.title}</h3>
+              <p>{s.body}</p>
+            </li>
+          ))
+        }
+      </ol>
+      <p class="lab-note" data-reveal>V runs on Cloudflare Workers AI. Conversations are stored so the founders can follow up and improve V’s answers.</p>
+    </div>
+  </section>
+
+  <ConciergeTeaser />
+
+  <section class="section lab-work" aria-labelledby="work-title">
+    <div class="wrap">
+      <SectionHead id="work-title" eyebrow="AI in the work" title="Built into" accent="what we ship." />
+      <div class="work-rows">
+        {
+          work.map((w, i) => (
+            <article class:list={['work-row', { 'work-row-flip': i % 2 }]}>
+              <div class="work-media" data-reveal>
+                {w.image ? (
+                  <Picture src={w.image} alt={w.alt} sizes="(max-width: 860px) 92vw, 50vw" imgClass="work-img" />
+                ) : (
+                  <img src={w.poster} alt={w.alt} class="work-img" loading="lazy" decoding="async" width="1280" height="720" />
+                )}
+              </div>
+              <div class="work-copy" data-reveal style="--reveal-delay:120ms">
+                <p class="work-tag">{w.tag}</p>
+                <h3 class="display work-title">{w.title}</h3>
+                <p>{w.body}</p>
+                <a class="work-link" href={w.href} {...(w.href.startsWith('http') ? { target: '_blank', rel: 'noopener' } : {})}>
+                  {w.link} →
+                </a>
+              </div>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section lab-media" aria-labelledby="media-title">
+    <div class="wrap">
+      <SectionHead
+        id="media-title"
+        eyebrow="Generative media"
+        title="Concept clips,"
+        accent="made with AI."
+        copy="AI-generated concept clips from the VM23G archive. They play only while on screen, and stay still when motion is paused."
+      />
+      <div class="clips">
+        {
+          clips.map((c, i) => (
+            <figure class="clip" data-reveal style={`--reveal-delay:${i * 120}ms`}>
+              <video
+                class="clip-video"
+                muted
+                loop
+                playsinline
+                preload="none"
+                poster={c.poster}
+                aria-label={c.label}
+                data-autoplay
+              >
+                <source src={c.src} type="video/mp4" />
+              </video>
+              <figcaption>
+                <span class="clip-badge">AI-generated</span>
+                {c.label}
+              </figcaption>
+            </figure>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <FinalCta title="Have a process" accent="AI should run?" copy="Tell us where your team loses time. We will show you what an agentic workflow could take off your plate." />
+</Base>
+
+<style>
+  .lab-ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .steps {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(1rem, 2vw, 1.5rem);
+  }
+
+  .step {
+    display: grid;
+    align-content: start;
+    gap: 0.6rem;
+    padding: clamp(1.4rem, 2.4vw, 2rem);
+  }
+
+  .step:nth-child(2) {
+    margin-top: var(--space-5);
+  }
+
+  .step-n {
+    font-size: 2.6rem;
+    line-height: 1;
+    color: transparent;
+    -webkit-text-stroke: 1px rgb(var(--gold-rgb) / 0.6);
+  }
+
+  .step-title {
+    font-size: var(--step-1);
+  }
+
+  .step p {
+    color: var(--text-2);
+    font-size: 0.95rem;
+  }
+
+  .lab-note {
+    margin-top: var(--space-6);
+    color: var(--text-3);
+    font-size: 0.88rem;
+    text-align: center;
+  }
+
+  .work-rows {
+    display: grid;
+    gap: clamp(3rem, 7vw, 6rem);
+  }
+
+  .work-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+    gap: clamp(1.5rem, 4vw, 4rem);
+    align-items: center;
+  }
+
+  .work-row-flip .work-media {
+    order: 2;
+  }
+
+  .work-media {
+    border-radius: var(--radius-l);
+    overflow: hidden;
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow-deep);
+    aspect-ratio: 4 / 3;
+  }
+
+  .work-media :global(picture),
+  .work-media :global(.work-img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .work-copy {
+    display: grid;
+    gap: 0.8rem;
+  }
+
+  .work-tag {
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  .work-title {
+    font-size: var(--step-3);
+    line-height: 1.1;
+  }
+
+  .work-copy p:not(.work-tag) {
+    color: var(--text-2);
+  }
+
+  .work-link {
+    justify-self: start;
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    color: var(--gold-hi);
+    font-weight: 650;
+    text-decoration: none;
+  }
+
+  .work-link:hover,
+  .work-link:focus-visible {
+    text-shadow: 0 0 18px rgb(var(--gold-rgb) / 0.6);
+  }
+
+  .clips {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: clamp(1rem, 2vw, 1.5rem);
+    align-items: start;
+  }
+
+  .clip {
+    margin: 0;
+  }
+
+  .clip:nth-child(2) {
+    margin-top: var(--space-6);
+  }
+
+  .clip-video {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    border-radius: var(--radius-l);
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow-deep);
+    background: var(--glass);
+  }
+
+  .clip figcaption {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6rem;
+    margin-top: 0.8rem;
+    font-size: 0.9rem;
+    color: var(--text-2);
+  }
+
+  .clip-badge {
+    padding: 0.2rem 0.65rem;
+    border-radius: 999px;
+    border: 1px solid rgb(var(--gold-rgb) / 0.45);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold-hi);
+  }
+
+  @media (max-width: 900px) {
+    .steps,
+    .clips {
+      grid-template-columns: 1fr;
+    }
+
+    .step:nth-child(2),
+    .clip:nth-child(2) {
+      margin-top: 0;
+    }
+
+    .work-row {
+      grid-template-columns: 1fr;
+    }
+
+    .work-row-flip .work-media {
+      order: 0;
+    }
+  }
+</style>
+
+<script>
+  import { motionAllowed } from '@/systems/motion';
+
+  const videos = document.querySelectorAll<HTMLVideoElement>('[data-autoplay]');
+  const visible = new Set<HTMLVideoElement>();
+  const sync = () => {
+    videos.forEach((v) => {
+      if (visible.has(v) && motionAllowed() && !document.hidden) {
+        v.play().catch(() => undefined);
+      } else {
+        v.pause();
+      }
+    });
+  };
+  const io = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((e) => {
+        const v = e.target as HTMLVideoElement;
+        if (e.isIntersecting) {
+          if (v.preload === 'none') v.preload = 'auto';
+          visible.add(v);
+        } else visible.delete(v);
+      });
+      sync();
+    },
+    { threshold: 0.35 },
+  );
+  videos.forEach((v) => io.observe(v));
+  window.addEventListener('vm23g:motion', sync);
+  document.addEventListener('visibilitychange', sync);
+</script>
