@@ -1,0 +1,249 @@
+---
+import Base from '@/layouts/Base.astro';
+import PageHero from '@/components/PageHero.astro';
+import SectionHead from '@/components/SectionHead.astro';
+import Picture from '@/components/Picture.astro';
+import FinalCta from '@/sections/FinalCta.astro';
+import { ecosystem, channels } from '@/content/site';
+import { collectivesCopy } from '@/content/pages';
+---
+
+<Base
+  title="Ecosystem"
+  description="The VM23G ecosystem: NavaFit Alignment, the NavaFit app, PlayRoom SG, Jurong Football Club, Navanagas Hub and the community that moves with us."
+>
+  <PageHero eyebrow="Ecosystem" title="The collective" accent="moves together." copy={collectivesCopy.intro} />
+
+  <section class="section eco" aria-label="Ventures and partners">
+    <div class="wrap">
+      <ul class="eco-grid">
+        {
+          ecosystem.map((t, i) => {
+            const Tag = t.href ? 'a' : 'div';
+            return (
+              <li class:list={['eco-item', `eco-item-${i + 1}`]} data-reveal style={`--reveal-delay:${(i % 3) * 90}ms`}>
+                <Tag
+                  class="eco-card"
+                  data-glow
+                  {...(t.href ? { href: t.href, target: '_blank', rel: 'noopener' } : {})}
+                >
+                  <div class="eco-media">
+                    <Picture src={`work/${t.image}`} alt="" sizes="(max-width: 760px) 92vw, 33vw" imgClass="eco-img" />
+                  </div>
+                  <div class="eco-body">
+                    <p class="eco-tag">{t.tag}</p>
+                    <h2 class="eco-title display">{t.title}</h2>
+                    <p class="eco-caption">{t.caption}</p>
+                    {t.href && (
+                      <span class="eco-link">
+                        Visit
+                        <svg width="13" height="13" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 12L12 4M5.5 4H12v6.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                        <span class="visually-hidden">(opens in a new tab)</span>
+                      </span>
+                    )}
+                  </div>
+                </Tag>
+              </li>
+            );
+          })
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="section mission" aria-labelledby="mission-title">
+    <div class="wrap mission-grid">
+      <SectionHead id="mission-title" eyebrow="The network" title="Aligned by" accent="mission." copy={collectivesCopy.ecosystem} align="left" />
+      <div class="mission-panel glass" data-reveal>
+        <p class="mission-text">{collectivesCopy.mission}</p>
+        <div class="channels">
+          <p class="channels-head">Follow NavaFit Alignment</p>
+          <ul>
+            {
+              channels.map((c) => (
+                <li>
+                  <a class="btn btn-ghost" href={c.href} target="_blank" rel="noopener">
+                    {c.label.replace(/^NavaFit Alignment on (the )?/, '')}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <FinalCta title="Move with" accent="the collective." />
+</Base>
+
+<style>
+  .eco {
+    padding-top: var(--space-5);
+  }
+
+  .eco-grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(1rem, 2vw, 1.6rem);
+  }
+
+  .eco-item:nth-child(3n + 2) {
+    margin-top: var(--space-6);
+  }
+
+  .eco-card {
+    --mx: 50%;
+    --my: 0%;
+    display: grid;
+    grid-template-rows: auto 1fr;
+    height: 100%;
+    border-radius: var(--radius-l);
+    overflow: hidden;
+    border: 1px solid var(--line-soft);
+    background:
+      radial-gradient(380px circle at var(--mx) var(--my), rgb(var(--gold-rgb) / 0.1), transparent 60%),
+      rgb(var(--glass-rgb) / 0.65);
+    box-shadow: var(--shadow-deep);
+    text-decoration: none;
+    transition: border-color var(--dur-2) var(--ease-cine), box-shadow var(--dur-2) var(--ease-cine), transform var(--dur-2) var(--ease-cine);
+  }
+
+  a.eco-card:hover,
+  a.eco-card:focus-visible {
+    border-color: rgb(var(--gold-rgb) / 0.45);
+    box-shadow: var(--shadow-deep), 0 0 50px -18px rgb(var(--gold-rgb) / 0.5);
+    transform: translateY(-4px);
+  }
+
+  .eco-media {
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+  }
+
+  .eco-media :global(picture),
+  .eco-media :global(.eco-img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .eco-media :global(.eco-img) {
+    transition: transform 1.2s var(--ease-cine);
+  }
+
+  .eco-card:hover .eco-media :global(.eco-img) {
+    transform: scale(1.05);
+  }
+
+  .eco-body {
+    display: grid;
+    align-content: start;
+    gap: 0.45rem;
+    padding: 1.25rem 1.4rem 1.5rem;
+  }
+
+  .eco-tag {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  .eco-title {
+    font-size: var(--step-2);
+  }
+
+  .eco-caption {
+    color: var(--text-2);
+    font-size: 0.94rem;
+  }
+
+  .eco-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 0.3rem;
+    font-size: 0.88rem;
+    font-weight: 650;
+    color: var(--gold-hi);
+  }
+
+  .mission {
+    padding-top: var(--space-8);
+  }
+
+  .mission-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(2rem, 5vw, 5rem);
+    align-items: center;
+  }
+
+  .mission-panel {
+    display: grid;
+    gap: var(--space-5);
+    padding: clamp(1.5rem, 4vw, 3rem);
+  }
+
+  .mission-text {
+    font-size: var(--step-2);
+    font-weight: 300;
+    line-height: 1.4;
+    color: var(--text);
+  }
+
+  .channels-head {
+    margin-bottom: 0.75rem;
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  .channels ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+
+  @media (max-width: 960px) {
+    .eco-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .eco-item:nth-child(3n + 2) {
+      margin-top: 0;
+    }
+
+    .eco-item:nth-child(even) {
+      margin-top: var(--space-5);
+    }
+
+    .mission-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .eco-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .eco-item:nth-child(even) {
+      margin-top: 0;
+    }
+  }
+</style>
+
+<script>
+  import '@/systems/glow';
+</script>

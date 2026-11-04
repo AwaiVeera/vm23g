@@ -1,0 +1,264 @@
+---
+import Base from '@/layouts/Base.astro';
+import PageHero from '@/components/PageHero.astro';
+import Picture from '@/components/Picture.astro';
+import FinalCta from '@/sections/FinalCta.astro';
+import { projects } from '@/content/site';
+
+const categories = ['All', ...new Set(projects.map((p) => p.category))];
+---
+
+<Base
+  title="Work"
+  description="Websites, an iOS app, brand programmes and partnerships delivered by VM23G in Singapore."
+>
+  <PageHero
+    eyebrow="Work"
+    title="Built, shipped,"
+    accent="and still moving."
+    copy="A selection of websites, apps and partnerships from across the VM23G ecosystem."
+  />
+
+  <section class="section work-page" aria-label="Projects">
+    <div class="wrap">
+      <div class="filters" role="group" aria-label="Filter projects" data-filters hidden>
+        {
+          categories.map((c, i) => (
+            <button type="button" class="filter" aria-pressed={i === 0 ? 'true' : 'false'} data-filter={c}>
+              {c}
+            </button>
+          ))
+        }
+      </div>
+
+      <p class="visually-hidden" aria-live="polite" data-filter-status></p>
+      <ol class="projects" data-projects>
+        {
+          projects.map((p, i) => (
+            <li id={p.slug} class:list={['project', i % 2 ? 'project-right' : 'project-left']} data-category={p.category}>
+              <div class="project-media" data-reveal>
+                <Picture src={`work/${p.image}`} alt={`${p.title} — ${p.kind}`} sizes="(max-width: 860px) 92vw, 56vw" imgClass="project-img" />
+                <span class="project-index display" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+              </div>
+              <div class="project-body glass" data-reveal style="--reveal-delay:120ms">
+                <p class="project-kind">
+                  {p.kind}
+                  {p.year && <span> · {p.year}</span>}
+                </p>
+                <h2 class="project-title display">{p.title}</h2>
+                <p class="project-summary">{p.summary}</p>
+                {p.href && (
+                  <a class="project-link" href={p.href} target="_blank" rel="noopener">
+                    {p.linkLabel}
+                    <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 12L12 4M5.5 4H12v6.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                    <span class="visually-hidden">(opens in a new tab)</span>
+                  </a>
+                )}
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <FinalCta title="Have something" accent="worth building?" />
+</Base>
+
+<style>
+  .work-page {
+    padding-top: var(--space-5);
+  }
+
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: var(--space-6);
+  }
+
+  .filters[hidden] {
+    display: none;
+  }
+
+  .filter {
+    min-height: 44px;
+    padding: 0 1.1rem;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: rgb(var(--glass-rgb) / 0.5);
+    color: var(--text-2);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: color var(--dur-1) ease, border-color var(--dur-2) var(--ease-cine), box-shadow var(--dur-2) var(--ease-cine);
+  }
+
+  .filter:hover,
+  .filter:focus-visible {
+    color: var(--text);
+    border-color: rgb(var(--gold-rgb) / 0.55);
+  }
+
+  .filter[aria-pressed='true'] {
+    color: #1a1408;
+    background: linear-gradient(180deg, var(--gold-hi), var(--gold));
+    border-color: transparent;
+    box-shadow: 0 8px 24px -10px rgb(var(--gold-rgb) / 0.7);
+  }
+
+  .projects {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: clamp(4rem, 9vw, 8rem);
+  }
+
+  .project {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    align-items: center;
+    scroll-margin-top: calc(var(--nav-h) + 2rem);
+  }
+
+  .project[hidden] {
+    display: none;
+  }
+
+  .project-media {
+    position: relative;
+    grid-row: 1;
+    border-radius: var(--radius-l);
+    overflow: hidden;
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow-deep);
+    aspect-ratio: 4 / 3;
+  }
+
+  .project-left .project-media {
+    grid-column: 1 / span 8;
+  }
+
+  .project-right .project-media {
+    grid-column: 5 / span 8;
+  }
+
+  .project-media :global(picture),
+  .project-media :global(.project-img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .project-media :global(.project-img) {
+    transition: transform 1.4s var(--ease-cine);
+  }
+
+  .project:hover .project-media :global(.project-img) {
+    transform: scale(1.04);
+  }
+
+  .project-index {
+    position: absolute;
+    top: 1rem;
+    left: 1.2rem;
+    font-size: 1rem;
+    letter-spacing: 0.2em;
+    color: var(--gold-hi);
+    text-shadow: 0 2px 12px rgb(0 0 0 / 0.8);
+  }
+
+  .project-body {
+    grid-row: 1;
+    z-index: 1;
+    display: grid;
+    gap: 0.8rem;
+    padding: clamp(1.4rem, 2.6vw, 2.3rem);
+    margin-top: 30%;
+  }
+
+  .project-left .project-body {
+    grid-column: 7 / span 6;
+  }
+
+  .project-right .project-body {
+    grid-column: 1 / span 6;
+  }
+
+  .project-kind {
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  .project-title {
+    font-size: var(--step-3);
+    line-height: 1.1;
+    overflow-wrap: anywhere;
+  }
+
+  .project-summary {
+    color: var(--text-2);
+  }
+
+  .project-link {
+    justify-self: start;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 44px;
+    font-weight: 650;
+    font-size: 0.92rem;
+    color: var(--gold-hi);
+    text-decoration: none;
+    transition: gap var(--dur-2) var(--ease-cine), text-shadow var(--dur-2) var(--ease-cine);
+  }
+
+  .project-link:hover,
+  .project-link:focus-visible {
+    gap: 0.8rem;
+    text-shadow: 0 0 18px rgb(var(--gold-rgb) / 0.6);
+  }
+
+  @media (max-width: 860px) {
+    .project {
+      grid-template-columns: 1fr;
+    }
+
+    .project-left .project-media,
+    .project-right .project-media,
+    .project-left .project-body,
+    .project-right .project-body {
+      grid-column: 1;
+    }
+
+    .project-body {
+      grid-row: 2;
+      margin: -3rem 0.75rem 0;
+    }
+  }
+</style>
+
+<script>
+  const bar = document.querySelector<HTMLElement>('[data-filters]');
+  const items = document.querySelectorAll<HTMLElement>('[data-projects] > li');
+  if (bar) {
+    bar.hidden = false;
+    bar.addEventListener('click', (e) => {
+      const btn = (e.target as Element).closest<HTMLButtonElement>('[data-filter]');
+      if (!btn) return;
+      const value = btn.dataset.filter;
+      bar.querySelectorAll('[data-filter]').forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
+      items.forEach((li) => {
+        li.hidden = value !== 'All' && li.dataset.category !== value;
+        if (!li.hidden) li.querySelectorAll('[data-reveal]').forEach((el) => el.classList.add('is-visible'));
+      });
+      const shown = [...items].filter((li) => !li.hidden).length;
+      const status = document.querySelector('[data-filter-status]');
+      if (status) status.textContent = `${shown} project${shown === 1 ? '' : 's'} shown`;
+    });
+  }
+</script>

@@ -1,0 +1,291 @@
+---
+import Base from '@/layouts/Base.astro';
+import PageHero from '@/components/PageHero.astro';
+import FounderCard from '@/components/FounderCard.astro';
+import Picture from '@/components/Picture.astro';
+import PressStrip from '@/sections/PressStrip.astro';
+import FinalCta from '@/sections/FinalCta.astro';
+import { founders, press } from '@/content/site';
+
+const tinesh = founders[1];
+const mensInsider = press.find((p) => p.publication === "Men's Insider")!;
+
+const personLd = founders.map((f) => ({
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: f.name,
+  jobTitle: f.role,
+  worksFor: { '@type': 'Organization', name: 'VM23G', url: 'https://veeramisir.com' },
+  sameAs: f.social.map((s) => s.href),
+}));
+---
+
+<Base
+  title="Founders"
+  description="Summan Misir Veera, Founder and Managing Director, and Tinesh Awai Veera, Co-founder — the founders of VM23G in Singapore."
+  jsonLd={personLd}
+>
+  <PageHero
+    eyebrow="Founders"
+    title="Two founders."
+    accent="One standard."
+    copy="Summan Misir Veera and Tinesh Awai Veera co-founded VM23G together in Singapore."
+  />
+
+  <section class="section founders-page" aria-label="Founder profiles">
+    <div class="wrap founder-grid">
+      {
+        founders.map((f, i) => (
+          <div class:list={['founder-col', `founder-col-${i + 1}`]} data-reveal style={`--reveal-delay:${i * 120}ms`}>
+            <FounderCard founder={f} detailed headingLevel="h2" />
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="section story" aria-labelledby="story-title">
+    <div class="wrap story-grid">
+      <div class="story-media" data-reveal>
+        <Picture
+          src="founders/tinesh-movement"
+          alt="Tinesh Awai Veera, bare-chested on a beach at golden hour, with dreadlocks, tattoos and a trident mark painted on his chest"
+          sizes="(max-width: 860px) 92vw, 44vw"
+          imgClass="story-img"
+        />
+      </div>
+      <div class="story-copy" data-reveal style="--reveal-delay:120ms">
+        <p class="eyebrow">NavaFit Alignment · The story</p>
+        <h2 id="story-title" class="story-title display">
+          Movement as<br /><span class="gilded">discipline.</span>
+        </h2>
+        <p class="story-text">{tinesh.bio}</p>
+        <p class="story-text">
+          Through <strong>{tinesh.venture}</strong>, he teaches {tinesh.ventureFocus.toLowerCase()}:
+        </p>
+        <ul class="story-list">
+          {tinesh.ventureOffers.map((o) => <li>{o}</li>)}
+        </ul>
+        <p class="story-quote">{tinesh.ventureNote}</p>
+        <div class="story-actions">
+          <a class="btn btn-ghost" href="https://navafit.sg" target="_blank" rel="noopener">Visit navafit.sg</a>
+          <a class="btn btn-ghost" href="https://apps.apple.com/sg/app/navafit-alignment/id6761351480" target="_blank" rel="noopener">NavaFit Alignment app</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section feature" aria-labelledby="feature-title">
+    <div class="wrap">
+      <a class="feature-panel glass" href={mensInsider.href} target="_blank" rel="noopener" data-reveal>
+        <div class="feature-media">
+          <Picture
+            src="press/mens-insider-portrait"
+            alt="Portrait of Tinesh Awai Veera with the overlaid artwork 'As seen on Men's Insider'"
+            sizes="(max-width: 760px) 70vw, 320px"
+            imgClass="feature-img"
+          />
+        </div>
+        <div class="feature-copy">
+          <p class="eyebrow">Press · {mensInsider.classification}</p>
+          <h2 id="feature-title" class="feature-title display">{mensInsider.publication}</h2>
+          <p class="feature-headline">{mensInsider.title}</p>
+          <p class="feature-summary">{mensInsider.summary}</p>
+          <span class="feature-link">
+            Read the feature
+            <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 12L12 4M5.5 4H12v6.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
+          </span>
+          <span class="visually-hidden">(opens in a new tab)</span>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <PressStrip />
+  <FinalCta title="Work with" accent="the founders." />
+</Base>
+
+<style>
+  .founders-page {
+    padding-top: var(--space-5);
+  }
+
+  .founder-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(1rem, 3vw, 2.5rem);
+    align-items: start;
+    max-width: 1080px;
+  }
+
+  .founder-col {
+    scroll-margin-top: calc(var(--nav-h) + 2rem);
+  }
+
+  .founder-col-2 {
+    margin-top: var(--space-7);
+  }
+
+  .story-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    gap: clamp(2rem, 6vw, 6rem);
+    align-items: center;
+  }
+
+  .story-media {
+    border-radius: var(--radius-l);
+    overflow: hidden;
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow-deep);
+    aspect-ratio: 4 / 5;
+  }
+
+  .story-media :global(picture),
+  .story-media :global(.story-img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .story-copy {
+    display: grid;
+    gap: var(--space-3);
+  }
+
+  .story-title {
+    font-size: var(--step-4);
+    line-height: 1.05;
+  }
+
+  .story-text {
+    color: var(--text-2);
+    max-width: 52ch;
+  }
+
+  .story-text strong {
+    color: var(--text);
+  }
+
+  .story-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.45rem;
+  }
+
+  .story-list li {
+    position: relative;
+    padding-left: 1.2rem;
+  }
+
+  .story-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.65em;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--gold);
+    box-shadow: 0 0 10px rgb(var(--gold-rgb) / 0.8);
+  }
+
+  .story-quote {
+    padding-left: 1rem;
+    border-left: 2px solid var(--gold);
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+    color: var(--gold-hi);
+  }
+
+  .story-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .feature-panel {
+    display: grid;
+    grid-template-columns: minmax(0, 320px) minmax(0, 1fr);
+    gap: clamp(1.5rem, 4vw, 4rem);
+    align-items: center;
+    padding: clamp(1.25rem, 3vw, 2.5rem);
+    text-decoration: none;
+    transition: border-color var(--dur-2) var(--ease-cine), box-shadow var(--dur-2) var(--ease-cine), transform var(--dur-2) var(--ease-cine);
+  }
+
+  .feature-panel:hover,
+  .feature-panel:focus-visible {
+    border-color: rgb(var(--gold-rgb) / 0.5);
+    box-shadow: var(--shadow-deep), 0 0 60px -20px rgb(var(--gold-rgb) / 0.55);
+    transform: translateY(-3px);
+  }
+
+  .feature-media {
+    border-radius: var(--radius-m);
+    overflow: hidden;
+    aspect-ratio: 1320 / 1988;
+    max-height: 460px;
+    background: #000;
+  }
+
+  .feature-media :global(picture),
+  .feature-media :global(.feature-img) {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .feature-copy {
+    display: grid;
+    gap: var(--space-3);
+  }
+
+  .feature-title {
+    font-size: var(--step-3);
+  }
+
+  .feature-headline {
+    font-size: var(--step-1);
+    font-weight: 650;
+  }
+
+  .feature-summary {
+    color: var(--text-2);
+  }
+
+  .feature-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 650;
+    color: var(--gold-hi);
+  }
+
+  @media (max-width: 860px) {
+    .founder-grid,
+    .story-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .founder-col-2 {
+      margin-top: 0;
+    }
+
+    .story-media {
+      aspect-ratio: 4 / 4.4;
+    }
+  }
+
+  @media (max-width: 760px) {
+    .feature-panel {
+      grid-template-columns: 1fr;
+    }
+
+    .feature-media {
+      max-width: 280px;
+    }
+  }
+</style>

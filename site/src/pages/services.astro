@@ -1,0 +1,373 @@
+---
+import Base from '@/layouts/Base.astro';
+import PageHero from '@/components/PageHero.astro';
+import SectionHead from '@/components/SectionHead.astro';
+import Picture from '@/components/Picture.astro';
+import FinalCta from '@/sections/FinalCta.astro';
+import { pillars } from '@/content/site';
+import { businessArms, clientPathwayContent } from '@/content/pages';
+
+const arms = [businessArms.navaFitAlignment, businessArms.aaVisions];
+---
+
+<Base
+  title="Services"
+  description="Mind, Body, Brand and Technology: VM23G's coaching, brand, media, web, app and AI workflow services in Singapore."
+>
+  <PageHero
+    eyebrow="Services"
+    title="Mind. Body."
+    accent="Brand. Technology."
+    copy="Four disciplines delivered by two specialist arms — NavaFit Alignment and AaVisions — under one VM23G standard."
+  >
+    <nav class="jump" aria-label="Jump to a discipline" data-reveal>
+      {pillars.map((p) => <a href={`#${p.key}`}><span>{p.index}</span> {p.title}</a>)}
+    </nav>
+  </PageHero>
+
+  <section class="section pillars" aria-label="Disciplines">
+    <div class="wrap pillar-list">
+      {
+        pillars.map((p, i) => (
+          <article id={p.key} class:list={['pillar', i % 2 ? 'pillar-right' : 'pillar-left']} aria-labelledby={`${p.key}-title`}>
+            <div class="pillar-media" data-reveal>
+              <Picture src={p.image} alt={p.imageAlt} sizes="(max-width: 860px) 92vw, 50vw" imgClass="pillar-img" />
+            </div>
+            <div class="pillar-body" data-reveal style="--reveal-delay:120ms">
+              <p class="pillar-arm">
+                <span class="pillar-index display">{p.index}</span>
+                {p.arm}
+              </p>
+              <h2 id={`${p.key}-title`} class="pillar-title display gilded">{p.title}</h2>
+              <p class="pillar-summary">{p.summary}</p>
+              <ul class="pillar-offers">
+                {p.offers.map((o) => <li>{o}</li>)}
+              </ul>
+              <a class="btn btn-ghost pillar-cta" href={`/start?focus=${p.key}`}>Start a {p.title.toLowerCase()} project</a>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="section pathway" aria-labelledby="pathway-title">
+    <div class="wrap">
+      <SectionHead id="pathway-title" eyebrow="Pathway" title={clientPathwayContent.heading} copy="Every engagement follows the same four movements." />
+      <ol class="steps">
+        {
+          clientPathwayContent.steps.map((s, i) => (
+            <li class="step glass" data-reveal style={`--reveal-delay:${i * 90}ms`}>
+              <span class="step-num display">{s.number}</span>
+              <h3 class="step-title display">{s.title}</h3>
+              <p>{s.body}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <section class="section arms" aria-labelledby="arms-title">
+    <div class="wrap">
+      <SectionHead id="arms-title" eyebrow="Two arms" title="Specialists," accent="under one roof." copy={businessArms.umbrella.positioning} />
+      <div class="arm-grid">
+        {
+          arms.map((a, i) => (
+            <article class="arm" data-glow data-reveal style={`--reveal-delay:${i * 120}ms`}>
+              <p class="arm-role">{a.role}</p>
+              <h3 class="arm-name display">{a.name}</h3>
+              <p class="arm-lead">{a.leadership}</p>
+              <ul>
+                {a.focus.map((f) => <li>{f}</li>)}
+              </ul>
+              <p class="arm-note">{'differentiator' in a ? a.differentiator : a.brandEnergy}</p>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <FinalCta />
+</Base>
+
+<style>
+  .jump {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .jump a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 44px;
+    padding: 0 1.1rem;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: rgb(var(--glass-rgb) / 0.5);
+    font-family: var(--font-display);
+    text-decoration: none;
+    transition: border-color var(--dur-2) var(--ease-cine), box-shadow var(--dur-2) var(--ease-cine);
+  }
+
+  .jump a span {
+    font-family: var(--font-body);
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--gold);
+  }
+
+  .jump a:hover,
+  .jump a:focus-visible {
+    border-color: rgb(var(--gold-rgb) / 0.6);
+    box-shadow: var(--shadow-glow);
+  }
+
+  .pillars {
+    padding-top: var(--space-6);
+  }
+
+  .pillar-list {
+    display: grid;
+    gap: clamp(4rem, 9vw, 9rem);
+  }
+
+  .pillar {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    gap: clamp(2rem, 5vw, 5rem);
+    align-items: center;
+    scroll-margin-top: calc(var(--nav-h) + 2rem);
+  }
+
+  .pillar-right .pillar-media {
+    order: 2;
+  }
+
+  .pillar-media {
+    border-radius: var(--radius-l);
+    overflow: hidden;
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow-deep);
+    aspect-ratio: 4 / 3;
+  }
+
+  .pillar-media :global(picture),
+  .pillar-media :global(.pillar-img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .pillar-body {
+    display: grid;
+    gap: var(--space-3);
+  }
+
+  .pillar-arm {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  .pillar-index {
+    font-size: 1rem;
+    color: var(--text-3);
+  }
+
+  .pillar-title {
+    font-size: var(--step-5);
+    line-height: 1;
+  }
+
+  .pillar-summary {
+    color: var(--text-2);
+    font-size: var(--step-1);
+    line-height: 1.55;
+    max-width: 40ch;
+  }
+
+  .pillar-offers {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.55rem;
+  }
+
+  .pillar-offers li {
+    position: relative;
+    padding: 0.7rem 0 0.7rem 1.4rem;
+    border-bottom: 1px solid var(--line-soft);
+  }
+
+  .pillar-offers li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 1.25rem;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--gold);
+    box-shadow: 0 0 10px rgb(var(--gold-rgb) / 0.8);
+  }
+
+  .pillar-cta {
+    justify-self: start;
+    margin-top: 0.5rem;
+  }
+
+  .steps {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: clamp(0.9rem, 1.6vw, 1.4rem);
+  }
+
+  .step {
+    display: grid;
+    align-content: start;
+    gap: 0.6rem;
+    padding: clamp(1.3rem, 2.2vw, 1.9rem);
+  }
+
+  .step:nth-child(even) {
+    margin-top: var(--space-5);
+  }
+
+  .step-num {
+    font-size: 2.6rem;
+    line-height: 1;
+    color: transparent;
+    -webkit-text-stroke: 1px rgb(var(--gold-rgb) / 0.6);
+  }
+
+  .step-title {
+    font-size: var(--step-2);
+  }
+
+  .step p {
+    color: var(--text-2);
+    font-size: 0.95rem;
+  }
+
+  .arm-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(1rem, 2vw, 1.75rem);
+  }
+
+  .arm {
+    --mx: 50%;
+    --my: 0%;
+    display: grid;
+    align-content: start;
+    gap: 0.7rem;
+    padding: clamp(1.5rem, 3vw, 2.6rem);
+    border-radius: var(--radius-l);
+    border: 1px solid var(--line);
+    background:
+      radial-gradient(420px circle at var(--mx) var(--my), rgb(var(--gold-rgb) / 0.1), transparent 60%),
+      rgb(var(--glass-rgb) / 0.65);
+    box-shadow: var(--shadow-deep);
+    transition: border-color var(--dur-2) var(--ease-cine), box-shadow var(--dur-2) var(--ease-cine);
+  }
+
+  .arm:hover {
+    border-color: rgb(var(--gold-rgb) / 0.45);
+    box-shadow: var(--shadow-deep), 0 0 50px -18px rgb(var(--gold-rgb) / 0.5);
+  }
+
+  .arm-role {
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  .arm-name {
+    font-size: var(--step-3);
+  }
+
+  .arm-lead {
+    color: var(--text-2);
+  }
+
+  .arm ul {
+    list-style: none;
+    margin: 0.4rem 0;
+    padding: 0;
+    display: grid;
+    gap: 0.4rem;
+  }
+
+  .arm li {
+    position: relative;
+    padding-left: 1.1rem;
+    font-size: 0.95rem;
+  }
+
+  .arm li::before {
+    content: '·';
+    position: absolute;
+    left: 0.2rem;
+    color: var(--gold);
+  }
+
+  .arm-note {
+    padding-top: 0.9rem;
+    border-top: 1px solid var(--line-soft);
+    font-style: italic;
+    color: var(--text-2);
+  }
+
+  @media (max-width: 960px) {
+    .steps {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 860px) {
+    .pillar {
+      grid-template-columns: 1fr;
+    }
+
+    .pillar-right .pillar-media {
+      order: 0;
+    }
+
+    .arm-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .steps {
+      grid-template-columns: 1fr;
+    }
+
+    .step:nth-child(even) {
+      margin-top: 0;
+    }
+
+    .pillar-title {
+      font-size: clamp(2.6rem, 13vw, 3.4rem);
+    }
+  }
+</style>
+
+<script>
+  import '@/systems/glow';
+</script>

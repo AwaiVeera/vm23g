@@ -1,0 +1,49 @@
+---
+import SectionHead from '@/components/SectionHead.astro';
+
+interface Props {
+  eyebrow: string;
+  title: string;
+  accent?: string;
+  copy?: string;
+}
+const { eyebrow, title, accent, copy } = Astro.props;
+---
+
+<section class="page-hero" aria-labelledby="page-title">
+  <div class="page-hero-glow" aria-hidden="true"></div>
+  <div class="wrap">
+    <SectionHead id="page-title" level="h1" eyebrow={eyebrow} title={title} accent={accent} copy={copy}>
+      <slot />
+    </SectionHead>
+  </div>
+</section>
+
+<style>
+  .page-hero {
+    position: relative;
+    isolation: isolate;
+    padding-top: calc(var(--nav-h) + clamp(3rem, 8vw, 7rem));
+    padding-bottom: var(--space-4);
+    overflow: hidden;
+  }
+
+  .page-hero-glow {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      radial-gradient(45% 70% at 85% 10%, rgb(var(--gold-rgb) / 0.1), transparent 70%),
+      radial-gradient(60% 80% at 10% 0%, rgb(var(--olive-rgb) / 0.22), transparent 70%);
+  }
+
+  .page-hero :global(.head-title) {
+    font-size: var(--step-5);
+  }
+
+  @media (max-width: 720px) {
+    .page-hero :global(.head-title) {
+      font-size: clamp(2.3rem, 10vw, 3rem);
+    }
+  }
+</style>

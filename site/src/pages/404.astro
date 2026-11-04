@@ -1,0 +1,105 @@
+---
+import Base from '@/layouts/Base.astro';
+import Picture from '@/components/Picture.astro';
+import { nav, startHref } from '@/content/site';
+
+Astro.response.status = 404;
+---
+
+<Base title="Page not found" description="This page could not be found on the VM23G website.">
+  <section class="nf" aria-labelledby="nf-title">
+    <div class="nf-glow" aria-hidden="true"></div>
+    <div class="wrap nf-inner">
+      <Picture src="brand/vm23g-logo" alt="" sizes="320px" loading="eager" imgClass="nf-logo" />
+      <p class="eyebrow">Error 404</p>
+      <h1 id="nf-title" class="nf-title display">
+        This path<br /><span class="gilded">leads nowhere.</span>
+      </h1>
+      <p class="nf-copy">The page you were looking for has moved or never existed. Choose a direction below.</p>
+      <div class="nf-actions">
+        <a class="btn btn-gold" href="/">Return home</a>
+        <a class="btn btn-ghost" href={startHref}>Start a Project</a>
+      </div>
+      <ul class="nf-links">
+        {nav.map((n) => <li><a href={n.href}>{n.label}</a></li>)}
+      </ul>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .nf {
+    position: relative;
+    isolation: isolate;
+    min-height: 100svh;
+    display: grid;
+    place-items: center;
+    padding: calc(var(--nav-h) + 3rem) 0 var(--space-7);
+    text-align: center;
+    overflow: hidden;
+  }
+
+  .nf-glow {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      radial-gradient(35% 40% at 50% 35%, rgb(var(--gold-rgb) / 0.14), transparent 70%),
+      radial-gradient(70% 70% at 50% 40%, rgb(var(--olive-rgb) / 0.22), transparent 75%);
+  }
+
+  .nf-inner {
+    display: grid;
+    justify-items: center;
+    gap: var(--space-4);
+  }
+
+  .nf-inner :global(.nf-logo) {
+    width: min(60vw, 260px);
+    filter: drop-shadow(0 0 28px rgb(var(--gold-rgb) / 0.35));
+  }
+
+  .nf-inner .eyebrow::before {
+    display: none;
+  }
+
+  .nf-title {
+    font-size: var(--step-4);
+    line-height: 1.05;
+  }
+
+  .nf-copy {
+    max-width: 44ch;
+    color: var(--text-2);
+  }
+
+  .nf-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem;
+  }
+
+  .nf-links {
+    list-style: none;
+    margin: var(--space-3) 0 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.4rem 1.4rem;
+  }
+
+  .nf-links a {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    color: var(--text-2);
+    text-decoration: none;
+  }
+
+  .nf-links a:hover,
+  .nf-links a:focus-visible {
+    color: var(--gold-hi);
+  }
+</style>

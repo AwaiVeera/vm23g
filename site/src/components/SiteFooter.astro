@@ -43,7 +43,7 @@ const year = new Date().getFullYear();
     <div class="footer-col">
       <p class="footer-head">NavaFit Alignment</p>
       <ul>
-        {channels.map((c) => <li><a href={c.href} rel="noopener" target="_blank">{c.label.replace('NavaFit Alignment on ', '')}</a></li>)}
+        {channels.map((c) => <li><a href={c.href} rel="noopener" target="_blank">{c.label.replace(/^NavaFit Alignment on (the )?/, '')}</a></li>)}
       </ul>
       <p class="footer-head footer-head-gap">Enquiries</p>
       <ul>
