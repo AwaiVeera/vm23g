@@ -8,6 +8,7 @@ import SiteFooter from '@/components/SiteFooter.astro';
 import Concierge from '@/components/Concierge.astro';
 import MotionToggle from '@/components/MotionToggle.astro';
 import { brand } from '@/content/site';
+import { getContent } from '@/lib/content';
 
 interface Props {
   title?: string;
@@ -26,6 +27,8 @@ const {
   jsonLd = [],
   bare = false,
 } = Astro.props;
+
+const { announcement } = bare ? { announcement: null } : await getContent();
 
 const fullTitle = title ? `${title} — VM23G` : `VM23G — Mind. Body. Brand. Technology. | Singapore`;
 const canonical = new URL(path, brand.domain).toString();
@@ -83,7 +86,7 @@ const orgLd = {
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
-    {!bare && <SiteNav />}
+    {!bare && <SiteNav announcement={announcement?.enabled && announcement.text ? announcement : null} />}
     <main id="main" tabindex="-1">
       <slot />
     </main>

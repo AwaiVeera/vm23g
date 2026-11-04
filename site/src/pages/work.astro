@@ -3,7 +3,9 @@ import Base from '@/layouts/Base.astro';
 import PageHero from '@/components/PageHero.astro';
 import Picture from '@/components/Picture.astro';
 import FinalCta from '@/sections/FinalCta.astro';
-import { projects } from '@/content/site';
+import { getContent } from '@/lib/content';
+
+const { projects } = await getContent();
 
 const categories = ['All', ...new Set(projects.map((p) => p.category))];
 ---

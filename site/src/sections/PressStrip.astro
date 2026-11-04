@@ -1,11 +1,11 @@
 ---
 import SectionHead from '@/components/SectionHead.astro';
-import { press } from '@/content/site';
+import type { PressItem } from '@/lib/content';
 
 interface Props {
-  items?: readonly (typeof press)[number][];
+  items: readonly PressItem[];
 }
-const { items = press } = Astro.props;
+const { items } = Astro.props;
 const fmt = (d: string) =>
   new Intl.DateTimeFormat('en-SG', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }).format(new Date(d));
 ---

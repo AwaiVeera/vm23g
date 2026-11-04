@@ -1,0 +1,47 @@
+---
+import Admin from '@/layouts/Admin.astro';
+import EnquiryRow from '@/components/admin/EnquiryRow.astro';
+import { listEnquiries, STATUSES } from '@/lib/admin-data';
+
+export const prerender = false;
+
+const status = Astro.url.searchParams.get('status');
+const { items, counts } = await listEnquiries(status);
+const active = STATUSES.some((s) => s.key === status) ? status : null;
+const openCount = Object.entries(counts)
+  .filter(([k]) => k !== 'archived')
+  .reduce((a, [, n]) => a + n, 0);
+---
+
+<Admin title="Enquiries" active="enquiries">
+  <header class="adm-head">
+    <div>
+      <p class="eyebrow">Enquiries</p>
+      <h1>Every brief, ranked.</h1>
+      <p>AI summarises each enquiry and scores how ready it is. Open one to reply.</p>
+    </div>
+  </header>
+  <nav class="tabs" aria-label="Filter by status">
+    <a href="/admin/enquiries" aria-current={!active ? 'page' : undefined}>Open <span>{openCount}</span></a>
+    {
+      STATUSES.map((s) => (
+        <a href={`/admin/enquiries?status=${s.key}`} aria-current={active === s.key ? 'page' : undefined}>
+          {s.label} <span>{counts[s.key] ?? 0}</span>
+        </a>
+      ))
+    }
+  </nav>
+  <section class="adm-card">
+    {
+      items.length ? (
+        <ul class="enq-list">
+          {items.map((item) => (
+            <EnquiryRow item={item} />
+          ))}
+        </ul>
+      ) : (
+        <p class="adm-empty">Nothing here yet.</p>
+      )
+    }
+  </section>
+</Admin>

@@ -7,14 +7,17 @@ import FoundersPreview from '@/sections/FoundersPreview.astro';
 import ConciergeTeaser from '@/sections/ConciergeTeaser.astro';
 import PressStrip from '@/sections/PressStrip.astro';
 import FinalCta from '@/sections/FinalCta.astro';
+import { getContent } from '@/lib/content';
+
+const content = await getContent();
 ---
 
 <Base>
-  <Hero />
+  <Hero lede={content.hero.lede} />
   <Chapters />
-  <WorkShowcase />
+  <WorkShowcase projects={content.projects} />
   <FoundersPreview />
   <ConciergeTeaser />
-  <PressStrip />
-  <FinalCta />
+  <PressStrip items={content.press} />
+  <FinalCta title={content.cta.title} accent={content.cta.accent} copy={content.cta.copy} />
 </Base>

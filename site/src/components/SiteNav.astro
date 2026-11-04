@@ -2,12 +2,29 @@
 import Picture from '@/components/Picture.astro';
 import { nav, startHref, projects } from '@/content/site';
 
+interface Props {
+  announcement?: { text: string; href: string } | null;
+}
+const { announcement } = Astro.props;
 const path = Astro.url.pathname.replace(/\/$/, '') || '/';
 const isActive = (href: string) => path === href || path.startsWith(`${href}/`);
 const previews = projects.slice(0, 3);
 ---
 
 <header class="nav" data-nav>
+  {
+    announcement && (
+      <p class="announce">
+        {announcement.href ? (
+          <a href={announcement.href}>
+            {announcement.text} <span aria-hidden="true">→</span>
+          </a>
+        ) : (
+          <span>{announcement.text}</span>
+        )}
+      </p>
+    )
+  }
   <div class="dock" data-dock>
     <a class="dock-logo" href="/" aria-label="VM23G — Home">
       <Picture src="brand/vm23g-logo" alt="" sizes="96px" loading="eager" imgClass="dock-logo-img" />
@@ -112,6 +129,39 @@ const previews = projects.slice(0, 3);
     inset: 0 0 auto 0;
     z-index: 50;
     padding: max(0.75rem, env(safe-area-inset-top)) var(--gutter) 0;
+    pointer-events: none;
+  }
+
+  .announce {
+    pointer-events: auto;
+    width: fit-content;
+    max-width: 100%;
+    margin: 0 auto 0.5rem;
+    padding: 0.3rem 1rem;
+    border-radius: 999px;
+    border: 1px solid rgb(var(--gold-rgb) / 0.35);
+    background: rgb(var(--gold-rgb) / 0.12);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-align: center;
+    color: var(--gold-hi);
+    transition: opacity var(--dur-2) var(--ease-cine), margin var(--dur-2) var(--ease-cine);
+  }
+
+  .announce a {
+    text-decoration: none;
+  }
+
+  .announce a:hover,
+  .announce a:focus-visible {
+    text-shadow: 0 0 14px rgb(var(--gold-rgb) / 0.6);
+  }
+
+  .nav.is-scrolled .announce {
+    opacity: 0;
+    margin-top: -2.2rem;
     pointer-events: none;
   }
 

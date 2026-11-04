@@ -5,7 +5,10 @@ import FounderCard from '@/components/FounderCard.astro';
 import Picture from '@/components/Picture.astro';
 import PressStrip from '@/sections/PressStrip.astro';
 import FinalCta from '@/sections/FinalCta.astro';
-import { founders, press } from '@/content/site';
+import { founders } from '@/content/site';
+import { getContent } from '@/lib/content';
+
+const { press } = await getContent();
 
 const tinesh = founders[1];
 const mensInsider = press.find((p) => p.publication === "Men's Insider")!;
@@ -101,7 +104,7 @@ const personLd = founders.map((f) => ({
     </div>
   </section>
 
-  <PressStrip />
+  <PressStrip items={press} />
   <FinalCta title="Work with" accent="the founders." />
 </Base>
 

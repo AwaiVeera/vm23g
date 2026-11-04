@@ -1,0 +1,31 @@
+---
+import { ago, parsePillars, STATUSES, type ListItem } from '@/lib/admin-data';
+
+interface Props {
+  item: ListItem;
+}
+const { item } = Astro.props;
+const label = STATUSES.find((s) => s.key === item.status)?.label ?? item.status;
+const score = item.ai_score ?? 0;
+---
+
+<li>
+  <a class="enq-row" href={`/admin/enquiries/${item.id}`} data-enq-id={item.id}>
+    <span class:list={['score', { 'score-hot': score >= 70 }]} style={`--s:${score}`} aria-label={`Lead score ${score} out of 100`}>
+      <span>{item.ai_score ?? '—'}</span>
+    </span>
+    <span class="enq-main">
+      <span class="enq-top">
+        <span class="enq-name">{item.name}</span>
+        {item.company && <span class="pill">{item.company}</span>}
+        {parsePillars(item.pillars).map((p) => <span class="pill">{p}</span>)}
+        {item.voice_key && <span class="pill" title="Includes a voice note">🎙 Voice</span>}
+      </span>
+      <span class="enq-summary">{item.ai_summary ?? 'Summarising…'}</span>
+    </span>
+    <span class="enq-meta">
+      <span class={`pill pill-${item.status}`}>{label}</span>
+      <span>{item.source === 'concierge' ? 'via V' : 'Start a Project'} · {ago(item.created_at)}</span>
+    </span>
+  </a>
+</li>

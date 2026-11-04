@@ -1,9 +1,13 @@
 ---
 import Picture from '@/components/Picture.astro';
 import SectionHead from '@/components/SectionHead.astro';
-import { projects } from '@/content/site';
+import type { Project } from '@/lib/content';
 
-const featured = projects.slice(0, 4);
+interface Props {
+  projects: Project[];
+}
+
+const featured = Astro.props.projects.slice(0, 4);
 ---
 
 <section class="section work" aria-labelledby="work-title">

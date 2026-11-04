@@ -1,0 +1,606 @@
+---
+import Admin from '@/layouts/Admin.astro';
+import manifest from '@/content/media-manifest.json';
+import { getContent, invalidateContent } from '@/lib/content';
+import { db } from '@/lib/runtime';
+import { fmtDate } from '@/lib/admin-data';
+
+export const prerender = false;
+
+invalidateContent();
+const content = await getContent();
+const { results: meta } = await db()
+  .prepare('SELECT key, updated_at, updated_by FROM content_blocks')
+  .all<{ key: string; updated_at: number; updated_by: string }>();
+const stamp = (k: string) => {
+  const m = meta.find((r) => r.key === k);
+  return m ? `Published ${fmtDate(m.updated_at)} by ${m.updated_by}` : 'Showing the original copy';
+};
+const images = Object.keys(manifest)
+  .filter((k) => k.startsWith('work/'))
+  .map((k) => k.replace('work/', ''));
+const categories = ['Apps', 'Websites', 'Collaborations', 'AaVisions', 'NavaFit Alignment'];
+---
+
+<Admin title="Publish" active="publish">
+  <header class="adm-head">
+    <div>
+      <p class="eyebrow">Publish</p>
+      <h1>Change the site. Instantly.</h1>
+      <p>Edit a section and press Publish — the live site updates within seconds. Every version is kept.</p>
+    </div>
+    <a class="adm-btn" href="/" target="_blank" rel="noopener">Preview site ↗</a>
+  </header>
+
+  <nav class="jump" aria-label="Sections">
+    <a href="#announcement">Announcement</a>
+    <a href="#hero">Hero line</a>
+    <a href="#cta">Closing call to action</a>
+    <a href="#projects">Work</a>
+    <a href="#press">Press</a>
+    <a href="#knowledge">Teach V</a>
+  </nav>
+
+  <div class="pub">
+    <form class="adm-card pub-section" id="announcement" data-section="announcement">
+      <div class="sec-head">
+        <div>
+          <h2>Announcement bar</h2>
+          <p class="stamp">{stamp('announcement')}</p>
+        </div>
+        <label class="switch">
+          <input type="checkbox" name="enabled" checked={content.announcement.enabled} />
+          <span aria-hidden="true"></span>
+          Show on site
+        </label>
+      </div>
+      <div class="row2">
+        <label class="adm-field"><span>Message</span><input name="text" maxlength="140" value={content.announcement.text} placeholder="e.g. Now booking projects for January" /></label>
+        <label class="adm-field"><span>Link (optional)</span><input name="href" maxlength="500" value={content.announcement.href} placeholder="/start" /></label>
+      </div>
+      <div class="sec-actions">
+        <button type="button" class="adm-btn" data-reset>Reset to original</button>
+        <button type="submit" class="adm-btn adm-btn-gold">Publish</button>
+      </div>
+    </form>
+
+    <form class="adm-card pub-section" id="hero" data-section="hero">
+      <div class="sec-head">
+        <div>
+          <h2>Hero line</h2>
+          <p class="stamp">{stamp('hero')}</p>
+        </div>
+      </div>
+      <label class="adm-field">
+        <span>The sentence under “Mind. Body. Brand. Technology.”</span>
+        <textarea name="lede" rows="3" maxlength="280" data-preview-src="hero">{content.hero.lede}</textarea>
+      </label>
+      <div class="preview" aria-hidden="true">
+        <p class="preview-eyebrow">VM23G · Singapore</p>
+        <p class="preview-title display">Mind. Body. Brand. Technology.</p>
+        <p class="preview-lede" data-preview="hero">{content.hero.lede}</p>
+      </div>
+      <div class="sec-actions">
+        <button type="button" class="adm-btn" data-reset>Reset to original</button>
+        <button type="submit" class="adm-btn adm-btn-gold">Publish</button>
+      </div>
+    </form>
+
+    <form class="adm-card pub-section" id="cta" data-section="cta">
+      <div class="sec-head">
+        <div>
+          <h2>Closing call to action</h2>
+          <p class="stamp">{stamp('cta')}</p>
+        </div>
+      </div>
+      <div class="row2">
+        <label class="adm-field"><span>Headline</span><input name="title" maxlength="80" value={content.cta.title} /></label>
+        <label class="adm-field"><span>Gold line</span><input name="accent" maxlength="80" value={content.cta.accent} /></label>
+      </div>
+      <label class="adm-field"><span>Supporting text</span><textarea name="copy" rows="3" maxlength="320">{content.cta.copy}</textarea></label>
+      <div class="sec-actions">
+        <button type="button" class="adm-btn" data-reset>Reset to original</button>
+        <button type="submit" class="adm-btn adm-btn-gold">Publish</button>
+      </div>
+    </form>
+
+    <form class="adm-card pub-section" id="projects" data-section="projects" data-list="root">
+      <div class="sec-head">
+        <div>
+          <h2>Work</h2>
+          <p class="stamp">{stamp('projects')} · The first four appear on the home page.</p>
+        </div>
+      </div>
+      <ol class="rep" data-rep>
+        {
+          content.projects.map((p) => (
+            <li class="rep-item">
+              <div class="rep-bar">
+                <strong data-rep-title>{p.title}</strong>
+                <span class="rep-tools">
+                  <button type="button" class="adm-btn" data-up aria-label="Move up">↑</button>
+                  <button type="button" class="adm-btn" data-down aria-label="Move down">↓</button>
+                  <button type="button" class="adm-btn" data-remove>Remove</button>
+                </span>
+              </div>
+              <div class="row3">
+                <label class="adm-field"><span>Title</span><input name="title" value={p.title} maxlength="80" required data-title-src /></label>
+                <label class="adm-field"><span>Type</span><input name="kind" value={p.kind} maxlength="80" /></label>
+                <label class="adm-field"><span>Year</span><input name="year" value={p.year} maxlength="8" /></label>
+              </div>
+              <div class="row3">
+                <label class="adm-field">
+                  <span>Category</span>
+                  <select name="category">
+                    {categories.map((c) => <option selected={p.category === c}>{c}</option>)}
+                  </select>
+                </label>
+                <label class="adm-field">
+                  <span>Image</span>
+                  <select name="image">
+                    {images.map((img) => <option value={img} selected={p.image === img}>{img.replace(/^(gallery|collective)-/, '')}</option>)}
+                  </select>
+                </label>
+                <label class="adm-field"><span>Link label</span><input name="linkLabel" value={p.linkLabel} maxlength="40" /></label>
+              </div>
+              <label class="adm-field"><span>Summary</span><textarea name="summary" rows="2" maxlength="400">{p.summary}</textarea></label>
+              <label class="adm-field"><span>Link (optional)</span><input name="href" value={p.href} maxlength="500" /></label>
+              <input type="hidden" name="slug" value={p.slug} />
+            </li>
+          ))
+        }
+      </ol>
+      <template data-rep-template>
+        <li class="rep-item">
+          <div class="rep-bar">
+            <strong data-rep-title>New project</strong>
+            <span class="rep-tools">
+              <button type="button" class="adm-btn" data-up aria-label="Move up">↑</button>
+              <button type="button" class="adm-btn" data-down aria-label="Move down">↓</button>
+              <button type="button" class="adm-btn" data-remove>Remove</button>
+            </span>
+          </div>
+          <div class="row3">
+            <label class="adm-field"><span>Title</span><input name="title" maxlength="80" required data-title-src /></label>
+            <label class="adm-field"><span>Type</span><input name="kind" maxlength="80" /></label>
+            <label class="adm-field"><span>Year</span><input name="year" maxlength="8" /></label>
+          </div>
+          <div class="row3">
+            <label class="adm-field"><span>Category</span><select name="category">{categories.map((c) => <option>{c}</option>)}</select></label>
+            <label class="adm-field"><span>Image</span><select name="image">{images.map((img) => <option value={img}>{img.replace(/^(gallery|collective)-/, '')}</option>)}</select></label>
+            <label class="adm-field"><span>Link label</span><input name="linkLabel" maxlength="40" /></label>
+          </div>
+          <label class="adm-field"><span>Summary</span><textarea name="summary" rows="2" maxlength="400"></textarea></label>
+          <label class="adm-field"><span>Link (optional)</span><input name="href" maxlength="500" /></label>
+          <input type="hidden" name="slug" value="" />
+        </li>
+      </template>
+      <div class="sec-actions">
+        <button type="button" class="adm-btn" data-add>+ Add project</button>
+        <span class="spacer"></span>
+        <button type="button" class="adm-btn" data-reset>Reset to original</button>
+        <button type="submit" class="adm-btn adm-btn-gold">Publish</button>
+      </div>
+    </form>
+
+    <form class="adm-card pub-section" id="press" data-section="press" data-list="root">
+      <div class="sec-head">
+        <div>
+          <h2>Press</h2>
+          <p class="stamp">{stamp('press')} · Label each item honestly (press release, contributor feature, editorial).</p>
+        </div>
+      </div>
+      <ol class="rep" data-rep>
+        {
+          content.press.map((p) => (
+            <li class="rep-item">
+              <div class="rep-bar">
+                <strong data-rep-title>{p.publication}</strong>
+                <span class="rep-tools">
+                  <button type="button" class="adm-btn" data-up aria-label="Move up">↑</button>
+                  <button type="button" class="adm-btn" data-down aria-label="Move down">↓</button>
+                  <button type="button" class="adm-btn" data-remove>Remove</button>
+                </span>
+              </div>
+              <div class="row3">
+                <label class="adm-field"><span>Publication</span><input name="publication" value={p.publication} maxlength="80" required data-title-src /></label>
+                <label class="adm-field"><span>Date</span><input name="date" type="date" value={p.date} /></label>
+                <label class="adm-field"><span>Type</span><input name="classification" value={p.classification} maxlength="80" /></label>
+              </div>
+              <label class="adm-field"><span>Headline</span><input name="title" value={p.title} maxlength="200" required /></label>
+              <label class="adm-field"><span>Summary</span><textarea name="summary" rows="2" maxlength="400">{p.summary}</textarea></label>
+              <label class="adm-field"><span>Link to original</span><input name="href" value={p.href} maxlength="500" required /></label>
+            </li>
+          ))
+        }
+      </ol>
+      <template data-rep-template>
+        <li class="rep-item">
+          <div class="rep-bar">
+            <strong data-rep-title>New press item</strong>
+            <span class="rep-tools">
+              <button type="button" class="adm-btn" data-up aria-label="Move up">↑</button>
+              <button type="button" class="adm-btn" data-down aria-label="Move down">↓</button>
+              <button type="button" class="adm-btn" data-remove>Remove</button>
+            </span>
+          </div>
+          <div class="row3">
+            <label class="adm-field"><span>Publication</span><input name="publication" maxlength="80" required data-title-src /></label>
+            <label class="adm-field"><span>Date</span><input name="date" type="date" /></label>
+            <label class="adm-field"><span>Type</span><input name="classification" maxlength="80" placeholder="Press release" /></label>
+          </div>
+          <label class="adm-field"><span>Headline</span><input name="title" maxlength="200" required /></label>
+          <label class="adm-field"><span>Summary</span><textarea name="summary" rows="2" maxlength="400"></textarea></label>
+          <label class="adm-field"><span>Link to original</span><input name="href" maxlength="500" required /></label>
+        </li>
+      </template>
+      <div class="sec-actions">
+        <button type="button" class="adm-btn" data-add>+ Add press item</button>
+        <span class="spacer"></span>
+        <button type="button" class="adm-btn" data-reset>Reset to original</button>
+        <button type="submit" class="adm-btn adm-btn-gold">Publish</button>
+      </div>
+    </form>
+
+    <form class="adm-card pub-section" id="knowledge" data-section="knowledge" data-list="faqs">
+      <div class="sec-head">
+        <div>
+          <h2>Teach V</h2>
+          <p class="stamp">{stamp('knowledge')} · V answers only from verified facts. Add answers to questions visitors ask.</p>
+        </div>
+      </div>
+      <ol class="rep" data-rep>
+        {
+          content.knowledge.faqs.map((f) => (
+            <li class="rep-item">
+              <div class="rep-bar">
+                <strong data-rep-title>{f.q}</strong>
+                <span class="rep-tools">
+                  <button type="button" class="adm-btn" data-remove>Remove</button>
+                </span>
+              </div>
+              <label class="adm-field"><span>When someone asks…</span><input name="q" value={f.q} maxlength="200" required data-title-src /></label>
+              <label class="adm-field"><span>V answers…</span><textarea name="a" rows="3" maxlength="800">{f.a}</textarea></label>
+            </li>
+          ))
+        }
+      </ol>
+      <template data-rep-template>
+        <li class="rep-item">
+          <div class="rep-bar">
+            <strong data-rep-title>New answer</strong>
+            <span class="rep-tools"><button type="button" class="adm-btn" data-remove>Remove</button></span>
+          </div>
+          <label class="adm-field"><span>When someone asks…</span><input name="q" maxlength="200" required data-title-src /></label>
+          <label class="adm-field"><span>V answers…</span><textarea name="a" rows="3" maxlength="800"></textarea></label>
+        </li>
+      </template>
+      <label class="adm-field">
+        <span>Extra facts V may use (one per line)</span>
+        <textarea name="notes" rows="4" maxlength="4000" placeholder="e.g. Discovery calls are free and take 30 minutes.">{content.knowledge.notes}</textarea>
+      </label>
+      <div class="sec-actions">
+        <button type="button" class="adm-btn" data-add>+ Add answer</button>
+        <span class="spacer"></span>
+        <button type="button" class="adm-btn" data-reset>Reset</button>
+        <button type="submit" class="adm-btn adm-btn-gold">Publish</button>
+      </div>
+    </form>
+  </div>
+</Admin>
+
+<style>
+  .jump {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    display: flex;
+    gap: 0.4rem;
+    margin: -0.5rem 0 1rem;
+    padding: 0.6rem 0;
+    overflow-x: auto;
+    background: linear-gradient(180deg, var(--canvas) 70%, transparent);
+    scrollbar-width: none;
+  }
+
+  .jump a {
+    flex: none;
+    min-height: 36px;
+    display: inline-flex;
+    align-items: center;
+    padding: 0 0.85rem;
+    border-radius: 999px;
+    border: 1px solid var(--line-soft);
+    color: var(--text-2);
+    font-size: 0.84rem;
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .jump a:hover,
+  .jump a:focus-visible {
+    color: var(--text);
+    border-color: rgb(var(--gold-rgb) / 0.5);
+  }
+
+  .pub {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .pub-section {
+    display: grid;
+    gap: 1rem;
+    scroll-margin-top: 4rem;
+  }
+
+  .pub-section.is-dirty {
+    border-color: rgb(var(--gold-rgb) / 0.45);
+  }
+
+  .sec-head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .sec-head h2 {
+    margin-bottom: 0.2rem;
+  }
+
+  .stamp {
+    font-size: 0.8rem;
+    color: var(--text-3);
+  }
+
+  .row2 {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+
+  .row3 {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+
+  .sec-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: flex-end;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--line-soft);
+  }
+
+  .spacer {
+    flex: 1;
+  }
+
+  .switch {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--text-2);
+    cursor: pointer;
+  }
+
+  .switch input {
+    position: absolute;
+    opacity: 0;
+  }
+
+  .switch span {
+    position: relative;
+    width: 44px;
+    height: 26px;
+    border-radius: 999px;
+    background: rgb(242 237 223 / 0.12);
+    border: 1px solid var(--line);
+    transition: background var(--dur-2) var(--ease-cine);
+  }
+
+  .switch span::after {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--text-2);
+    transition: transform var(--dur-2) var(--ease-cine), background var(--dur-2) var(--ease-cine);
+  }
+
+  .switch input:checked + span {
+    background: rgb(var(--gold-rgb) / 0.35);
+  }
+
+  .switch input:checked + span::after {
+    transform: translateX(18px);
+    background: var(--gold-hi);
+  }
+
+  .switch input:focus-visible + span {
+    outline: 2px solid var(--gold-hi);
+    outline-offset: 2px;
+  }
+
+  .preview {
+    display: grid;
+    gap: 0.4rem;
+    padding: 1.25rem;
+    border-radius: 16px;
+    border: 1px solid var(--line-soft);
+    background: radial-gradient(80% 120% at 80% 50%, rgb(var(--olive-rgb) / 0.3), transparent 70%), var(--canvas);
+  }
+
+  .preview-eyebrow {
+    font-size: 0.7rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  .preview-title {
+    font-size: 1.4rem;
+    color: var(--gold-hi);
+  }
+
+  .preview-lede {
+    color: var(--text-2);
+    max-width: 44ch;
+  }
+
+  .rep {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .rep-item {
+    display: grid;
+    gap: 0.75rem;
+    padding: 1rem;
+    border-radius: 14px;
+    border: 1px solid var(--line-soft);
+    background: rgb(5 8 6 / 0.35);
+    animation: rep-in 400ms var(--ease-cine) both;
+  }
+
+  @keyframes rep-in {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+  }
+
+  .rep-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .rep-tools {
+    display: flex;
+    gap: 0.35rem;
+  }
+
+  .rep-tools .adm-btn {
+    min-height: 34px;
+    padding: 0 0.7rem;
+    font-size: 0.8rem;
+  }
+
+  @media (max-width: 760px) {
+    .row2,
+    .row3 {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script>
+  import { toast } from '@/systems/admin';
+
+  const serialize = (form: HTMLFormElement) => {
+    const listMode = form.dataset.list;
+    const readFields = (scope: Element, skipItems: boolean) => {
+      const out: Record<string, unknown> = {};
+      scope.querySelectorAll<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>('input[name], textarea[name], select[name]').forEach((el) => {
+        if (skipItems && el.closest('.rep-item')) return;
+        if (el.closest('template')) return;
+        out[el.name] = el instanceof HTMLInputElement && el.type === 'checkbox' ? el.checked : el.value;
+      });
+      return out;
+    };
+    if (!listMode) return readFields(form, false);
+    const items = [...form.querySelectorAll('[data-rep] > .rep-item')].map((li) => readFields(li, false));
+    if (listMode === 'root') return items;
+    return { ...readFields(form, true), [listMode]: items };
+  };
+
+  document.querySelectorAll<HTMLFormElement>('[data-section]').forEach((form) => {
+    const key = form.dataset.section!;
+    const rep = form.querySelector<HTMLOListElement>('[data-rep]');
+    const tpl = form.querySelector<HTMLTemplateElement>('[data-rep-template]');
+
+    form.addEventListener('input', (e) => {
+      form.classList.add('is-dirty');
+      const t = e.target as HTMLElement;
+      if (t.matches('[data-title-src]')) {
+        const title = t.closest('.rep-item')?.querySelector('[data-rep-title]');
+        if (title) title.textContent = (t as HTMLInputElement).value || 'Untitled';
+      }
+      if (t.matches('[data-preview-src]')) {
+        const target = document.querySelector(`[data-preview="${(t as HTMLElement).dataset.previewSrc}"]`);
+        if (target) target.textContent = (t as HTMLTextAreaElement).value;
+      }
+    });
+
+    form.addEventListener('click', (e) => {
+      const btn = (e.target as Element).closest('button');
+      if (!btn) return;
+      const item = btn.closest<HTMLElement>('.rep-item');
+      if (btn.matches('[data-remove]') && item) {
+        item.remove();
+        form.classList.add('is-dirty');
+      } else if (btn.matches('[data-up]') && item?.previousElementSibling) {
+        item.parentElement!.insertBefore(item, item.previousElementSibling);
+        form.classList.add('is-dirty');
+      } else if (btn.matches('[data-down]') && item?.nextElementSibling) {
+        item.parentElement!.insertBefore(item.nextElementSibling, item);
+        form.classList.add('is-dirty');
+      } else if (btn.matches('[data-add]') && rep && tpl) {
+        const node = tpl.content.firstElementChild!.cloneNode(true) as HTMLElement;
+        rep.append(node);
+        node.querySelector<HTMLInputElement>('input')?.focus();
+        form.classList.add('is-dirty');
+      } else if (btn.matches('[data-reset]')) {
+        if (!confirm('Reset this section to the original copy? Your published version stays in history.')) return;
+        fetch(`/api/admin/content/${key}`, { method: 'DELETE' }).then((r) => {
+          if (r.ok) {
+            toast('Section reset — reloading');
+            setTimeout(() => location.reload(), 700);
+          } else toast('Could not reset');
+        });
+      }
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const submit = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
+      submit.disabled = true;
+      submit.textContent = 'Publishing…';
+      try {
+        const res = await fetch(`/api/admin/content/${key}`, {
+          method: 'PUT',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify(serialize(form)),
+        });
+        const out = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(out.error || 'Could not publish');
+        form.classList.remove('is-dirty');
+        const stamp = form.querySelector('.stamp');
+        if (stamp) stamp.textContent = `Published just now${stamp.textContent?.includes('·') ? ` ·${stamp.textContent.split('·').slice(1).join('·')}` : ''}`;
+        toast('Published — live in a few seconds');
+      } catch (err) {
+        toast((err as Error).message);
+      } finally {
+        submit.disabled = false;
+        submit.textContent = 'Publish';
+      }
+    });
+  });
+
+  window.addEventListener('beforeunload', (e) => {
+    if (document.querySelector('.pub-section.is-dirty')) e.preventDefault();
+  });
+</script>

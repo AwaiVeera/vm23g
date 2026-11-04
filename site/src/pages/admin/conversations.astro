@@ -1,0 +1,184 @@
+---
+import Admin from '@/layouts/Admin.astro';
+import { db } from '@/lib/runtime';
+import { ago } from '@/lib/admin-data';
+
+export const prerender = false;
+
+const selected = Astro.url.searchParams.get('chat');
+const { results: chats } = await db()
+  .prepare(
+    `SELECT c.id, c.updated_at, c.page, c.message_count, c.enquiry_id,
+       (SELECT content FROM chat_messages m WHERE m.chat_id = c.id AND m.role = 'user' ORDER BY m.id LIMIT 1) AS first_q
+     FROM chats c WHERE c.message_count > 0 ORDER BY c.updated_at DESC LIMIT 100`,
+  )
+  .all<{ id: string; updated_at: number; page: string | null; message_count: number; enquiry_id: string | null; first_q: string | null }>();
+
+const current = selected ?? chats[0]?.id ?? null;
+const { results: messages } = current
+  ? await db()
+      .prepare('SELECT role, content, created_at FROM chat_messages WHERE chat_id = ? ORDER BY id ASC')
+      .bind(current)
+      .all<{ role: string; content: string; created_at: number }>()
+  : { results: [] };
+const currentChat = chats.find((c) => c.id === current);
+---
+
+<Admin title="V chats" active="conversations">
+  <header class="adm-head">
+    <div>
+      <p class="eyebrow">V chats</p>
+      <h1>What people ask V.</h1>
+      <p>Every conversation with the AI concierge. Spot gaps, then teach V the answer in Publish.</p>
+    </div>
+    <a class="adm-btn" href="/admin/publish#knowledge">Teach V</a>
+  </header>
+
+  {
+    chats.length ? (
+      <div class="convo">
+        <nav class="adm-card convo-list" aria-label="Conversations">
+          <ul>
+            {chats.map((c) => (
+              <li>
+                <a href={`?chat=${c.id}`} aria-current={c.id === current ? 'true' : undefined}>
+                  <span class="q">{c.first_q ?? 'Conversation'}</span>
+                  <span class="meta">
+                    {c.message_count} {c.message_count === 1 ? 'reply' : 'replies'} · {ago(c.updated_at)}
+                    {c.enquiry_id && <span class="pill pill-new">Lead</span>}
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+        <section class="adm-card convo-thread" aria-label="Conversation">
+          <div class="thread-head">
+            <h2>Started on {currentChat?.page ?? '/'}</h2>
+            {currentChat?.enquiry_id && (
+              <a class="adm-btn adm-btn-gold" href={`/admin/enquiries/${currentChat.enquiry_id}`}>Open enquiry</a>
+            )}
+          </div>
+          <ol class="thread">
+            {messages.map((m) => (
+              <li class={m.role === 'user' ? 'from-user' : 'from-v'}>
+                <span class="who">{m.role === 'user' ? 'Visitor' : 'V'}</span>
+                <p>{m.content}</p>
+              </li>
+            ))}
+          </ol>
+        </section>
+      </div>
+    ) : (
+      <p class="adm-empty">No conversations yet. Once visitors talk to V, they appear here.</p>
+    )
+  }
+</Admin>
+
+<style>
+  .convo {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.4fr);
+    gap: 1rem;
+    align-items: start;
+  }
+
+  .convo-list ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.35rem;
+    max-height: 70dvh;
+    overflow-y: auto;
+  }
+
+  .convo-list a {
+    display: grid;
+    gap: 0.2rem;
+    padding: 0.7rem 0.8rem;
+    border-radius: 12px;
+    border: 1px solid transparent;
+    text-decoration: none;
+  }
+
+  .convo-list a:hover,
+  .convo-list a:focus-visible {
+    background: rgb(var(--gold-rgb) / 0.05);
+  }
+
+  .convo-list a[aria-current='true'] {
+    border-color: rgb(var(--gold-rgb) / 0.4);
+    background: rgb(var(--gold-rgb) / 0.08);
+  }
+
+  .q {
+    font-size: 0.92rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .meta {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    font-size: 0.76rem;
+    color: var(--text-3);
+  }
+
+  .thread-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .thread {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.6rem;
+  }
+
+  .thread li {
+    max-width: 88%;
+    padding: 0.65rem 0.9rem;
+    border-radius: 14px;
+    font-size: 0.92rem;
+    white-space: pre-wrap;
+  }
+
+  .from-user {
+    justify-self: end;
+    background: rgb(var(--gold-rgb) / 0.12);
+    border: 1px solid rgb(var(--gold-rgb) / 0.25);
+  }
+
+  .from-v {
+    background: rgb(5 8 6 / 0.4);
+    border: 1px solid var(--line-soft);
+  }
+
+  .who {
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.15rem;
+  }
+
+  @media (max-width: 900px) {
+    .convo {
+      grid-template-columns: 1fr;
+    }
+
+    .convo-list ul {
+      max-height: 40dvh;
+    }
+  }
+</style>

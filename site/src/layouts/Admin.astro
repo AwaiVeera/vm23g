@@ -1,0 +1,72 @@
+---
+import '@fontsource/cinzel/500.css';
+import '@fontsource-variable/manrope/wght.css';
+import '@/styles/global.css';
+import '@/styles/admin.css';
+import Picture from '@/components/Picture.astro';
+
+interface Props {
+  title: string;
+  active?: 'overview' | 'enquiries' | 'conversations' | 'publish';
+}
+
+const { title, active } = Astro.props;
+const admin = Astro.locals.admin ?? '';
+const links = [
+  { key: 'overview', href: '/admin', label: 'Command', icon: 'M3 12l9-8 9 8v8a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1z' },
+  { key: 'enquiries', href: '/admin/enquiries', label: 'Enquiries', icon: 'M4 6h16v12H4zM4 7l8 6 8-6' },
+  { key: 'conversations', href: '/admin/conversations', label: 'V chats', icon: 'M5 5h14v10H9l-4 4z' },
+  { key: 'publish', href: '/admin/publish', label: 'Publish', icon: 'M12 3v12M7 8l5-5 5 5M5 21h14' },
+] as const;
+---
+
+<!doctype html>
+<html lang="en-SG">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="theme-color" content="#080d09" />
+    <link rel="icon" href="/favicon.png" type="image/png" />
+    <title>{title} — VM23G Command Centre</title>
+  </head>
+  <body class="adm">
+    <a class="skip-link" href="#adm-main">Skip to content</a>
+    <aside class="adm-side">
+      <a href="/admin" class="adm-brand" aria-label="Command Centre home">
+        <Picture src="brand/vm23g-logo" alt="" sizes="120px" imgClass="adm-logo" />
+        <span class="display">Command Centre</span>
+      </a>
+      <nav aria-label="Admin">
+        <ul>
+          {
+            links.map((l) => (
+              <li>
+                <a href={l.href} aria-current={active === l.key ? 'page' : undefined}>
+                  <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d={l.icon} fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" />
+                  </svg>
+                  <span>{l.label}</span>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+      <div class="adm-side-foot">
+        <a href="/" target="_blank" rel="noopener" class="adm-view">View live site ↗</a>
+        <p class="adm-user" title={admin}>{admin}</p>
+        <form method="post" action="/api/admin/logout">
+          <button type="submit" class="adm-logout">Sign out</button>
+        </form>
+      </div>
+    </aside>
+    <main id="adm-main" class="adm-main" tabindex="-1">
+      <slot />
+    </main>
+    <div class="adm-toast" role="status" aria-live="polite" data-toast></div>
+    <script>
+      import '@/systems/admin';
+    </script>
+  </body>
+</html>

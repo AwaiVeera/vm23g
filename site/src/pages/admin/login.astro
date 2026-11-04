@@ -1,0 +1,169 @@
+---
+import '@fontsource/cinzel/500.css';
+import '@fontsource-variable/manrope/wght.css';
+import '@/styles/global.css';
+import Picture from '@/components/Picture.astro';
+import { readSession, authConfigured } from '@/lib/auth';
+
+export const prerender = false;
+
+const next = Astro.url.searchParams.get('next') ?? '/admin';
+if (await readSession(Astro.cookies).catch(() => null)) return Astro.redirect(next.startsWith('/admin') ? next : '/admin');
+
+const messages: Record<string, string> = {
+  invalid: 'That email and password did not match.',
+  locked: 'Too many attempts. Please wait 15 minutes and try again.',
+  setup: 'Admin sign-in is not configured yet. Set ADMIN_PASSWORD_HASH and SESSION_SECRET.',
+};
+const error = messages[Astro.url.searchParams.get('error') ?? ''];
+const signedOut = Astro.url.searchParams.has('signed_out');
+const configured = authConfigured();
+---
+
+<!doctype html>
+<html lang="en-SG">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="theme-color" content="#080d09" />
+    <link rel="icon" href="/favicon.png" type="image/png" />
+    <title>Sign in — VM23G Command Centre</title>
+  </head>
+  <body>
+    <main class="login">
+      <div class="login-halo" aria-hidden="true"></div>
+      <form class="login-card glass" method="post" action="/api/admin/login">
+        <Picture src="brand/vm23g-logo" alt="VM23G" sizes="180px" loading="eager" imgClass="login-logo" />
+        <h1 class="display">Command Centre</h1>
+        <p class="login-sub">Private area for the VM23G founders.</p>
+        {error && <p class="login-msg login-err" role="alert">{error}</p>}
+        {signedOut && !error && <p class="login-msg" role="status">You have signed out.</p>}
+        {!configured && !error && <p class="login-msg login-err" role="alert">{messages.setup}</p>}
+        <input type="hidden" name="next" value={next} />
+        <label>
+          <span>Email</span>
+          <input name="email" type="email" autocomplete="username" required autofocus />
+        </label>
+        <label>
+          <span>Password</span>
+          <input name="password" type="password" autocomplete="current-password" required minlength="8" />
+        </label>
+        <button class="btn btn-gold" type="submit">Enter</button>
+        <a class="login-back" href="/">← Back to veeramisir.com</a>
+      </form>
+    </main>
+    <style>
+      .login {
+        position: relative;
+        display: grid;
+        place-items: center;
+        min-height: 100dvh;
+        padding: 1.25rem;
+        overflow: hidden;
+      }
+
+      .login-halo {
+        position: absolute;
+        inset: 0;
+        background:
+          radial-gradient(40% 40% at 50% 38%, rgb(var(--gold-rgb) / 0.16), transparent 70%),
+          radial-gradient(70% 70% at 50% 40%, rgb(var(--olive-rgb) / 0.3), transparent 70%);
+        animation: halo 9s var(--ease-soft) infinite;
+      }
+
+      @keyframes halo {
+        50% {
+          opacity: 0.7;
+          transform: scale(1.06);
+        }
+      }
+
+      .login-card {
+        position: relative;
+        display: grid;
+        gap: 1rem;
+        justify-items: stretch;
+        width: min(100%, 420px);
+        padding: clamp(1.5rem, 5vw, 2.5rem);
+        animation: rise 800ms var(--ease-cine) both;
+      }
+
+      @keyframes rise {
+        from {
+          opacity: 0;
+          transform: translate3d(0, 20px, 0) scale(0.98);
+        }
+      }
+
+      .login-card :global(picture) {
+        justify-self: center;
+      }
+
+      .login-card :global(.login-logo) {
+        width: 150px;
+        filter: drop-shadow(0 0 22px rgb(var(--gold-rgb) / 0.35));
+      }
+
+      .login-card h1 {
+        text-align: center;
+        font-size: 1.6rem;
+      }
+
+      .login-sub {
+        margin-top: -0.6rem;
+        text-align: center;
+        color: var(--text-2);
+        font-size: 0.92rem;
+      }
+
+      .login-msg {
+        padding: 0.65rem 0.9rem;
+        border-radius: 12px;
+        border: 1px solid var(--line);
+        font-size: 0.88rem;
+        color: var(--text-2);
+      }
+
+      .login-err {
+        color: #f0b27a;
+        border-color: rgb(240 178 122 / 0.4);
+      }
+
+      label {
+        display: grid;
+        gap: 0.35rem;
+        font-size: 0.84rem;
+        font-weight: 600;
+        color: var(--text-2);
+      }
+
+      input {
+        min-height: 48px;
+        padding: 0.7rem 0.95rem;
+        border-radius: 14px;
+        border: 1px solid var(--line);
+        background: rgb(5 8 6 / 0.6);
+        font-size: 1rem;
+      }
+
+      input:focus-visible {
+        outline: none;
+        border-color: rgb(var(--gold-rgb) / 0.75);
+        box-shadow: 0 0 0 4px rgb(var(--gold-rgb) / 0.15);
+      }
+
+      .login-back {
+        justify-self: center;
+        font-size: 0.85rem;
+        color: var(--text-2);
+        text-decoration: none;
+      }
+
+      .login-back:hover,
+      .login-back:focus-visible {
+        color: var(--gold-hi);
+      }
+    </style>
+  </body>
+</html>

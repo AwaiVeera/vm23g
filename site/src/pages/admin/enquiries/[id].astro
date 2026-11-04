@@ -1,0 +1,359 @@
+---
+import Admin from '@/layouts/Admin.astro';
+import { db } from '@/lib/runtime';
+import { fmtDate, parsePillars, STATUSES } from '@/lib/admin-data';
+import type { EnquiryRow } from '@/lib/enquiries';
+
+export const prerender = false;
+
+const id = Astro.params.id ?? '';
+const row = await db().prepare('SELECT * FROM enquiries WHERE id = ?').bind(id).first<EnquiryRow>();
+if (!row) return new Response('Not found', { status: 404 });
+
+const { results: chat } = row.chat_id
+  ? await db()
+      .prepare('SELECT role, content, created_at FROM chat_messages WHERE chat_id = ? ORDER BY id ASC')
+      .bind(row.chat_id)
+      .all<{ role: string; content: string; created_at: number }>()
+  : { results: [] };
+
+let tags: string[] = [];
+try {
+  tags = JSON.parse(row.ai_tags ?? '[]');
+} catch {}
+const pillars = parsePillars(row.pillars);
+const score = row.ai_score ?? 0;
+const subject = `Your VM23G enquiry${row.company ? ` — ${row.company}` : ''}`;
+---
+
+<Admin title={row.name} active="enquiries">
+  <a href="/admin/enquiries" class="back">← All enquiries</a>
+  <header class="adm-head">
+    <div>
+      <p class="eyebrow">{row.source === 'concierge' ? 'Via V, the AI concierge' : 'Start a Project'} · {fmtDate(row.created_at)}</p>
+      <h1>{row.name}</h1>
+      <p>{row.company ?? 'No company given'}</p>
+    </div>
+    <div class="status-box">
+      <label class="adm-field">
+        <span>Status</span>
+        <select data-status data-id={row.id}>
+          {STATUSES.map((s) => <option value={s.key} selected={row.status === s.key}>{s.label}</option>)}
+        </select>
+      </label>
+    </div>
+  </header>
+
+  <div class="detail">
+    <div class="detail-main">
+      <section class="adm-card insight">
+        <span class:list={['score', 'score-lg', { 'score-hot': score >= 70 }]} style={`--s:${score}`}>
+          <span>{row.ai_score ?? '—'}</span>
+        </span>
+        <div>
+          <h2>AI insight</h2>
+          <p>{row.ai_summary ?? 'Summary is being prepared…'}</p>
+          {tags.length > 0 && <p class="tags">{tags.map((t) => <span class="pill">{t}</span>)}</p>}
+        </div>
+      </section>
+
+      <section class="adm-card">
+        <h2>The brief</h2>
+        <dl class="facts">
+          {pillars.length > 0 && (<><dt>Needs</dt><dd>{pillars.join(', ')}</dd></>)}
+          {row.stage && (<><dt>Stage</dt><dd>{row.stage}</dd></>)}
+          {row.timeline && (<><dt>Timeline</dt><dd>{row.timeline}</dd></>)}
+          {row.budget && (<><dt>Budget</dt><dd>{row.budget}</dd></>)}
+        </dl>
+        {row.message ? <p class="brief-text">{row.message}</p> : <p class="muted">No written message.</p>}
+      </section>
+
+      {
+        row.voice_key && (
+          <section class="adm-card">
+            <h2>Voice note</h2>
+            <audio controls preload="none" src={`/api/admin/voice/${row.id}`} class="voice"></audio>
+            <p class="transcript">{row.transcript ? `“${row.transcript}”` : 'Transcript appears here once Workers AI is connected.'}</p>
+          </section>
+        )
+      }
+
+      {
+        chat.length > 0 && (
+          <section class="adm-card">
+            <h2>Conversation with V</h2>
+            <ol class="chat">
+              {chat.map((m) => (
+                <li class={m.role === 'user' ? 'from-user' : 'from-v'}>
+                  <span class="who">{m.role === 'user' ? row.name.split(' ')[0] : 'V'}</span>
+                  <p>{m.content}</p>
+                </li>
+              ))}
+            </ol>
+          </section>
+        )
+      }
+    </div>
+
+    <aside class="detail-side">
+      <section class="adm-card">
+        <h2>Contact</h2>
+        <p><a href={`mailto:${row.email}`} class="contact-link">{row.email}</a></p>
+        {row.phone && <p><a href={`tel:${row.phone.replace(/[^+\d]/g, '')}`} class="contact-link">{row.phone}</a></p>}
+        <p class="muted small">{row.consent ? 'Consented to be contacted about this enquiry.' : 'No contact consent recorded.'}</p>
+      </section>
+
+      <section class="adm-card">
+        <h2>Reply</h2>
+        <label class="adm-field">
+          <span class="visually-hidden">Reply draft</span>
+          <textarea rows="10" data-draft placeholder="Write a reply, or let AI draft one for you.">{row.reply_draft ?? ''}</textarea>
+        </label>
+        <div class="reply-actions">
+          <button type="button" class="adm-btn" data-ai-draft data-id={row.id}>✦ Draft with AI</button>
+          <a class="adm-btn adm-btn-gold" data-mailto data-email={row.email} data-subject={subject} href={`mailto:${row.email}?subject=${encodeURIComponent(subject)}`}>Open in email</a>
+        </div>
+        <p class="muted small">Opens your email app with the draft filled in. Nothing is sent until you press send there.</p>
+      </section>
+
+      <section class="adm-card">
+        <h2>Private notes</h2>
+        <label class="adm-field">
+          <span class="visually-hidden">Notes</span>
+          <textarea rows="5" data-notes>{row.notes ?? ''}</textarea>
+        </label>
+        <button type="button" class="adm-btn" data-save-notes data-id={row.id}>Save notes</button>
+      </section>
+    </aside>
+  </div>
+</Admin>
+
+<style>
+  .back {
+    display: inline-flex;
+    min-height: 40px;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    color: var(--text-2);
+    text-decoration: none;
+    font-size: 0.88rem;
+  }
+
+  .back:hover,
+  .back:focus-visible {
+    color: var(--gold-hi);
+  }
+
+  .status-box {
+    min-width: 200px;
+  }
+
+  .detail {
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+    gap: 1rem;
+    align-items: start;
+  }
+
+  .detail-main,
+  .detail-side {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .insight {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 1.1rem;
+    align-items: center;
+    border-color: rgb(var(--gold-rgb) / 0.3);
+    background:
+      radial-gradient(80% 120% at 0% 0%, rgb(var(--gold-rgb) / 0.12), transparent 60%),
+      rgb(var(--glass-rgb) / 0.75);
+  }
+
+  .insight h2 {
+    margin-bottom: 0.4rem;
+  }
+
+  .score-lg {
+    width: 76px;
+    height: 76px;
+    font-size: 1.3rem;
+  }
+
+  .score-lg::before {
+    inset: 6px;
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin-top: 0.6rem;
+  }
+
+  .facts {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.35rem 1rem;
+    margin: 0 0 1rem;
+    font-size: 0.92rem;
+  }
+
+  .facts dt {
+    color: var(--text-3);
+  }
+
+  .facts dd {
+    margin: 0;
+  }
+
+  .brief-text {
+    white-space: pre-wrap;
+    line-height: 1.7;
+  }
+
+  .muted {
+    color: var(--text-2);
+  }
+
+  .small {
+    font-size: 0.8rem;
+    margin-top: 0.5rem;
+  }
+
+  .voice {
+    width: 100%;
+  }
+
+  .transcript {
+    margin-top: 0.75rem;
+    color: var(--text-2);
+    font-style: italic;
+  }
+
+  .chat {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.6rem;
+  }
+
+  .chat li {
+    max-width: 90%;
+    padding: 0.6rem 0.85rem;
+    border-radius: 14px;
+    font-size: 0.9rem;
+    white-space: pre-wrap;
+  }
+
+  .chat .from-user {
+    justify-self: end;
+    background: rgb(var(--gold-rgb) / 0.12);
+    border: 1px solid rgb(var(--gold-rgb) / 0.25);
+  }
+
+  .chat .from-v {
+    background: rgb(5 8 6 / 0.4);
+    border: 1px solid var(--line-soft);
+  }
+
+  .who {
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.15rem;
+  }
+
+  .contact-link {
+    color: var(--gold-hi);
+    word-break: break-all;
+  }
+
+  .reply-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+  }
+
+  .detail-side .adm-btn[data-save-notes] {
+    margin-top: 0.75rem;
+  }
+
+  @media (max-width: 1000px) {
+    .detail {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script>
+  import { toast } from '@/systems/admin';
+
+  const patch = async (id: string, body: Record<string, unknown>) => {
+    const res = await fetch(`/api/admin/enquiries/${id}`, {
+      method: 'PATCH',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    if (!res.ok) throw new Error((await res.json().catch(() => ({}))).error || 'Could not save');
+  };
+
+  const status = document.querySelector<HTMLSelectElement>('[data-status]');
+  status?.addEventListener('change', async () => {
+    try {
+      await patch(status.dataset.id!, { status: status.value });
+      toast(`Marked as ${status.selectedOptions[0].textContent}`);
+    } catch (e) {
+      toast((e as Error).message);
+    }
+  });
+
+  const notesBtn = document.querySelector<HTMLButtonElement>('[data-save-notes]');
+  const notes = document.querySelector<HTMLTextAreaElement>('[data-notes]');
+  notesBtn?.addEventListener('click', async () => {
+    try {
+      await patch(notesBtn.dataset.id!, { notes: notes?.value ?? '' });
+      toast('Notes saved');
+    } catch (e) {
+      toast((e as Error).message);
+    }
+  });
+
+  const draft = document.querySelector<HTMLTextAreaElement>('[data-draft]');
+  const mailto = document.querySelector<HTMLAnchorElement>('[data-mailto]');
+  const syncMail = () => {
+    if (!mailto || !draft) return;
+    mailto.href = `mailto:${mailto.dataset.email}?subject=${encodeURIComponent(mailto.dataset.subject ?? '')}&body=${encodeURIComponent(draft.value)}`;
+  };
+  draft?.addEventListener('input', syncMail);
+  syncMail();
+
+  const aiBtn = document.querySelector<HTMLButtonElement>('[data-ai-draft]');
+  aiBtn?.addEventListener('click', async () => {
+    aiBtn.disabled = true;
+    const label = aiBtn.textContent;
+    aiBtn.textContent = 'Drafting…';
+    try {
+      const res = await fetch(`/api/admin/enquiries/${aiBtn.dataset.id}/draft`, { method: 'POST' });
+      const out = await res.json();
+      if (!res.ok) throw new Error(out.error || 'Could not draft');
+      if (draft) {
+        draft.value = out.draft;
+        syncMail();
+      }
+      toast('Draft ready — edit before sending');
+    } catch (e) {
+      toast((e as Error).message);
+    } finally {
+      aiBtn.disabled = false;
+      aiBtn.textContent = label;
+    }
+  });
+</script>

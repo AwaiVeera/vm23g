@@ -1,0 +1,423 @@
+---
+import Admin from '@/layouts/Admin.astro';
+import EnquiryRow from '@/components/admin/EnquiryRow.astro';
+import { overview, STATUSES, ago } from '@/lib/admin-data';
+import { aiAvailable } from '@/lib/ai';
+
+export const prerender = false;
+
+const data = await overview();
+const email = Astro.locals.admin ?? '';
+const names: Record<string, string> = { summan: 'Summan', awaiveera: 'Awai' };
+const first = names[email.split('@')[0]] ?? email.split('@')[0];
+const hour = Number(new Intl.DateTimeFormat('en-SG', { hour: 'numeric', hour12: false, timeZone: 'Asia/Singapore' }).format(new Date()));
+const greet = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening';
+
+const max = Math.max(4, ...data.series.map((s) => s.v));
+const W = 640;
+const H = 160;
+const pts = data.series.map((s, i) => [(i / (data.series.length - 1)) * W, H - 12 - (s.v / max) * (H - 30)] as const);
+const line = pts.map(([x, y], i) => `${i ? 'L' : 'M'}${x.toFixed(1)},${y.toFixed(1)}`).join(' ');
+const area = `${line} L${W},${H} L0,${H} Z`;
+const total14 = data.series.reduce((a, s) => a + s.v, 0);
+const pipeTotal = Object.values(data.pipeline).reduce((a, b) => a + b, 0);
+---
+
+<Admin title="Command" active="overview">
+  <header class="adm-head">
+    <div>
+      <p class="eyebrow">Command Centre</p>
+      <h1>{greet}, {first}.</h1>
+      <p>
+        {data.enquiriesNew > 0 ? `${data.enquiriesNew} new ${data.enquiriesNew === 1 ? 'enquiry is' : 'enquiries are'} waiting for you.` : 'You are all caught up.'}
+      </p>
+    </div>
+    <div class="head-actions">
+      <span class:list={['ai-chip', { 'ai-on': aiAvailable() }]}>
+        <span class="ai-dot" aria-hidden="true"></span>
+        {aiAvailable() ? 'V is live on Workers AI' : 'V in built-in knowledge mode'}
+      </span>
+      <a class="adm-btn adm-btn-gold" href="/admin/publish">Publish an update</a>
+    </div>
+  </header>
+
+  <section class="adm-grid adm-kpis" aria-label="Key numbers">
+    <div class="adm-card kpi">
+      <span class="kpi-label">Visits today</span>
+      <span class="kpi-value" data-count={data.viewsToday}>{data.viewsToday}</span>
+      <span class="kpi-sub">{total14} in the last 14 days</span>
+    </div>
+    <div class="adm-card kpi">
+      <span class="kpi-label">Enquiries · 7 days</span>
+      <span class="kpi-value" data-count={data.enquiriesWeek}>{data.enquiriesWeek}</span>
+      <span class="kpi-sub">{data.enquiriesNew} still new</span>
+    </div>
+    <div class="adm-card kpi">
+      <span class="kpi-label">V conversations · 7 days</span>
+      <span class="kpi-value" data-count={data.chatsWeek}>{data.chatsWeek}</span>
+      <span class="kpi-sub">Visitors who asked V something</span>
+    </div>
+    <div class="adm-card kpi">
+      <span class="kpi-label">Avg lead score · 30 days</span>
+      <span class="kpi-value" data-count={data.avgScore ?? 0}>{data.avgScore ?? '—'}</span>
+      <span class="kpi-sub">AI-rated readiness, out of 100</span>
+    </div>
+  </section>
+
+  <div class="cc-grid">
+    <section class="adm-card cc-live" aria-labelledby="live-title">
+      <div class="card-head">
+        <h2 id="live-title">Live signal</h2>
+        <span class="live-badge"><span aria-hidden="true"></span>Live</span>
+      </div>
+      {
+        data.recent.length ? (
+          <ul class="enq-list" data-live-list data-latest={data.recent[0]?.id}>
+            {data.recent.map((item) => (
+              <EnquiryRow item={item} />
+            ))}
+          </ul>
+        ) : (
+          <p class="adm-empty" data-live-list>No enquiries yet. When someone sends a brief or talks to V, it lands here instantly.</p>
+        )
+      }
+      <a class="adm-btn card-more" href="/admin/enquiries">All enquiries</a>
+    </section>
+
+    <section class="adm-card cc-pulse" aria-labelledby="pulse-title">
+      <h2 id="pulse-title">Visitor pulse · 14 days</h2>
+      <svg class="pulse" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" role="img" aria-label={`Daily visits over the last 14 days, ${total14} in total`}>
+        <defs>
+          <linearGradient id="pulse-fill" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0" stop-color="#c7a45a" stop-opacity="0.45"></stop>
+            <stop offset="1" stop-color="#c7a45a" stop-opacity="0"></stop>
+          </linearGradient>
+        </defs>
+        <path d={area} fill="url(#pulse-fill)"></path>
+        <path d={line} fill="none" stroke="#e5d09a" stroke-width="2" vector-effect="non-scaling-stroke" class="pulse-line"></path>
+        {pts.map(([x, y], i) => (
+          <circle cx={x} cy={y} r="3" fill="#e5d09a" vector-effect="non-scaling-stroke">
+            <title>{`${data.series[i].day}: ${data.series[i].v} visits`}</title>
+          </circle>
+        ))}
+      </svg>
+      <div class="pulse-axis" aria-hidden="true">
+        <span>{data.series[0].day.slice(5)}</span>
+        <span>Today</span>
+      </div>
+    </section>
+
+    <section class="adm-card cc-pipe" aria-labelledby="pipe-title">
+      <h2 id="pipe-title">Pipeline</h2>
+      <div class="pipe-bar" role="img" aria-label="Enquiries by status">
+        {STATUSES.map((s) => {
+          const n = data.pipeline[s.key] ?? 0;
+          return n ? <span class={`seg seg-${s.key}`} style={`flex:${n}`} title={`${s.label}: ${n}`}></span> : null;
+        })}
+        {!pipeTotal && <span class="seg seg-empty" style="flex:1"></span>}
+      </div>
+      <ul class="pipe-legend">
+        {STATUSES.map((s) => (
+          <li>
+            <a href={`/admin/enquiries?status=${s.key}`}>
+              <span class={`dot seg-${s.key}`} aria-hidden="true"></span>
+              {s.label}
+              <strong>{data.pipeline[s.key] ?? 0}</strong>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <section class="adm-card cc-asks" aria-labelledby="asks-title">
+      <h2 id="asks-title">What visitors ask V</h2>
+      {
+        data.questions.length ? (
+          <ul class="asks">
+            {data.questions.map((q) => (
+              <li>
+                <span>“{q.content.slice(0, 140)}”</span>
+                <small>{ago(q.created_at)}</small>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p class="adm-empty">No questions yet.</p>
+        )
+      }
+      <div class="asks-actions">
+        <a class="adm-btn" href="/admin/conversations">Read conversations</a>
+        <a class="adm-btn" href="/admin/publish#knowledge">Teach V</a>
+      </div>
+    </section>
+  </div>
+</Admin>
+
+<style>
+  .head-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .ai-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 38px;
+    padding: 0 0.9rem;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-2);
+  }
+
+  .ai-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--text-3);
+  }
+
+  .ai-on .ai-dot {
+    background: #9fd17a;
+    box-shadow: 0 0 10px #9fd17a;
+  }
+
+  .cc-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  .cc-live {
+    grid-row: span 3;
+    display: grid;
+    align-content: start;
+    gap: 0.25rem;
+  }
+
+  .card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .card-head h2 {
+    margin-bottom: 0.9rem;
+  }
+
+  .live-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-bottom: 0.9rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold-hi);
+  }
+
+  .live-badge span {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--gold);
+    animation: live 1.8s var(--ease-soft) infinite;
+  }
+
+  @keyframes live {
+    0%,
+    100% {
+      box-shadow: 0 0 0 0 rgb(var(--gold-rgb) / 0.6);
+    }
+    60% {
+      box-shadow: 0 0 0 8px rgb(var(--gold-rgb) / 0);
+    }
+  }
+
+  .card-more {
+    justify-self: start;
+    margin-top: 0.75rem;
+  }
+
+  .pulse {
+    width: 100%;
+    height: 160px;
+    overflow: visible;
+  }
+
+  .pulse-line {
+    filter: drop-shadow(0 0 6px rgb(var(--gold-rgb) / 0.7));
+    stroke-dasharray: 2000;
+    stroke-dashoffset: 2000;
+    animation: draw 1.8s var(--ease-cine) forwards 0.2s;
+  }
+
+  @keyframes draw {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  .pulse-axis {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.4rem;
+    font-size: 0.74rem;
+    color: var(--text-3);
+  }
+
+  .pipe-bar {
+    display: flex;
+    gap: 3px;
+    height: 12px;
+    border-radius: 999px;
+    overflow: hidden;
+  }
+
+  .seg {
+    min-width: 6px;
+    height: 100%;
+  }
+
+  .seg-new {
+    background: var(--gold);
+  }
+
+  .seg-in_progress {
+    background: #a88a45;
+  }
+
+  .seg-replied {
+    background: #7f9c62;
+  }
+
+  .seg-won {
+    background: #b9d3a0;
+  }
+
+  .seg-archived {
+    background: #3a4235;
+  }
+
+  .seg-empty {
+    background: rgb(242 237 223 / 0.08);
+  }
+
+  .pipe-legend {
+    list-style: none;
+    margin: 0.9rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 0.2rem;
+  }
+
+  .pipe-legend a {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-height: 34px;
+    padding: 0 0.4rem;
+    border-radius: 10px;
+    color: var(--text-2);
+    text-decoration: none;
+    font-size: 0.88rem;
+  }
+
+  .pipe-legend a:hover,
+  .pipe-legend a:focus-visible {
+    background: rgb(var(--gold-rgb) / 0.06);
+    color: var(--text);
+  }
+
+  .pipe-legend strong {
+    margin-left: auto;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 3px;
+  }
+
+  .asks {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.6rem;
+  }
+
+  .asks li {
+    display: grid;
+    gap: 0.1rem;
+    padding-left: 0.8rem;
+    border-left: 2px solid rgb(var(--gold-rgb) / 0.4);
+    font-size: 0.9rem;
+  }
+
+  .asks small {
+    color: var(--text-3);
+    font-size: 0.74rem;
+  }
+
+  .asks-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+
+  @media (max-width: 1100px) {
+    .cc-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .cc-live {
+      grid-row: auto;
+    }
+  }
+</style>
+
+<script>
+  const toast = document.querySelector<HTMLElement>('[data-toast]');
+  let latest = document.querySelector<HTMLElement>('[data-live-list]')?.dataset.latest ?? '';
+
+  const poll = async () => {
+    if (document.hidden) return;
+    try {
+      const res = await fetch('/api/admin/overview', { headers: { accept: 'application/json' } });
+      if (res.status === 401) return location.reload();
+      const data = (await res.json()) as { latestId: string | null; latestName: string | null };
+      if (data.latestId && data.latestId !== latest) {
+        latest = data.latestId;
+        const html = await (await fetch(location.pathname)).text();
+        const doc = new DOMParser().parseFromString(html, 'text/html');
+        const fresh = doc.querySelector('[data-live-list]');
+        const list = document.querySelector('[data-live-list]');
+        if (fresh && list) {
+          list.replaceWith(fresh);
+          fresh.querySelector('.enq-row')?.classList.add('is-fresh');
+        }
+        document.querySelectorAll('[data-count]').forEach((el) => {
+          const key = [...document.querySelectorAll('[data-count]')].indexOf(el);
+          const next = doc.querySelectorAll('[data-count]')[key];
+          if (next) el.textContent = next.textContent;
+        });
+        if (toast) {
+          toast.textContent = `New enquiry from ${data.latestName ?? 'a visitor'}`;
+          toast.classList.add('is-on');
+          setTimeout(() => toast.classList.remove('is-on'), 4200);
+        }
+      }
+    } catch {}
+  };
+  setInterval(poll, 15000);
+</script>
