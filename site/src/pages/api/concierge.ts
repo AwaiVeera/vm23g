@@ -55,10 +55,10 @@ export const POST: APIRoute = async ({ request, locals }) => {
         .all<{ role: 'user' | 'assistant'; content: string }>();
       history = results.reverse().map((r) => ({ role: r.role, content: r.content }));
     }
-    await db
-      .prepare('INSERT INTO chat_messages (chat_id, role, content, created_at) VALUES (?, ?, ?, ?)')
-      .bind(chatId, 'user', message, now())
-      .run();
+    await db.batch([
+      db.prepare('INSERT INTO chat_messages (chat_id, role, content, created_at) VALUES (?, ?, ?, ?)').bind(chatId, 'user', message, now()),
+      db.prepare('UPDATE chats SET updated_at = ?, message_count = message_count + 1 WHERE id = ?').bind(now(), chatId),
+    ]);
   } else if (!chatId) {
     chatId = uid('chat');
   }
@@ -75,7 +75,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
     const save = db
       .batch([
         db.prepare('INSERT INTO chat_messages (chat_id, role, content, created_at) VALUES (?, ?, ?, ?)').bind(chatId, 'assistant', full, now()),
-        db.prepare('UPDATE chats SET updated_at = ?, message_count = message_count + 1 WHERE id = ?').bind(now(), chatId),
+        db.prepare('UPDATE chats SET updated_at = ? WHERE id = ?').bind(now(), chatId),
       ])
       .catch(() => undefined);
     locals.cfContext?.waitUntil(save);

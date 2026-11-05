@@ -47,5 +47,9 @@ export const isEmail = (v: string) => /^[^\s@]{1,64}@[^\s@]{1,190}\.[^\s@]{2,24}
 export function sameOrigin(request: Request) {
   const origin = request.headers.get('origin');
   if (!origin) return true;
-  return new URL(origin).host === new URL(request.url).host;
+  try {
+    return new URL(origin).host === new URL(request.url).host;
+  } catch {
+    return false;
+  }
 }

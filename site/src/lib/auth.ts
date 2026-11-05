@@ -48,7 +48,8 @@ export const adminEmails = () =>
     .map((e) => e.trim().toLowerCase())
     .filter(Boolean);
 
-export const authConfigured = () => Boolean(bindings.ADMIN_PASSWORD_HASH && bindings.SESSION_SECRET && adminEmails().length);
+export const authConfigured = () =>
+  Boolean(bindings.ADMIN_PASSWORD_HASH && (bindings.SESSION_SECRET?.length ?? 0) >= 32 && adminEmails().length);
 
 export async function createSession(cookies: AstroCookies, email: string, secure: boolean) {
   const exp = now() + SESSION_TTL;

@@ -44,7 +44,7 @@ const currentChat = chats.find((c) => c.id === current);
                 <a href={`?chat=${c.id}`} aria-current={c.id === current ? 'true' : undefined}>
                   <span class="q">{c.first_q ?? 'Conversation'}</span>
                   <span class="meta">
-                    {c.message_count} {c.message_count === 1 ? 'reply' : 'replies'} · {ago(c.updated_at)}
+                    {c.message_count} {c.message_count === 1 ? 'message' : 'messages'} · {ago(c.updated_at)}
                     {c.enquiry_id && <span class="pill pill-new">Lead</span>}
                   </span>
                 </a>

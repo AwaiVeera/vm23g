@@ -8,7 +8,12 @@ const safeNext = (n: string) => (n.startsWith('/admin') && !n.startsWith('//') ?
 
 export const POST: APIRoute = async ({ request, cookies, redirect, url }) => {
   if (!sameOrigin(request)) return new Response('Forbidden', { status: 403 });
-  const form = await request.formData();
+  let form: FormData;
+  try {
+    form = await request.formData();
+  } catch {
+    return redirect('/admin/login?error=invalid', 303);
+  }
   const email = clean(form.get('email'), 200).toLowerCase();
   const password = String(form.get('password') ?? '').slice(0, 200);
   const next = safeNext(clean(form.get('next'), 200));

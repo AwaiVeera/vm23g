@@ -13,6 +13,10 @@ export const POST: APIRoute = async ({ request, locals }) => {
   const db = bindings.DB;
   if (!db) return json({ error: 'Enquiries are temporarily unavailable. Please try again shortly.' }, { status: 503 });
 
+  if (Number(request.headers.get('content-length') ?? 0) > MAX_VOICE + 1024 * 1024) {
+    return json({ error: 'That submission is too large. Voice notes can be up to 6 MB.' }, { status: 413 });
+  }
+
   let form: FormData;
   try {
     form = await request.formData();
@@ -54,7 +58,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
   if (hasVoice) {
     const type = (voice as File).type.split(';')[0];
     if ((voice as File).size > MAX_VOICE) errors.voice = 'Voice notes can be up to 6 MB (about 3 minutes).';
-    else if (type && !VOICE_TYPES.includes(type)) errors.voice = 'That audio format is not supported.';
+    else if (!VOICE_TYPES.includes(type)) errors.voice = 'That audio format is not supported.';
   }
 
   if (Object.keys(errors).length) return json({ error: 'Please check the highlighted fields.', fields: errors }, { status: 422 });
