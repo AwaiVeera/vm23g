@@ -4,7 +4,7 @@ You are building a cinematic luxury web platform for VM23G.
 
 NON-NEGOTIABLE RULES (v2 brand direction, owner brief 2026-11-05 — supersedes the old Pearl Matte light theme):
 - No assumptions. If unclear, ask.
-- Use the authentic supplied logo (`site/src/assets/brand/vm23g-logo.png`, 640×499 raster). Never redraw, recolour or crop it into a new mark. Never call it vector or 4K.
+- Use the authentic supplied logo (`site/src/assets/brand/vm23g-logo.png`, 1306×1019 raster, trimmed from the owner's `bglogo-1.png`). Never redraw, recolour or crop it into a new mark. Never call it vector or 4K. Never upscale, filter or sub-pixel-translate it.
 - Brand line, exactly: MIND. BODY. BRAND. TECHNOLOGY.
 - Dark gold-and-olive UI tokens: canvas #080D09, glass #141E16, olive #687347, gold #C7A45A, gold highlight #E5D09A, text #F2EDDF, secondary text #B8BEA7.
   - Olive #687347 fails contrast for text (3.85:1) — use it only for surfaces, borders and glows.

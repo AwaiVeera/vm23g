@@ -41,8 +41,8 @@ for (const [folder, widths] of Object.entries(plans)) {
         const out = path.join(outDir, folder, `${name}-${w}.${format}`);
         if (!(await newer(input, out))) {
           const pipeline = sharp(input).resize({ width: w, withoutEnlargement: true });
-          if (format === 'avif') await pipeline.avif({ quality: folder === 'brand' ? 70 : 55, effort: 6 }).toFile(out);
-          else await pipeline.webp({ quality: folder === 'brand' ? 90 : 78, alphaQuality: 100 }).toFile(out);
+          if (format === 'avif') await pipeline.avif(folder === 'brand' ? { quality: 92, effort: 6, chromaSubsampling: '4:4:4' } : { quality: 55, effort: 6 }).toFile(out);
+          else await pipeline.webp(folder === 'brand' ? { lossless: true } : { quality: 78, alphaQuality: 100 }).toFile(out);
         }
       }
       variants.push(w);
