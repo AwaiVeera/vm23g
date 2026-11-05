@@ -2,8 +2,12 @@
 
 Branch: `redesign-v2` · New site lives in `site/` · Live veeramisir.com is untouched.
 
-## Current status
-All screens and the five upgrades are built and checked locally at 1440×900 and 390×844. Waiting on the owner's Cloudflare login to publish the private preview.
+## Current status (updated 2026-11-05)
+Direction changed after the screens below were built. The owner now wants:
+- a more static, screen-by-screen site, explored in concept spikes under `site/public/concepts/` (the chosen concept is `mix.html`: Monolith + Lens, five sides);
+- hosting on **Bluehost** at veeramisir.com, structured like destinosingapore.co: a static front end served by Apache, plus a PHP `/api` folder for forms, admin and V. **Not Cloudflare, not WordPress.**
+
+The Astro site in `site/` stays as the working reference for features: Start a Project, Command Centre and V. Nothing is deployed. Audit record: `docs/v2/AUDIT-2026-11-05.md`.
 
 ## Completed screens
 1. **Navigation + Living Logo hero** — floating olive glass dock with active indicator; expanded menu with full logo, described destinations and project previews; authentic gold logo on a glass stage with WebGL olive-to-gold halo, light sweep masked to the gold lines, glass planes with pointer parallax (logo itself never 3D-transformed, so it stays sharp). Pause motion + reduced-motion.
@@ -27,7 +31,7 @@ All screens and the five upgrades are built and checked locally at 1440×900 and
 - **VM23G enquiry inbox not verified.** Enquiries are stored in the Command Centre; no email address is published. Confirm which inbox (if any) should get notifications. See `docs/v2/CONTACT-REGISTER.md`.
 
 ## Decisions taken (owner delegated)
-- Hosting stays on Cloudflare (owner decision, 2026-11-05). New site deploys as Worker `vm23g-v2`, preview first.
+- ~~Hosting stays on Cloudflare~~. Superseded later on 2026-11-05: host on Bluehost (veeramisir.com). Before go-live: copy the email DNS records, back up the Bluehost WordPress site, and get explicit approval to move nameservers away from Cloudflare.
 - Rebuilt on Astro (web-first) instead of Expo web, for speed.
 - Five upgrades approved by the owner: Living Logo stage, V AI concierge, Command Centre, cinematic page transitions, guided Start a Project.
 - Budget ranges on Start a Project are visitor options, not published prices.
