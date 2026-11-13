@@ -81,9 +81,7 @@ async function notify(row: EnquiryRow, summary: string) {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({
-        text: `New VM23G enquiry from ${row.name}: ${summary}`,
-        id: row.id,
-        source: row.source,
+        text: `New VM23G enquiry from ${row.name} (${row.source === 'concierge' ? 'via V' : 'Start a Project'}): ${summary}\nOpen: https://veeramisir.com/admin/enquiries/${row.id}`,
       }),
     });
   } catch {}
