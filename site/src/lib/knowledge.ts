@@ -1,5 +1,6 @@
 import { brand, founders, pillars, ecosystem, channels } from '@/content/site';
 import { servicesPageContent, clientPathwayContent } from '@/content/pages';
+import { bindings } from '@/lib/runtime';
 import type { SiteContent } from './content';
 
 export function buildFacts(content: SiteContent) {
@@ -30,7 +31,7 @@ export function buildFacts(content: SiteContent) {
     lines.push(`Press: "${p.title}" — ${p.publication}, ${p.date}, type: ${p.classification}. ${p.href}`);
   }
   lines.push(
-    'Enquiries: the best way to start is the Start a Project brief at veeramisir.com/start (about two minutes, optional voice note). Briefs go directly to the founders.',
+    `Enquiries: the best way to start is the Start a Project brief at veeramisir.com/start (about two minutes${bindings.MEDIA ? ', optional voice note' : ''}). Briefs go directly to the founders.`,
   );
   lines.push(
     'Unknown details: pricing, availability, phone numbers, office address and turnaround times are not published. Do not guess them; offer to pass the question to the founders.',

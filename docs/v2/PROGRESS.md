@@ -17,6 +17,13 @@ The Astro site in `site/` stays as the working reference for features: Start a P
 - Removed: two unused images (`gallery-kyani`, `gallery-navafit-session`) and three outdated legacy docs (Pearl Matte brand system, Expo launch checklist, Expo task manager). Restore point: `~/Backups/vm23g/2026-11-14-pre-health-check`.
 - `astro preview` does not start locally (Cloudflare runtime needs a login); not a code fault.
 
+## Cloudflare preview (2026-11-14)
+- Owner chose Cloudflare. Worker `vm23g-v2` is live at https://vm23g-v2.awaiveera.workers.dev with D1 `vm23g` (APAC). Admin secrets set from the local admin hash plus a new session secret.
+- R2 is not enabled on the account, so voice notes are switched off: the recorder is hidden, the API ignores audio, and V does not offer voice notes. Enable R2, add the `r2_buckets` binding back to the top level of `wrangler.jsonc` and redeploy to turn them on.
+- `public/.assetsignore` keeps `concepts/` out of every deploy. The first upload briefly included it (about a minute, unlisted address) before this was added.
+- The old Pages project `vm23g` (Git-connected) still serves veeramisir.com from `main`. Pushes to `redesign-v2` trigger failing Pages preview builds; they never touch production.
+- Checks on the preview: all routes answer, V answers via Workers AI, a test enquiry saved and was deleted, Lighthouse mobile 100/100/100, LCP 0.78 s and CLS 0 on a throttled phone trace.
+
 ## Go-live blockers (owner decisions)
 - **Hosting target.** The site is built for Cloudflare Workers (D1 database, R2 voice notes, Workers AI for V). The Bluehost plan needs the server parts (forms, admin, V) rebuilt in PHP first. veeramisir.com's nameservers are already on Cloudflare.
 - **Cloudflare account access** (if Cloudflare): owner login, create the D1 database and R2 bucket, set admin secrets, then route veeramisir.com.

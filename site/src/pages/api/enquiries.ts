@@ -52,8 +52,8 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
   const message = clean(form.get('message'), 4000);
   const voice = form.get('voice');
-  const hasVoice = voice instanceof File && voice.size > 0;
-  if (source === 'start' && !message && !hasVoice) errors.message = 'Add a few words or a voice note about your project.';
+  const hasVoice = Boolean(bindings.MEDIA) && voice instanceof File && voice.size > 0;
+  if (source === 'start' && !message && !hasVoice) errors.message = bindings.MEDIA ? 'Add a few words or a voice note about your project.' : 'Add a few words about your project.';
 
   if (hasVoice) {
     const type = (voice as File).type.split(';')[0];

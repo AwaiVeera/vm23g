@@ -70,7 +70,7 @@ export function mountBrief() {
     if (i === 3) {
       const msg = String(data.get('message') ?? '').trim();
       const hasVoice = Boolean(recording);
-      err('message', msg || hasVoice ? '' : 'Add a few words or a voice note about your project.');
+      err('message', msg || hasVoice ? '' : voice ? 'Add a few words or a voice note about your project.' : 'Add a few words about your project.');
       const consent = data.get('consent') === 'yes';
       err('consent', consent ? '' : 'Please confirm we may contact you about your enquiry.');
       ok = (Boolean(msg) || hasVoice) && consent;

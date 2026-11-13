@@ -14,11 +14,10 @@
     {
       "binding": "DB",
       "database_name": "vm23g",
-      "database_id": "00000000-0000-0000-0000-000000000000",
+      "database_id": "a83e7362-abed-472f-a841-26d7a62bd706",
       "migrations_dir": "migrations"
     }
   ],
-  "r2_buckets": [{ "binding": "MEDIA", "bucket_name": "vm23g-media" }],
   "ai": { "binding": "AI" },
   "env": {
     "dev": {
