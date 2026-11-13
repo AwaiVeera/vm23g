@@ -1,4 +1,5 @@
 import { brand, founders, pillars, ecosystem, channels } from '@/content/site';
+import { servicesPageContent, clientPathwayContent } from '@/content/pages';
 import type { SiteContent } from './content';
 
 export function buildFacts(content: SiteContent) {
@@ -9,8 +10,10 @@ export function buildFacts(content: SiteContent) {
     'Structure: VM23G is an umbrella group with two specialist arms — NavaFit Alignment (mind and body wellness, led by Tinesh Awai Veera) and AaVisions (tech, AI, web, app and marketing consulting, led by Summan Misir Veera).',
   );
   for (const p of pillars) {
-    lines.push(`Discipline ${p.title} (${p.arm}): ${p.summary} Offers: ${p.offers.join('; ')}.`);
+    const c = servicesPageContent.pillars[p.key] as { summary: string; offers: readonly string[]; note?: string };
+    lines.push(`Discipline ${p.title} (${p.arm}): ${c.summary} Offers: ${c.offers.join('; ')}.${c.note ? ` ${c.note}` : ''}`);
   }
+  lines.push(`How we engage: ${clientPathwayContent.intro} ${clientPathwayContent.steps.map((s) => `${s.title}: ${s.body}`).join(' ')}`);
   for (const f of founders) {
     lines.push(`Founder: ${f.name} — ${f.role}, associated with ${f.venture}. ${f.bio}`);
     lines.push(`${f.venture} focus: ${f.ventureFocus}. Services: ${f.ventureOffers.join('; ')}. Note: ${f.ventureNote}`);
@@ -78,7 +81,7 @@ const intents: Intent[] = [
   {
     test: /\b(app|website|web|site|ai|automation|workflow|software|tech|ui|ux|digital|build)\b/i,
     answer: () =>
-      `That sits with AaVisions, VM23G's technology arm led by Summan Misir Veera: web design and app development, AI workflow automation, and UI/UX and digital transformation. Recent work includes the NavaFit Alignment iOS app and websites such as kyanielite.com and playroom-sg.com. Tap "Send my brief" and I'll pass the details to the founders.`,
+      `That sits with AaVisions, VM23G's technology arm led by Summan Misir Veera: web design and app development, AI workflow automation, and UI/UX and digital transformation. Recent work includes the NavaFit Alignment iOS app and websites such as destinosingapore.co and playroom-sg.com. Tap "Send my brief" and I'll pass the details to the founders.`,
   },
   {
     test: /\b(brand|marketing|logo|video|media|music|sales|campaign|content)\b/i,

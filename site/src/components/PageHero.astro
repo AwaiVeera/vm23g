@@ -41,6 +41,12 @@ const { eyebrow, title, accent, copy } = Astro.props;
     font-size: var(--step-5);
   }
 
+  @media (max-width: 1200px) {
+    .page-hero :global(.head-split) {
+      grid-template-columns: 1fr;
+    }
+  }
+
   @media (max-width: 720px) {
     .page-hero :global(.head-title) {
       font-size: clamp(2.3rem, 10vw, 3rem);

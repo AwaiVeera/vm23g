@@ -9,38 +9,65 @@ export const businessArms = {
     name: 'NavaFit Alignment',
     role: 'Mind and Body Wellness',
     leadership: 'Founded and led by Tinesh Awai Veera (mind/body alignment Guru).',
-    focus: [
-      'Fitness branding',
-      'Physical alignment and movement education',
-      'Mind/body alignment programmes',
-      'Real-world strength, breathwork, Kalari/Gadah/Breathwork-inspired training with modern results',
-    ],
-    brandEnergy:
-      'Testimonials from ACL patient to organ donor.',
   },
   aaVisions: {
     name: 'AaVisions',
     role: 'Tech, AI, Web, App, and Marketing Consulting',
     leadership: 'Led by Summan Misir Veera.',
-    focus: [
-      'Web design and app development',
-      'Sales and performance consultations',
-      'AI workflow automation',
-      'UI/UX design and digital transformation',
-    ],
-    differentiator:
-      'Practical, execution-focused use of agentic AI to accelerate delivery and business outcomes — from creating studio-quality music, to making movies, to a storybook for kids.',
   },
+} as const;
+
+export const servicesPageContent = {
+  pillars: {
+    mind: {
+      summary: 'Founded and led by Tinesh Awai Veera (Founder: FLOWMENTUM / Mind & Body Alignment Guru).',
+      offers: [
+        'Hindu Martial Arts Fitness',
+        'Mind/body alignment programmes (FLOWMENTUM MENTALITY)',
+        'Real-world strength, Kalari/Gadah/Breathwork-inspired training with modern results',
+        'AI-enhanced coaching (Coming Soon)',
+        'AI-based home training and nutritionist (Coming Soon)',
+      ],
+    },
+    body: {
+      summary: 'Real-world strength through physical alignment, movement education and Kalari- and Gadah-inspired training.',
+      offers: ['Physical alignment and movement education', 'Kalari and Gadah-inspired training'],
+    },
+    brand: {
+      summary: 'Led by Summan Misir Veera.',
+      offers: [
+        'Sales and performance backed results (contact for testimonials)',
+        'Videography, edits and music composing for 100% ownership (no copyright)',
+        'Speciality: brand and logo work based on data collected over 8 years',
+      ],
+      note: 'Practical, execution-focused use of agentic AI to accelerate delivery and business outcomes — from creating studio-quality music, to making movies, to a storybook for kids.',
+    },
+    technology: {
+      summary: 'Websites, apps and agentic AI workflows engineered to move a business faster.',
+      offers: [
+        'Web design and app development. No bad ideas: you want an app that tells you where to find a clean toilet for a good, clean experience? We will give you an entire structure.',
+        'AI workflow automation with Telegram, Google and more. Social media assistance to remotely operate, collect data and set up content.',
+        'UI/UX design and digital transformation (static, interactive and responsive sites)',
+      ],
+    },
+  },
+  arms: {
+    eyebrow: 'Agentic specialists',
+    title: 'Imagine NVIDIA',
+    copy: 'Picture 1000 chefs flipping that omelette all at the same time, no breaks, no sweat. That’s 1000 eggs ready to be served every 5 minutes. Mind, body, brand, and intelligent technology operating together as one strategic ecosystem.',
+  },
+  ctaNote: 'Book a consultation or just ‘lim kopi’ with V now.',
 } as const;
 
 export const clientPathwayContent = {
   microLabel: 'PATHWAY',
   heading: 'How We Engage.',
+  intro: 'IV’DS Blueprint (our human workflow). Every engagement follows the same four movements.',
   steps: [
-    { number: '01', title: 'Diagnose',  body: 'We identify the pressure points in your brand, system, body, or operating model.' },
-    { number: '02', title: 'Architect', body: 'We design the structure, experience, and intelligence layer required to move forward.' },
-    { number: '03', title: 'Build',     body: 'We execute across web, app, AI workflow, media, and performance systems.' },
-    { number: '04', title: 'Scale',     body: 'We refine, measure, and compound the system until it becomes difficult to ignore.' },
+    { number: 'I', title: 'Discover', body: 'Listen, explore, and understand your vision, needs, and goals.' },
+    { number: 'II', title: 'Design', body: 'Turn your vision into a clear concept, visual direction, and working prototype.' },
+    { number: 'III', title: 'Develop', body: 'Build, refine, and test the solution so everything works together.' },
+    { number: 'IV', title: 'Deploy', body: 'Launch the finished solution, complete the handover, and put it into use.' },
   ],
 } as const;
 

@@ -5,9 +5,11 @@ import SectionHead from '@/components/SectionHead.astro';
 import Picture from '@/components/Picture.astro';
 import FinalCta from '@/sections/FinalCta.astro';
 import { pillars } from '@/content/site';
-import { businessArms, clientPathwayContent } from '@/content/pages';
+import { businessArms, clientPathwayContent, servicesPageContent } from '@/content/pages';
+import { startHref } from '@/content/site';
 
 const arms = [businessArms.navaFitAlignment, businessArms.aaVisions];
+const copyFor = (key: keyof typeof servicesPageContent.pillars) => servicesPageContent.pillars[key] as { summary: string; offers: readonly string[]; note?: string };
 ---
 
 <Base
@@ -28,9 +30,11 @@ const arms = [businessArms.navaFitAlignment, businessArms.aaVisions];
   <section class="section pillars" aria-label="Disciplines">
     <div class="wrap pillar-list">
       {
-        pillars.map((p, i) => (
+        pillars.map((p, i) => {
+          const c = copyFor(p.key);
+          return (
           <article id={p.key} class:list={['pillar', i % 2 ? 'pillar-right' : 'pillar-left']} aria-labelledby={`${p.key}-title`}>
-            <div class="pillar-media" data-reveal>
+            <div class:list={['pillar-media', p.imageFit && 'fit-contain']} style={p.imageBg && `--fit-bg:${p.imageBg}`} data-reveal>
               <Picture src={p.image} alt={p.imageAlt} sizes="(max-width: 860px) 92vw, 50vw" imgClass="pillar-img" />
             </div>
             <div class="pillar-body" data-reveal style="--reveal-delay:120ms">
@@ -39,21 +43,25 @@ const arms = [businessArms.navaFitAlignment, businessArms.aaVisions];
                 {p.arm}
               </p>
               <h2 id={`${p.key}-title`} class="pillar-title display gilded">{p.title}</h2>
-              <p class="pillar-summary">{p.summary}</p>
+              <p class="pillar-summary">{c.summary}</p>
               <ul class="pillar-offers">
-                {p.offers.map((o) => <li>{o}</li>)}
+                {c.offers.map((o) => <li>{o}</li>)}
               </ul>
-              <a class="btn btn-ghost pillar-cta" href={`/start?focus=${p.key}`}>Start a {p.title.toLowerCase()} project</a>
+              {c.note && <p class="pillar-note">{c.note}</p>}
             </div>
           </article>
-        ))
+          );
+        })
       }
+      <div class="pillar-end" data-reveal>
+        <a class="btn btn-gold" href={startHref}>Start a Project</a>
+      </div>
     </div>
   </section>
 
   <section class="section pathway" aria-labelledby="pathway-title">
     <div class="wrap">
-      <SectionHead id="pathway-title" eyebrow="Pathway" title={clientPathwayContent.heading} copy="Every engagement follows the same four movements." />
+      <SectionHead id="pathway-title" eyebrow="Pathway" title={clientPathwayContent.heading} copy={clientPathwayContent.intro} />
       <ol class="steps">
         {
           clientPathwayContent.steps.map((s, i) => (
@@ -70,7 +78,7 @@ const arms = [businessArms.navaFitAlignment, businessArms.aaVisions];
 
   <section class="section arms" aria-labelledby="arms-title">
     <div class="wrap">
-      <SectionHead id="arms-title" eyebrow="Two arms" title="Specialists," accent="under one roof." copy={businessArms.umbrella.positioning} />
+      <SectionHead id="arms-title" eyebrow={servicesPageContent.arms.eyebrow} title={servicesPageContent.arms.title} copy={servicesPageContent.arms.copy} />
       <div class="arm-grid">
         {
           arms.map((a, i) => (
@@ -78,10 +86,6 @@ const arms = [businessArms.navaFitAlignment, businessArms.aaVisions];
               <p class="arm-role">{a.role}</p>
               <h3 class="arm-name display">{a.name}</h3>
               <p class="arm-lead">{a.leadership}</p>
-              <ul>
-                {a.focus.map((f) => <li>{f}</li>)}
-              </ul>
-              <p class="arm-note">{'differentiator' in a ? a.differentiator : a.brandEnergy}</p>
             </article>
           ))
         }
@@ -89,7 +93,7 @@ const arms = [businessArms.navaFitAlignment, businessArms.aaVisions];
     </div>
   </section>
 
-  <FinalCta />
+  <FinalCta note={servicesPageContent.ctaNote} />
 </Base>
 
 <style>
@@ -162,6 +166,14 @@ const arms = [businessArms.navaFitAlignment, businessArms.aaVisions];
     object-fit: cover;
   }
 
+  .pillar-media.fit-contain {
+    background: var(--fit-bg, var(--canvas));
+  }
+
+  .pillar-media.fit-contain :global(.pillar-img) {
+    object-fit: contain;
+  }
+
   .pillar-body {
     display: grid;
     gap: var(--space-3);
@@ -221,9 +233,16 @@ const arms = [businessArms.navaFitAlignment, businessArms.aaVisions];
     box-shadow: 0 0 10px rgb(var(--gold-rgb) / 0.8);
   }
 
-  .pillar-cta {
-    justify-self: start;
-    margin-top: 0.5rem;
+  .pillar-note {
+    padding-top: 0.9rem;
+    font-style: italic;
+    color: var(--text-2);
+    max-width: 46ch;
+  }
+
+  .pillar-end {
+    display: flex;
+    justify-content: center;
   }
 
   .steps {
@@ -305,33 +324,9 @@ const arms = [businessArms.navaFitAlignment, businessArms.aaVisions];
     color: var(--text-2);
   }
 
-  .arm ul {
-    list-style: none;
-    margin: 0.4rem 0;
-    padding: 0;
-    display: grid;
-    gap: 0.4rem;
-  }
 
-  .arm li {
-    position: relative;
-    padding-left: 1.1rem;
-    font-size: 0.95rem;
-  }
 
-  .arm li::before {
-    content: '·';
-    position: absolute;
-    left: 0.2rem;
-    color: var(--gold);
-  }
 
-  .arm-note {
-    padding-top: 0.9rem;
-    border-top: 1px solid var(--line-soft);
-    font-style: italic;
-    color: var(--text-2);
-  }
 
   @media (max-width: 960px) {
     .steps {

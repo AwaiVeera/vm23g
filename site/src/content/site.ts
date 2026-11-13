@@ -27,6 +27,8 @@ export type Pillar = {
   offers: string[];
   image: string;
   imageAlt: string;
+  imageFit?: 'contain';
+  imageBg?: string;
 };
 
 export const pillars: Pillar[] = [
@@ -57,8 +59,10 @@ export const pillars: Pillar[] = [
     arm: 'AaVisions',
     summary: 'Brand direction, media and commercial strategy for founders who want to be remembered.',
     offers: ['Sales and performance consultations', 'Videography, edits and music composing', 'Brand and logo work'],
-    image: 'work/gallery-kyani',
-    imageAlt: 'kyanielite.com website with a black-and-white talent gallery',
+    image: 'work/destino-home',
+    imageAlt: 'Destino Singapore website home screen: The night has a destination, beside a gold masquerade emblem',
+    imageFit: 'contain',
+    imageBg: '#000',
   },
   {
     key: 'technology',
@@ -67,8 +71,10 @@ export const pillars: Pillar[] = [
     arm: 'AaVisions',
     summary: 'Websites, apps and agentic AI workflows engineered to move a business faster.',
     offers: ['Web design and app development', 'AI workflow automation', 'UI/UX design and digital transformation'],
-    image: 'work/gallery-navafit-app',
-    imageAlt: 'NavaFit Alignment iOS app home screen with Kalari, Gadah and Breathwork disciplines',
+    image: 'work/astroalignment-banner',
+    imageAlt: 'Astro Alignment banner: a glowing violet lotus beside the words Vedic wisdom. Daily guidance.',
+    imageFit: 'contain',
+    imageBg: 'linear-gradient(#1a0129, #110120)',
   },
 ];
 
@@ -149,14 +155,14 @@ export const projects = [
     linkLabel: 'View on the App Store',
   },
   {
-    slug: 'kyanielite',
-    title: 'kyanielite.com',
+    slug: 'destino',
+    title: 'Destino Singapore',
     kind: 'Website',
     category: 'Websites',
-    year: '2024',
-    summary: 'Kshatriya · Yuga · Atman · Nirvana · Ishvara — a talent and lifestyle platform.',
-    image: 'gallery-kyani',
-    href: 'https://kyanielite.com',
+    year: '',
+    summary: 'Destino Singapore — the night has a destination. A nightclub and alfresco space by the Singapore River.',
+    image: 'destino-home',
+    href: 'https://destinosingapore.co',
     linkLabel: 'Visit site',
   },
   {

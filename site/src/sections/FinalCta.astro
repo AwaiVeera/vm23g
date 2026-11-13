@@ -6,12 +6,14 @@ interface Props {
   title?: string;
   accent?: string;
   copy?: string;
+  note?: string;
 }
 
 const {
   title = 'If the work matters,',
   accent = 'build it properly.',
   copy = 'For founders, brands, creators and teams ready to combine intelligence, identity, media and human performance into one sharper operating system.',
+  note,
 } = Astro.props;
 ---
 
@@ -27,6 +29,7 @@ const {
           {title}<br /><span class="gilded">{accent}</span>
         </h2>
         <p class="cta-text">{copy}</p>
+        {note && <p class="cta-note">{note}</p>}
         <div class="cta-actions">
           <a class="btn btn-gold" href={startHref}>Start a Project</a>
           <button type="button" class="btn btn-ghost" data-concierge-open>Ask V first</button>
@@ -87,6 +90,12 @@ const {
 
   .cta-text {
     color: var(--text-2);
+    max-width: 50ch;
+  }
+
+  .cta-note {
+    color: var(--gold-hi);
+    font-weight: 600;
     max-width: 50ch;
   }
 

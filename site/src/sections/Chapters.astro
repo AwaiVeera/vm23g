@@ -36,7 +36,7 @@ import { pillars } from '@/content/site';
         pillars.map((p, i) => (
           <article id={`chapter-${p.key}`} class={`chapter chapter-${i % 2 ? 'right' : 'left'}`} data-chapter={p.key}>
             <div class="chapter-media" data-reveal>
-              <div class="media-frame" data-parallax>
+              <div class:list={['media-frame', p.imageFit && 'fit-contain']} style={p.imageBg && `--fit-bg:${p.imageBg}`} data-parallax>
                 <Picture
                   src={p.image}
                   alt={p.imageAlt}
@@ -70,6 +70,7 @@ import { pillars } from '@/content/site';
 <style>
   .chapters {
     position: relative;
+    overflow-x: clip;
     padding-block: var(--space-8);
     background:
       radial-gradient(50% 40% at 0% 20%, rgb(var(--olive-rgb) / 0.14), transparent 70%),
@@ -224,6 +225,14 @@ import { pillars } from '@/content/site';
     object-fit: cover;
     transition: transform 1.4s var(--ease-cine), filter 1.4s var(--ease-cine);
     filter: saturate(0.92) contrast(1.02);
+  }
+
+  .media-frame.fit-contain {
+    background: var(--fit-bg, var(--canvas));
+  }
+
+  .media-frame.fit-contain :global(.media-img) {
+    object-fit: contain;
   }
 
   .chapter:hover .media-frame :global(.media-img) {
