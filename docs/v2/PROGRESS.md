@@ -24,6 +24,11 @@ The Astro site in `site/` stays as the working reference for features: Start a P
 - The old Pages project `vm23g` (Git-connected) still serves veeramisir.com from `main`. Pushes to `redesign-v2` trigger failing Pages preview builds; they never touch production.
 - Checks on the preview: all routes answer, V answers via Workers AI, a test enquiry saved and was deleted, Lighthouse mobile 100/100/100, LCP 0.78 s and CLS 0 on a throttled phone trace.
 
+## Launch (2026-11-14)
+- veeramisir.com and www.veeramisir.com moved from the Pages project `vm23g` to the Worker `vm23g-v2` (custom domains in `wrangler.jsonc`; `workers_dev` kept on). Email records (Google MX, DKIM, imap/pop/smtp) untouched; pre-switch DNS saved in `~/Backups/vm23g/2026-11-14-pre-health-check/dns-before-switch.txt`.
+- Live checks: every route answers, `/concepts/*` returns 404, HSTS on, V answers via Workers AI.
+- Rollback: remove the two custom domains from `vm23g-v2`, then re-add them to the Pages project `vm23g` (it still holds the old site).
+
 ## Go-live blockers (owner decisions)
 - **Hosting target.** The site is built for Cloudflare Workers (D1 database, R2 voice notes, Workers AI for V). The Bluehost plan needs the server parts (forms, admin, V) rebuilt in PHP first. veeramisir.com's nameservers are already on Cloudflare.
 - **Cloudflare account access** (if Cloudflare): owner login, create the D1 database and R2 bucket, set admin secrets, then route veeramisir.com.

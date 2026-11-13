@@ -5,6 +5,11 @@
   "compatibility_date": "2026-10-01",
   "compatibility_flags": ["nodejs_compat"],
   "observability": { "enabled": true },
+  "workers_dev": true,
+  "routes": [
+    { "pattern": "veeramisir.com", "custom_domain": true },
+    { "pattern": "www.veeramisir.com", "custom_domain": true }
+  ],
   "vars": {
     "AI_MODEL": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
     "TRANSCRIBE_MODEL": "@cf/openai/whisper-large-v3-turbo",
