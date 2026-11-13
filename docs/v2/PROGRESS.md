@@ -2,12 +2,27 @@
 
 Branch: `redesign-v2` · New site lives in `site/` · Live veeramisir.com is untouched.
 
-## Current status (updated 2026-11-05)
+## Current status (updated 2026-11-14)
 Direction changed after the screens below were built. The owner now wants:
-- a more static, screen-by-screen site, explored in concept spikes under `site/public/concepts/` (the chosen concept is `mix.html`: Monolith + Lens, five sides);
+- a more static, screen-by-screen site, explored in concept spikes under `site/public/concepts/` (the latest test is `calm.html`: one quiet screen at a time, tap to move on; Kyani removed);
 - hosting on **Bluehost** at veeramisir.com, structured like destinosingapore.co: a static front end served by Apache, plus a PHP `/api` folder for forms, admin and V. **Not Cloudflare, not WordPress.**
 
 The Astro site in `site/` stays as the working reference for features: Start a Project, Command Centre and V. Nothing is deployed. Audit record: `docs/v2/AUDIT-2026-11-05.md`.
+
+## Health check (2026-11-14)
+- `astro check` 0 errors/warnings; `astro build` passes; `npm audit` 0 vulnerabilities (production and full).
+- Patch updates applied: astro 7.4.11, @astrojs/cloudflare 14.4.7, wrangler 4.162.0, workers-types. TypeScript 7 (major, dev-only) held back.
+- All routes answer locally (200; `/admin` redirects to login; unknown pages 404). V answers in built-in knowledge mode. No console errors.
+- Lighthouse (mobile, local dev server): Home, Services, Work and Start score 100 for Accessibility, Best Practices and SEO. Work page layout shift 0.083 (within the 0.1 "good" limit).
+- Removed: two unused images (`gallery-kyani`, `gallery-navafit-session`) and three outdated legacy docs (Pearl Matte brand system, Expo launch checklist, Expo task manager). Restore point: `~/Backups/vm23g/2026-11-14-pre-health-check`.
+- `astro preview` does not start locally (Cloudflare runtime needs a login); not a code fault.
+
+## Go-live blockers (owner decisions)
+- **Hosting target.** The site is built for Cloudflare Workers (D1 database, R2 voice notes, Workers AI for V). The Bluehost plan needs the server parts (forms, admin, V) rebuilt in PHP first. veeramisir.com's nameservers are already on Cloudflare.
+- **Cloudflare account access** (if Cloudflare): owner login, create the D1 database and R2 bucket, set admin secrets, then route veeramisir.com.
+- **Legal page** still states it must be reviewed by a qualified Singapore lawyer before publication.
+- **Enquiry inbox** for notifications is unconfirmed (`docs/v2/CONTACT-REGISTER.md`).
+- **Login bot check** (Turnstile) and session revocation are still open from the 2026-11-05 audit.
 
 ## Completed screens
 1. **Navigation + Living Logo hero** — floating olive glass dock with active indicator; expanded menu with full logo, described destinations and project previews; authentic gold logo on a glass stage with WebGL olive-to-gold halo, light sweep masked to the gold lines, glass planes with pointer parallax (logo itself never 3D-transformed, so it stays sharp). Pause motion + reduced-motion.
